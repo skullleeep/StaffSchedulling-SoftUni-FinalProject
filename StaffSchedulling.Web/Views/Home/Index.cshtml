@@ -1,8 +1,39 @@
-﻿@{
+﻿@using static StaffSchedulling.Common.DataConstants.Web;
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to @SiteName!</h1>
+</div>
+<hr />
+
+
+<div class="row">
+    <div class="col">
+        <section>
+            <div class="text-center">
+                <h4>Are you a bussiness owner looking for an easy solution to schedule your employees vacations?</h4>
+                <br />
+                <h4>Then you have come to the right place!</h4>
+                <br />
+                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">Get Started</a>
+            </div>
+    </div>
+    <div class="col-md-auto">
+        <div class="d-flex" style="height: 200px;">
+            <div class="vr"></div>
+        </div>
+    </div>
+    <div class="col">
+        <section>
+            <div class="text-center">
+                <h4>Are you an employee sent by your higher up?</h4>
+                <br />
+                <h4>Then please login!</h4>
+                <br />
+                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            </div>
+        </section>
+    </div>
 </div>

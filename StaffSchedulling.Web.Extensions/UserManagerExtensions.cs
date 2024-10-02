@@ -8,7 +8,7 @@ namespace StaffSchedulling.Web.Extensions
 {
     public static class UserManagerExtensions
     {
-        public static async Task<StatusReport> CreateUserAsync(this UserManager<ApplicationUser> userManager, string email, string password, string fullName, UserRole roleEnum)
+        public static async Task<StatusReport> CreateWithRoleAsync(this UserManager<ApplicationUser> userManager, string email, string password, string fullName, UserRole roleEnum)
         {
             var user = new ApplicationUser();
             user.UserName = email;

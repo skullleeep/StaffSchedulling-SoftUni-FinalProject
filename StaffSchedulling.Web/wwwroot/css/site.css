@@ -20,3 +20,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.form-custom {
+    max-width: 70%;
+    margin: 0 auto;
+}

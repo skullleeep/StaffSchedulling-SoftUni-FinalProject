@@ -36,6 +36,7 @@ namespace StaffSchedulling.Data.Models
         public virtual ApplicationUser Employee { get; set; } = null!;
 
         [ForeignKey(nameof(DepartmentId))]
+        [DeleteBehavior(DeleteBehavior.NoAction)]
         public virtual Department Department { get; set; } = null!;
     }
 }

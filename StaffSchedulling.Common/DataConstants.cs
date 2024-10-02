@@ -11,8 +11,14 @@
             public const int FullNameMaxLength = 128;
 
             public const string PasswordRegexPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$";
+            public const string FullNameRegexPattern = @"^\S*[A-Za-z]+\s[A-Za-z]+$";
         }
 
+        public static class Company
+        {
+            public const int NameMinLength = 5;
+            public const int NameMaxLength = 160;
+        }
         public static class Department
         {
             public const int NameMinLength = 3;
@@ -32,6 +38,8 @@
         {
             public const string DefaultAdminEmail = "admin@admin.com";
             public const string DefaultAdminPassword = "Test1234!";
+
+            public const string SiteName = "Staff Schedulling";
         }
     }
 }

@@ -6,17 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StaffSchedulling.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAllEntities : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "DepartmentId",
-                table: "AspNetUsers",
-                type: "int",
-                nullable: true);
-
             migrationBuilder.AddColumn<string>(
                 name: "FullName",
                 table: "AspNetUsers",
@@ -25,16 +19,55 @@ namespace StaffSchedulling.Data.Migrations
                 nullable: true);
 
             migrationBuilder.CreateTable(
+                name: "Companies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(160)", maxLength: 160, nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AdminId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Companies_AspNetUsers_AdminId",
+                        column: x => x.AdminId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Companies_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Departments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    SupervisorId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Departments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Departments_AspNetUsers_SupervisorId",
+                        column: x => x.SupervisorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Departments_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -84,14 +117,28 @@ namespace StaffSchedulling.Data.Migrations
                         name: "FK_Vacations_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_DepartmentId",
-                table: "AspNetUsers",
-                column: "DepartmentId");
+                name: "IX_Companies_AdminId",
+                table: "Companies",
+                column: "AdminId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Companies_OwnerId",
+                table: "Companies",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Departments_CompanyId",
+                table: "Departments",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Departments_SupervisorId",
+                table: "Departments",
+                column: "SupervisorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeesInfo_DepartmentId",
@@ -107,22 +154,11 @@ namespace StaffSchedulling.Data.Migrations
                 name: "IX_Vacations_EmployeeId",
                 table: "Vacations",
                 column: "EmployeeId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_Departments_DepartmentId",
-                table: "AspNetUsers",
-                column: "DepartmentId",
-                principalTable: "Departments",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Departments_DepartmentId",
-                table: "AspNetUsers");
-
             migrationBuilder.DropTable(
                 name: "EmployeesInfo");
 
@@ -132,13 +168,8 @@ namespace StaffSchedulling.Data.Migrations
             migrationBuilder.DropTable(
                 name: "Departments");
 
-            migrationBuilder.DropIndex(
-                name: "IX_AspNetUsers_DepartmentId",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "DepartmentId",
-                table: "AspNetUsers");
+            migrationBuilder.DropTable(
+                name: "Companies");
 
             migrationBuilder.DropColumn(
                 name: "FullName",

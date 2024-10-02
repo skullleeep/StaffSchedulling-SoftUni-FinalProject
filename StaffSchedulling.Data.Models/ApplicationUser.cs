@@ -11,11 +11,14 @@ namespace StaffSchedulling.Data.Models
         [PersonalData]
         public string? FullName { get; set; }
 
-        [ForeignKey(nameof(Department))]
-        public int? DepartmentId { get; set; }
-
         //Navigation
-        public virtual Department Department { get; set; }
+        [InverseProperty("Owner")]
+        public virtual ICollection<Company> CompaniesOwned { get; set; } = new HashSet<Company>();
+
+        [InverseProperty("Admin")]
+        public virtual ICollection<Company> CompaniesWhereAdmin { get; set; } = new HashSet<Company>();
+
+        public virtual ICollection<Department> DepartmentsWhereSupervisor { get; set; } = new HashSet<Department>();
 
         public virtual ICollection<Vacation> Vacations { get; set; } = new HashSet<Vacation>();
     }

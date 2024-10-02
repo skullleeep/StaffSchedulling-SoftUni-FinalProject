@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using StaffSchedulling.Common.Enums;
 using StaffSchedulling.Data;
 using StaffSchedulling.Data.Models;
-using StaffSchedulling.Web.Extensions;
-using static StaffSchedulling.Common.DataConstants.Web;
 
 namespace StaffSchedulling.Web
 {
@@ -52,41 +49,41 @@ namespace StaffSchedulling.Web
             app.MapRazorPages();
 
             //Add custom roles
-            using (var scope = app.Services.CreateScope())
-            {
-                var roleManager =
-                    scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            /*            using (var scope = app.Services.CreateScope())
+                        {
+                            var roleManager =
+                                scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-                //Get roles from enum
-                string[] roles = Enum.GetNames(typeof(UserRole));
+                            //Get roles from enum
+                            string[] roles = Enum.GetNames(typeof(UserRole));
 
-                foreach (var role in roles)
-                {
-                    if (!await roleManager.RoleExistsAsync(role))
-                    {
-                        await roleManager.CreateAsync(new IdentityRole(role));
-                    }
-                }
-            }
+                            foreach (var role in roles)
+                            {
+                                if (!await roleManager.RoleExistsAsync(role))
+                                {
+                                    await roleManager.CreateAsync(new IdentityRole(role));
+                                }
+                            }
+                        }*/
 
             //Add custom admin
-            using (var scope = app.Services.CreateScope())
-            {
-                var userManager =
-                    scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            /*            using (var scope = app.Services.CreateScope())
+                        {
+                            var userManager =
+                                scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-                string name = "Admin";
-                string email = DefaultAdminEmail;
-                string password = DefaultAdminPassword;
+                            string name = "Admin";
+                            string email = DefaultAdminEmail;
+                            string password = DefaultAdminPassword;
 
-                var usersInAdminRole = await userManager.GetUsersInRoleAsync(UserRole.Admin.ToString());
+                            var usersInAdminRole = await userManager.GetUsersInRoleAsync(UserRole.Admin.ToString());
 
-                //If there are no admins then create one
-                if (usersInAdminRole.Count == 0)
-                {
-                    await userManager.CreateUserAsync(email, password, name, UserRole.Admin);
-                }
-            }
+                            //If there are no admins then create one
+                            if (usersInAdminRole.Count == 0)
+                            {
+                                await userManager.CreateUserAsync(email, password, name, UserRole.Admin);
+                            }
+                        }*/
 
             app.Run();
         }

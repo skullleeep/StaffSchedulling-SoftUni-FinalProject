@@ -171,9 +171,6 @@ namespace StaffSchedulling.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -220,8 +217,6 @@ namespace StaffSchedulling.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DepartmentId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -233,6 +228,35 @@ namespace StaffSchedulling.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("StaffSchedulling.Data.Models.Company", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdminId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
+
+                    b.Property<string>("OwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Companies");
+                });
+
             modelBuilder.Entity("StaffSchedulling.Data.Models.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -241,12 +265,22 @@ namespace StaffSchedulling.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("SupervisorId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("SupervisorId");
 
                     b.ToTable("Departments");
                 });
@@ -368,13 +402,38 @@ namespace StaffSchedulling.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.ApplicationUser", b =>
+            modelBuilder.Entity("StaffSchedulling.Data.Models.Company", b =>
                 {
-                    b.HasOne("StaffSchedulling.Data.Models.Department", "Department")
-                        .WithMany("Employees")
-                        .HasForeignKey("DepartmentId");
+                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", "Admin")
+                        .WithMany("CompaniesWhereAdmin")
+                        .HasForeignKey("AdminId");
 
-                    b.Navigation("Department");
+                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", "Owner")
+                        .WithMany("CompaniesOwned")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Admin");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("StaffSchedulling.Data.Models.Department", b =>
+                {
+                    b.HasOne("StaffSchedulling.Data.Models.Company", "Company")
+                        .WithMany("Departments")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", "Supervisor")
+                        .WithMany("DepartmentsWhereSupervisor")
+                        .HasForeignKey("SupervisorId");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Supervisor");
                 });
 
             modelBuilder.Entity("StaffSchedulling.Data.Models.EmployeeInfo", b =>
@@ -393,7 +452,7 @@ namespace StaffSchedulling.Data.Migrations
                     b.HasOne("StaffSchedulling.Data.Models.Department", "Department")
                         .WithMany("Vacations")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", "Employee")
@@ -409,13 +468,22 @@ namespace StaffSchedulling.Data.Migrations
 
             modelBuilder.Entity("StaffSchedulling.Data.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("CompaniesOwned");
+
+                    b.Navigation("CompaniesWhereAdmin");
+
+                    b.Navigation("DepartmentsWhereSupervisor");
+
                     b.Navigation("Vacations");
+                });
+
+            modelBuilder.Entity("StaffSchedulling.Data.Models.Company", b =>
+                {
+                    b.Navigation("Departments");
                 });
 
             modelBuilder.Entity("StaffSchedulling.Data.Models.Department", b =>
                 {
-                    b.Navigation("Employees");
-
                     b.Navigation("EmployeesInfo");
 
                     b.Navigation("Vacations");
