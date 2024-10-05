@@ -7,13 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StaffSchedulling.Common\StaffSchedulling.Common.csproj" />
-    <ProjectReference Include="..\StaffSchedulling.Data.Models\StaffSchedulling.Data.Models.csproj" />
+    <ProjectReference Include="..\StaffSchedulling.Common\StaffScheduling.Common.csproj" />
   </ItemGroup>
 
 </Project>

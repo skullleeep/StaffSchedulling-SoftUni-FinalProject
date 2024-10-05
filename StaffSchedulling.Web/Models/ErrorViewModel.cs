@@ -1,4 +1,4 @@
-namespace StaffSchedulling.Web.Models
+namespace StaffScheduling.Web.Models
 {
     public class ErrorViewModel
     {

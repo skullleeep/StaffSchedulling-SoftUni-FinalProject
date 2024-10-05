@@ -1,0 +1,38 @@
+﻿@using StaffScheduling.Web.Models.ViewModels.Company;
+@model DashboardCompaniesViewModel
+
+@{
+    ViewData["Title"] = "Owner Dashboard";
+}
+
+<h1>Owner Dashboard</h1>
+
+<h2>Companies Owned</h2>
+@if (Model.OwnedCompanies.Any())
+{
+    <ul>
+        @foreach (var company in Model.OwnedCompanies)
+        {
+            <li>@company.Name</li>
+        }
+    </ul>
+}
+else
+{
+    <p>You do not own any companies.</p>
+}
+
+<h2>Companies Joined</h2>
+@if (Model.JoinedCompanies.Any())
+{
+    <ul>
+        @foreach (var company in Model.JoinedCompanies)
+        {
+            <li>@company.Name</li>
+        }
+    </ul>
+}
+else
+{
+    <p>You have not joined any companies.</p>
+}

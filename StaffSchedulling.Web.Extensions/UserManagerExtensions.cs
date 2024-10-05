@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using StaffSchedulling.Common;
-using StaffSchedulling.Common.Enums;
-using StaffSchedulling.Data.Models;
+using StaffScheduling.Common;
+using StaffScheduling.Common.Enums;
+using StaffScheduling.Data.Models;
 using System.Security.Claims;
 
-namespace StaffSchedulling.Web.Extensions
+namespace StaffScheduling.Web.Extensions
 {
     public static class UserManagerExtensions
     {

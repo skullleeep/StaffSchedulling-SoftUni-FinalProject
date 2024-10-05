@@ -1,4 +1,4 @@
-﻿namespace StaffSchedulling.Common
+﻿namespace StaffScheduling.Common
 {
     public class StatusReport
     {

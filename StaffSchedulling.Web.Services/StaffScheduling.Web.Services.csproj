@@ -11,7 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StaffSchedulling.Common\StaffSchedulling.Common.csproj" />
+    <ProjectReference Include="..\StaffSchedulling.Data.Models\StaffScheduling.Data.Models.csproj" />
+    <ProjectReference Include="..\StaffSchedulling.Data\StaffScheduling.Data.csproj" />
+    <ProjectReference Include="..\StaffSchedulling.Web.Models\StaffScheduling.Web.Models.csproj" />
   </ItemGroup>
 
 </Project>

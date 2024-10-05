@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using StaffSchedulling.Data;
-using StaffSchedulling.Data.Models;
+using StaffScheduling.Data;
+using StaffScheduling.Data.Models;
+using StaffScheduling.Web.Services.DbServices;
+using StaffScheduling.Web.Services.DbServices.Contracts;
+using StaffScheduling.Web.Services.UserServices;
 
-namespace StaffSchedulling.Web
+namespace StaffScheduling.Web
 {
     public class Program
     {
@@ -14,12 +17,17 @@ namespace StaffSchedulling.Web
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString))
+                .AddScoped<IEmployeeInfoService, EmployeeInfoService>()
+                .AddScoped<ICompanyService, CompanyService>();
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddUserManager<ApplicationUserManager>();
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
@@ -41,6 +49,7 @@ namespace StaffSchedulling.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

@@ -25,3 +25,31 @@ body {
     max-width: 70%;
     margin: 0 auto;
 }
+
+
+/* Home - Index */
+.hero-section {
+    background-color: #258cfb;
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.hero-section h1 {
+    color: white;
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.hero-section p {
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+}
+
+.cta-buttons .btn {
+    margin: 10px;
+}
+
+.cta-section {
+    padding: 40px 0;
+}

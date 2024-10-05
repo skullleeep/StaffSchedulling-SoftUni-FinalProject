@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static StaffSchedulling.Common.DataConstants.Company;
+using static StaffScheduling.Common.DataConstants.Company;
 
-namespace StaffSchedulling.Data.Models
+namespace StaffScheduling.Data.Models
 {
     public class Company
     {
@@ -18,6 +18,9 @@ namespace StaffSchedulling.Data.Models
 
         public string? AdminId { get; set; }
 
+        [Required]
+        public Guid Invite { get; set; } = new Guid();
+
         //Navigation
         [ForeignKey(nameof(OwnerId))]
         public ApplicationUser Owner { get; set; }
@@ -25,6 +28,7 @@ namespace StaffSchedulling.Data.Models
         [ForeignKey(nameof(AdminId))]
         public ApplicationUser Admin { get; set; }
 
+        public virtual ICollection<EmployeeInfo> CompanyEmployees { get; set; } = new HashSet<EmployeeInfo>();
         public virtual ICollection<Department> Departments { get; set; } = new HashSet<Department>();
     }
 }

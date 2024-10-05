@@ -1,27 +1,35 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static StaffSchedulling.Common.DataConstants.EmployeeInfo;
+using static StaffScheduling.Common.DataConstants.EmployeeInfo;
 
-namespace StaffSchedulling.Data.Models
+namespace StaffScheduling.Data.Models
 {
     public class EmployeeInfo
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [MaxLength(FullNameMaxLength)]
-        [Required]
-        public string FullName { get; set; } = null!;
-
         [Required]
         [MaxLength(EmailMaxLength)]
         public string Email { get; set; } = null!;
 
         [Required]
-        public int DepartmentId { get; set; }
+        public bool IsSuperior { get; set; } = false;
+
+        [Required]
+        public bool HasJoined { get; set; } = false;
+
+        [Required]
+        public int CompanyId { get; set; }
+
+        [ForeignKey(nameof(Department))]
+        public int? DepartmentId { get; set; }
 
         //Navigation
-        [ForeignKey(nameof(DepartmentId))]
-        public virtual Department Department { get; set; } = null!;
+
+        [ForeignKey(nameof(CompanyId))]
+        public virtual Company Company { get; set; } = null!;
+
+        public virtual Department Department { get; set; }
     }
 }

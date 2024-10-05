@@ -5,15 +5,15 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using StaffSchedulling.Common.Enums;
-using StaffSchedulling.Data.Models;
-using StaffSchedulling.Web.Extensions;
+using StaffScheduling.Common.Enums;
+using StaffScheduling.Data.Models;
+using StaffScheduling.Web.Extensions;
 using System.ComponentModel.DataAnnotations;
-using static StaffSchedulling.Common.DataConstants.ApplicationUser;
-using static StaffSchedulling.Common.DataConstants.Web;
-using static StaffSchedulling.Common.DataErrorMessages.ApplicationUser;
+using static StaffScheduling.Common.DataConstants.ApplicationUser;
+using static StaffScheduling.Common.DataConstants.Web;
+using static StaffScheduling.Common.DataErrorMessages.ApplicationUser;
 
-namespace StaffSchedulling.Web.Areas.Identity.Pages.Account
+namespace StaffScheduling.Web.Areas.Identity.Pages.Account
 {
     public class AdminChangeModel : PageModel
     {

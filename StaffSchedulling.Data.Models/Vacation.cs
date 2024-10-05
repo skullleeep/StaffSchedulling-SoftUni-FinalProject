@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StaffSchedulling.Data.Models
+namespace StaffScheduling.Data.Models
 {
     public class Vacation
     {

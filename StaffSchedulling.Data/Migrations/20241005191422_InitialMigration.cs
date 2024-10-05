@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace StaffSchedulling.Data.Migrations
+namespace StaffScheduling.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,7 +26,8 @@ namespace StaffSchedulling.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(160)", maxLength: 160, nullable: false),
                     OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AdminId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    AdminId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Invite = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,19 +76,25 @@ namespace StaffSchedulling.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(320)", maxLength: 320, nullable: false),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false)
+                    IsSuperior = table.Column<bool>(type: "bit", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmployeesInfo", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_EmployeesInfo_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_EmployeesInfo_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -139,6 +146,11 @@ namespace StaffSchedulling.Data.Migrations
                 name: "IX_Departments_SupervisorId",
                 table: "Departments",
                 column: "SupervisorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmployeesInfo_CompanyId",
+                table: "EmployeesInfo",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeesInfo_DepartmentId",

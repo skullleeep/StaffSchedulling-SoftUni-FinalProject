@@ -1,39 +1,29 @@
-﻿@using static StaffSchedulling.Common.DataConstants.Web;
+﻿@using static StaffScheduling.Common.DataConstants.Web;
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to @SiteName!</h1>
-</div>
-<hr />
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <h1>Staff Scheduling Made Simple</h1>
+        <p>Your go-to solution for easy staff management and scheduling for businesses of all sizes.</p>
+    </div>
+</section>
 
+<!-- Call to Action Section -->
+<section class="cta-section">
+    <div class="container text-center">
+        <h2>Are You a Company Owner?</h2>
+        <p>Sign up and manage your staff schedules with ease. Reduce administrative burden and focus on growing your business.</p>
+        <a asp-area="Identity" asp-page="/Account/RegisterCompany" class="btn btn-primary btn-lg">Register as a Company Owner</a>
+    </div>
+</section>
 
-<div class="row">
-    <div class="col">
-        <section>
-            <div class="text-center">
-                <h4>Are you a bussiness owner looking for an easy solution to schedule your employees vacations?</h4>
-                <br />
-                <h4>Then you have come to the right place!</h4>
-                <br />
-                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">Get Started</a>
-            </div>
+<section class="cta-section bg-light">
+    <div class="container text-center">
+        <h2>Are You an Employee?</h2>
+        <p>Register and request schedule changes directly from home. Stay organized and up-to-date with your shifts.</p>
+        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-secondary btn-lg">Register as an Employee</a>
     </div>
-    <div class="col-md-auto">
-        <div class="d-flex" style="height: 200px;">
-            <div class="vr"></div>
-        </div>
-    </div>
-    <div class="col">
-        <section>
-            <div class="text-center">
-                <h4>Are you an employee sent by your higher up?</h4>
-                <br />
-                <h4>Then please login!</h4>
-                <br />
-                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
-            </div>
-        </section>
-    </div>
-</div>
+</section>

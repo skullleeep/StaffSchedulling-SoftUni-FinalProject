@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using StaffSchedulling.Data.Models;
+using StaffScheduling.Data.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace StaffSchedulling.Web.Areas.Identity.Pages.Account
+namespace StaffScheduling.Web.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {

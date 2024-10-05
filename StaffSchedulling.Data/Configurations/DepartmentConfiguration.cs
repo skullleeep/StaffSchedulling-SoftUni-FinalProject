@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using StaffSchedulling.Data.Models;
+using StaffScheduling.Data.Models;
 
-namespace StaffSchedulling.Data.Configurations
+namespace StaffScheduling.Data.Configurations
 {
     internal class DepartmentConfiguration : IEntityTypeConfiguration<Department>
     {

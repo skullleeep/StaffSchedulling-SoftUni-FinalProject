@@ -1,4 +1,4 @@
-﻿namespace StaffSchedulling.Common.Enums
+﻿namespace StaffScheduling.Common.Enums
 {
     public enum UserRole
     {

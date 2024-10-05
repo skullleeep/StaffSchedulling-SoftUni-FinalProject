@@ -3,19 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffSchedulling.Web", "StaffSchedulling.Web\StaffSchedulling.Web.csproj", "{C2E140DE-CB89-4018-97D0-6CF555D4312E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Web", "StaffSchedulling.Web\StaffScheduling.Web.csproj", "{C2E140DE-CB89-4018-97D0-6CF555D4312E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{B934A415-F1C3-4724-A353-5E41D836EE2F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffSchedulling.Data.Models", "StaffSchedulling.Data.Models\StaffSchedulling.Data.Models.csproj", "{04681536-D700-4B72-8A24-34AB9F628AD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Data.Models", "StaffSchedulling.Data.Models\StaffScheduling.Data.Models.csproj", "{04681536-D700-4B72-8A24-34AB9F628AD0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffSchedulling.Data", "StaffSchedulling.Data\StaffSchedulling.Data.csproj", "{EADA102F-6296-491D-95D2-F47AA0D8ABE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Data", "StaffSchedulling.Data\StaffScheduling.Data.csproj", "{EADA102F-6296-491D-95D2-F47AA0D8ABE8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffSchedulling.Common", "StaffSchedulling.Common\StaffSchedulling.Common.csproj", "{350C6DEA-7AAD-4224-A7DB-B3A765C02239}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Common", "StaffSchedulling.Common\StaffScheduling.Common.csproj", "{350C6DEA-7AAD-4224-A7DB-B3A765C02239}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{E1DEE13B-239E-4A50-A9E1-E0B4234AC9D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffSchedulling.Web.Extensions", "StaffSchedulling.Web.Extensions\StaffSchedulling.Web.Extensions.csproj", "{6FEFD72C-5FFF-4D7B-A7BB-EC63645E5258}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Web.Extensions", "StaffSchedulling.Web.Extensions\StaffScheduling.Web.Extensions.csproj", "{6FEFD72C-5FFF-4D7B-A7BB-EC63645E5258}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffScheduling.Web.Services", "StaffSchedulling.Web.Services\StaffScheduling.Web.Services.csproj", "{3C53F644-E08B-48A2-AE37-34CE7C00BFC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffScheduling.Web.Models", "StaffSchedulling.Web.Models\StaffScheduling.Web.Models.csproj", "{915D1B9C-5058-4CD5-8444-3663D243DC5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +47,14 @@ Global
 		{6FEFD72C-5FFF-4D7B-A7BB-EC63645E5258}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FEFD72C-5FFF-4D7B-A7BB-EC63645E5258}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FEFD72C-5FFF-4D7B-A7BB-EC63645E5258}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C53F644-E08B-48A2-AE37-34CE7C00BFC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C53F644-E08B-48A2-AE37-34CE7C00BFC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C53F644-E08B-48A2-AE37-34CE7C00BFC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C53F644-E08B-48A2-AE37-34CE7C00BFC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{915D1B9C-5058-4CD5-8444-3663D243DC5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{915D1B9C-5058-4CD5-8444-3663D243DC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{915D1B9C-5058-4CD5-8444-3663D243DC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{915D1B9C-5058-4CD5-8444-3663D243DC5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +64,8 @@ Global
 		{04681536-D700-4B72-8A24-34AB9F628AD0} = {B934A415-F1C3-4724-A353-5E41D836EE2F}
 		{EADA102F-6296-491D-95D2-F47AA0D8ABE8} = {B934A415-F1C3-4724-A353-5E41D836EE2F}
 		{6FEFD72C-5FFF-4D7B-A7BB-EC63645E5258} = {E1DEE13B-239E-4A50-A9E1-E0B4234AC9D2}
+		{3C53F644-E08B-48A2-AE37-34CE7C00BFC3} = {E1DEE13B-239E-4A50-A9E1-E0B4234AC9D2}
+		{915D1B9C-5058-4CD5-8444-3663D243DC5C} = {E1DEE13B-239E-4A50-A9E1-E0B4234AC9D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9DC417C4-9CC5-4F56-964F-98C30C77089D}

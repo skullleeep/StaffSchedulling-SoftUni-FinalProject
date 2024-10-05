@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using StaffSchedulling.Data.Configurations;
-using StaffSchedulling.Data.Models;
+using StaffScheduling.Data.Configurations;
+using StaffScheduling.Data.Models;
 
-namespace StaffSchedulling.Data
+namespace StaffScheduling.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

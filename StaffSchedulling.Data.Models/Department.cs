@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static StaffSchedulling.Common.DataConstants.Department;
+using static StaffScheduling.Common.DataConstants.Department;
 
-namespace StaffSchedulling.Data.Models
+namespace StaffScheduling.Data.Models
 {
     public class Department
     {
@@ -24,7 +24,7 @@ namespace StaffSchedulling.Data.Models
         [ForeignKey(nameof(CompanyId))]
         public virtual Company Company { get; set; }
 
-        public virtual ICollection<EmployeeInfo> EmployeesInfo { get; set; } = new HashSet<EmployeeInfo>();
+        public virtual ICollection<EmployeeInfo> DepartmentEmployeesInfo { get; set; } = new HashSet<EmployeeInfo>();
 
         public virtual ICollection<Vacation> Vacations { get; set; } = new HashSet<Vacation>();
     }

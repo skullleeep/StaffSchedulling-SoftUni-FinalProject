@@ -18,8 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StaffSchedulling.Data\StaffSchedulling.Data.csproj" />
-    <ProjectReference Include="..\StaffSchedulling.Web.Extensions\StaffSchedulling.Web.Extensions.csproj" />
+    <ProjectReference Include="..\StaffSchedulling.Data\StaffScheduling.Data.csproj" />
+    <ProjectReference Include="..\StaffSchedulling.Web.Extensions\StaffScheduling.Web.Extensions.csproj" />
+    <ProjectReference Include="..\StaffSchedulling.Web.Services\StaffScheduling.Web.Services.csproj" />
   </ItemGroup>
 
 </Project>

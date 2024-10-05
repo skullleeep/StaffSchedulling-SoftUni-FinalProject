@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using StaffSchedulling.Data;
+using StaffScheduling.Data;
 
 #nullable disable
 
-namespace StaffSchedulling.Data.Migrations
+namespace StaffScheduling.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241002104024_Initial")]
-    partial class Initial
+    [Migration("20241005191422_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -162,7 +162,7 @@ namespace StaffSchedulling.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.ApplicationUser", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -231,7 +231,7 @@ namespace StaffSchedulling.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.Company", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.Company", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -241,6 +241,9 @@ namespace StaffSchedulling.Data.Migrations
 
                     b.Property<string>("AdminId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("Invite")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -260,7 +263,7 @@ namespace StaffSchedulling.Data.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.Department", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -288,13 +291,16 @@ namespace StaffSchedulling.Data.Migrations
                     b.ToTable("Departments");
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.EmployeeInfo", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.EmployeeInfo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -302,19 +308,19 @@ namespace StaffSchedulling.Data.Migrations
                         .HasMaxLength(320)
                         .HasColumnType("nvarchar(320)");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                    b.Property<bool>("IsSuperior")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("EmployeesInfo");
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.Vacation", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.Vacation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -365,7 +371,7 @@ namespace StaffSchedulling.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", null)
+                    b.HasOne("StaffScheduling.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -374,7 +380,7 @@ namespace StaffSchedulling.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", null)
+                    b.HasOne("StaffScheduling.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -389,7 +395,7 @@ namespace StaffSchedulling.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", null)
+                    b.HasOne("StaffScheduling.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -398,20 +404,20 @@ namespace StaffSchedulling.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", null)
+                    b.HasOne("StaffScheduling.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.Company", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.Company", b =>
                 {
-                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", "Admin")
+                    b.HasOne("StaffScheduling.Data.Models.ApplicationUser", "Admin")
                         .WithMany("CompaniesWhereAdmin")
                         .HasForeignKey("AdminId");
 
-                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", "Owner")
+                    b.HasOne("StaffScheduling.Data.Models.ApplicationUser", "Owner")
                         .WithMany("CompaniesOwned")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -422,15 +428,15 @@ namespace StaffSchedulling.Data.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.Department", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.Department", b =>
                 {
-                    b.HasOne("StaffSchedulling.Data.Models.Company", "Company")
+                    b.HasOne("StaffScheduling.Data.Models.Company", "Company")
                         .WithMany("Departments")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", "Supervisor")
+                    b.HasOne("StaffScheduling.Data.Models.ApplicationUser", "Supervisor")
                         .WithMany("DepartmentsWhereSupervisor")
                         .HasForeignKey("SupervisorId");
 
@@ -439,26 +445,32 @@ namespace StaffSchedulling.Data.Migrations
                     b.Navigation("Supervisor");
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.EmployeeInfo", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.EmployeeInfo", b =>
                 {
-                    b.HasOne("StaffSchedulling.Data.Models.Department", "Department")
-                        .WithMany("EmployeesInfo")
-                        .HasForeignKey("DepartmentId")
+                    b.HasOne("StaffScheduling.Data.Models.Company", "Company")
+                        .WithMany("CompanyEmployees")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("StaffScheduling.Data.Models.Department", "Department")
+                        .WithMany("DepartmentEmployeesInfo")
+                        .HasForeignKey("DepartmentId");
+
+                    b.Navigation("Company");
 
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.Vacation", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.Vacation", b =>
                 {
-                    b.HasOne("StaffSchedulling.Data.Models.Department", "Department")
+                    b.HasOne("StaffScheduling.Data.Models.Department", "Department")
                         .WithMany("Vacations")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("StaffSchedulling.Data.Models.ApplicationUser", "Employee")
+                    b.HasOne("StaffScheduling.Data.Models.ApplicationUser", "Employee")
                         .WithMany("Vacations")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -469,7 +481,7 @@ namespace StaffSchedulling.Data.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.ApplicationUser", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.ApplicationUser", b =>
                 {
                     b.Navigation("CompaniesOwned");
 
@@ -480,14 +492,16 @@ namespace StaffSchedulling.Data.Migrations
                     b.Navigation("Vacations");
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.Company", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.Company", b =>
                 {
+                    b.Navigation("CompanyEmployees");
+
                     b.Navigation("Departments");
                 });
 
-            modelBuilder.Entity("StaffSchedulling.Data.Models.Department", b =>
+            modelBuilder.Entity("StaffScheduling.Data.Models.Department", b =>
                 {
-                    b.Navigation("EmployeesInfo");
+                    b.Navigation("DepartmentEmployeesInfo");
 
                     b.Navigation("Vacations");
                 });

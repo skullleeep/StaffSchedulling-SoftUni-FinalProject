@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static StaffSchedulling.Common.DataConstants.ApplicationUser;
+using static StaffScheduling.Common.DataConstants.ApplicationUser;
 
-namespace StaffSchedulling.Data.Models
+namespace StaffScheduling.Data.Models
 {
     public class ApplicationUser : IdentityUser
     {

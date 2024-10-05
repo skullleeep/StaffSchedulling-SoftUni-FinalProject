@@ -1,4 +1,4 @@
-﻿namespace StaffSchedulling.Common
+﻿namespace StaffScheduling.Common
 {
     public static class DataConstants
     {
@@ -18,6 +18,8 @@
         {
             public const int NameMinLength = 5;
             public const int NameMaxLength = 160;
+
+            public const string NameRegexPattern = @"^[A-Z]([a-zA-Z0-9]|[\s\-@.,#&£$€¥])*$";
         }
         public static class Department
         {
@@ -39,7 +41,7 @@
             public const string DefaultAdminEmail = "admin@admin.com";
             public const string DefaultAdminPassword = "Test1234!";
 
-            public const string SiteName = "Staff Schedulling";
+            public const string SiteName = "Staff Scheduling";
         }
     }
 }

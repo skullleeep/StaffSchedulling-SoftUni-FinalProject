@@ -12,27 +12,32 @@ using StaffScheduling.Common.Enums;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Web.Areas.Identity.InputModels;
 using StaffScheduling.Web.Extensions;
+using StaffScheduling.Web.Models.Dtos;
+using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
 using System.Text;
 using System.Text.Encodings.Web;
 
+
 namespace StaffScheduling.Web.Areas.Identity.Pages.Account
 {
-    public class RegisterEmployeeModel : PageModel
+    public class RegisterCompanyModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationUserManager _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
-        private readonly ILogger<RegisterEmployeeModel> _logger;
+        private readonly ILogger<RegisterCompanyModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ICompanyService _companyService;
 
-        public RegisterEmployeeModel(
+        public RegisterCompanyModel(
             ApplicationUserManager userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterEmployeeModel> logger,
-            IEmailSender emailSender)
+            ILogger<RegisterCompanyModel> logger,
+            IEmailSender emailSender,
+            ICompanyService companyService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -40,6 +45,7 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _companyService = companyService;
         }
 
         /// <summary>
@@ -47,7 +53,7 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [BindProperty]
-        public RegisterInputModel Input { get; set; }
+        public CompanyRegisterInputModel Input { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -60,6 +66,7 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -76,8 +83,7 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                 var user = CreateUser();
 
                 //Update the full name variable
-                string fullName = Input.FullName.TrimEnd(); //Remove any spaces at end of full name
-                user.FullName = fullName;
+                user.FullName = Input.FullName;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -88,12 +94,32 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     //Add FullName Claim
-                    var resultClaimAdd = await _userManager.AddUpdateUserClaimAsync(user, ClaimType.FullName, fullName);
+                    var resultClaimAdd = await _userManager.AddUpdateUserClaimAsync(user, ClaimType.FullName, Input.FullName);
                     if (!resultClaimAdd.Ok)
                     {
+                        //Delete user
+                        await _userManager.DeleteAsync(user);
+
                         ModelState.AddModelError(String.Empty, resultClaimAdd.Message);
                         return Page();
                     }
+
+                    //Create new Company and add it to DB
+                    var newCompany = new CompanyDto()
+                    {
+                        Name = Input.CompanyName.TrimEnd(),
+                        OwnerId = user.Id
+                    };
+                    var resultAddingCompany = await _companyService.AddCompanyAsync(newCompany);
+                    if (!resultAddingCompany.Ok)
+                    {
+                        //Delete user
+                        await _userManager.DeleteAsync(user);
+
+                        ModelState.AddModelError(String.Empty, resultAddingCompany.Message);
+                        return Page();
+                    }
+
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
