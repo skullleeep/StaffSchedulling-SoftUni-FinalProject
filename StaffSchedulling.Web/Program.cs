@@ -17,9 +17,7 @@ namespace StaffScheduling.Web
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString))
-                .AddScoped<IEmployeeInfoService, EmployeeInfoService>()
-                .AddScoped<ICompanyService, CompanyService>();
+                options.UseSqlServer(connectionString));
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -27,6 +25,10 @@ namespace StaffScheduling.Web
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddUserManager<ApplicationUserManager>();
+
+            builder.Services
+                .AddScoped<IEmployeeInfoService, EmployeeInfoService>()
+                .AddScoped<ICompanyService, CompanyService>();
 
             builder.Services.AddControllersWithViews();
 

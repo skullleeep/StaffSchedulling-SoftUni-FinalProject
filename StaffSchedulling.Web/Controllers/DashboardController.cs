@@ -17,5 +17,24 @@ namespace StaffScheduling.Web.Controllers
 
             return View(model);
         }
+
+        [HttpGet("Dashboard/Join/{inviteCode}")]
+        public async Task<IActionResult> Join(string inviteCode)
+        {
+            if (inviteCode == null)
+            {
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            Guid inviteGuid = Guid.Empty;
+            if (Guid.TryParse(inviteCode, out inviteGuid) == false)
+            {
+                return RedirectToAction(nameof(Index), "Home");
+            }
+
+            var model = await _companyService.GetCompanyFromInviteLinkAsync(inviteGuid);
+
+            return View(model);
+        }
     }
 }

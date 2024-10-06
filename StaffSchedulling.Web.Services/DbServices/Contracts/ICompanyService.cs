@@ -8,6 +8,8 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
     {
         public Task<StatusReport> AddCompanyAsync(CompanyDto model);
 
+        public Task<CompanyJoinViewModel> GetCompanyFromInviteLinkAsync(Guid invite);
+
         public Task<DashboardCompaniesViewModel> GetOwnedAndJoinedCompaniesFromUserEmailAsync(string emailId);
     }
 }

@@ -1,0 +1,29 @@
+﻿@using StaffScheduling.Web.Models.ViewModels.Company;
+@model CompanyJoinViewModel
+
+@{
+    ViewData["Title"] = "Join Company";
+}
+
+<h1>Join Company</h1>
+
+<!-- Display company name -->
+<p>You are about to join the company: <strong>@Model.Name</strong></p>
+
+<!-- Display error message if there are any -->
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @Model.ErrorMessage
+    </div>
+}
+
+<!-- Form for joining the company -->
+<form asp-action="Join" method="post">
+    <!-- Hidden fields -->
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Name" />
+
+    <!-- Join button -->
+    <button type="submit" class="btn btn-primary">Join Company</button>
+</form>

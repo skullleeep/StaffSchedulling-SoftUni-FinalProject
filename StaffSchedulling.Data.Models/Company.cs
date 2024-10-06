@@ -19,7 +19,7 @@ namespace StaffScheduling.Data.Models
         public string? AdminId { get; set; }
 
         [Required]
-        public Guid Invite { get; set; } = new Guid();
+        public Guid Invite { get; set; } = Guid.NewGuid();
 
         //Navigation
         [ForeignKey(nameof(OwnerId))]

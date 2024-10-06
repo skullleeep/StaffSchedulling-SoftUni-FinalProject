@@ -32,21 +32,35 @@ namespace StaffScheduling.Web.Services.DbServices
             return new StatusReport() { Ok = true };
         }
 
+        public async Task<CompanyJoinViewModel> GetCompanyFromInviteLinkAsync(Guid invite)
+        {
+            //Check if company with this GUID exists
+            var entity = await _dbContext
+                .Companies
+                .FirstOrDefaultAsync(c => c.Invite == invite);
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return new CompanyJoinViewModel
+            {
+                Id = entity.Id,
+                Name = entity.Name
+            };
+        }
+
         public async Task<DashboardCompaniesViewModel> GetOwnedAndJoinedCompaniesFromUserEmailAsync(string email)
         {
-            var user = await _dbContext.ApplicationUsers
-                .Include(u => u.CompaniesOwned)
-                .FirstOrDefaultAsync(u => u.Email == email);
-
-            if (user == null)
-                return null;
-
-            var ownedCompanies = user
-                .CompaniesOwned
+            var ownedCompanyIds = await _userManager.GetOwnedCompanyIdsFromUserEmailAsync(email);
+            var ownedCompanies = _dbContext
+                .Companies
+                .Where(c => ownedCompanyIds.Contains(c.Id))
                 .Select(c => new CompanyViewModel()
                 {
                     Id = c.Id,
-                    Name = c.Name
+                    Name = c.Name,
+                    Invite = c.Invite
                 })
                 .ToList();
 
@@ -57,7 +71,8 @@ namespace StaffScheduling.Web.Services.DbServices
                 .Select(c => new CompanyViewModel()
                 {
                     Id = c.Id,
-                    Name = c.Name
+                    Name = c.Name,
+                    Invite = c.Invite
                 })
                 .ToList();
 

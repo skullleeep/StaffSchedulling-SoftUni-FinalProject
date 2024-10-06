@@ -19,7 +19,7 @@
             public const int NameMinLength = 5;
             public const int NameMaxLength = 160;
 
-            public const string NameRegexPattern = @"^[A-Z]([a-zA-Z0-9]|[\s\-@.,#&£$€¥])*$";
+            public const string NameRegexPattern = @"^[A-Z]([a-zA-Z0-9]|[\s\-@.,\'#&£$€¥])*$";
         }
         public static class Department
         {
@@ -42,6 +42,7 @@
             public const string DefaultAdminPassword = "Test1234!";
 
             public const string SiteName = "Staff Scheduling";
+            public const string InviteLinkEmptyFormat = "{0}://{1}/Dashboard/Join/";
         }
     }
 }

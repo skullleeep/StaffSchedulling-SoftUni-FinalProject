@@ -1,11 +1,11 @@
 ﻿namespace StaffScheduling.Web.Models.ViewModels.Company
 {
-    public class CompanyViewModel
+    public class CompanyJoinViewModel
     {
         public int Id { get; set; }
 
         public string Name { get; set; } = null!;
 
-        public Guid Invite { get; set; }
+        public string? ErrorMessage { get; set; }
     }
 }

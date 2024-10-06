@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StaffScheduling.Data.Models;
@@ -21,6 +22,18 @@ namespace StaffScheduling.Web.Services.UserServices
             : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
 
+        }
+
+        public async Task<List<int>> GetOwnedCompanyIdsFromUserEmailAsync(string email)
+        {
+            var user = await Users
+                .Include(u => u.CompaniesOwned)
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+                return null;
+
+            return user.CompaniesOwned.Select(c => c.Id).ToList();
         }
     }
 }

@@ -1,21 +1,39 @@
 ﻿@using StaffScheduling.Web.Models.ViewModels.Company;
+@using static StaffScheduling.Common.DataConstants.Web;
 @model DashboardCompaniesViewModel
 
 @{
-    ViewData["Title"] = "Owner Dashboard";
+    ViewData["Title"] = "Dashboard";
+
+    string inviteLinkBase = String.Format(InviteLinkEmptyFormat, Context.Request.Scheme, Context.Request.Host);
 }
 
-<h1>Owner Dashboard</h1>
+<h1>Dashboard</h1>
+<br />
 
 <h2>Companies Owned</h2>
+<hr />
 @if (Model.OwnedCompanies.Any())
 {
-    <ul>
-        @foreach (var company in Model.OwnedCompanies)
-        {
-            <li>@company.Name</li>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        @{
+            foreach (var company in Model.OwnedCompanies.OrderBy(c => c.Name))
+            {
+                string inviteLink = inviteLinkBase + company.Invite.ToString();
+
+                <div class="col h-100" style="text-align: center;">
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header"><b>@company.Name</b></div>
+                        <div class="card-body">
+                            <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
+                            <a href="#" class="btn btn-outline-dark"><i class="bi bi-pencil-square"></i> Manage Company</a>
+                            <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link"><i class="bi bi-copy"></i> <span>Copy Invite Link</span></button>
+                        </div>
+                    </div>
+                </div>
+            }
         }
-    </ul>
+    </div>
 }
 else
 {
@@ -23,14 +41,28 @@ else
 }
 
 <h2>Companies Joined</h2>
+<hr />
 @if (Model.JoinedCompanies.Any())
 {
-    <ul>
-        @foreach (var company in Model.JoinedCompanies)
-        {
-            <li>@company.Name</li>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        @{
+            foreach (var company in Model.JoinedCompanies.OrderBy(c => c.Name))
+            {
+                string inviteLink = inviteLinkBase + company.Invite.ToString();
+
+                <div class="col h-100" style="text-align: center;">
+                    <div class="card bg-light mb-3" style="max-width: 18rem;">
+                        <div class="card-header">@company.Name</div>
+                        <div class="card-body">
+                            <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
+                            <a href="#" class="btn btn-outline-dark"><i class="bi bi-calendar4-week"></i> Manage Schedule</a>
+                            <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link"><i class="bi bi-copy"></i> <span>Copy Invite Link</span></button>
+                        </div>
+                    </div>
+                </div>
+            }
         }
-    </ul>
+    </div>
 }
 else
 {
