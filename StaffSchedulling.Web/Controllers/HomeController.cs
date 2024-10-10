@@ -10,9 +10,10 @@ namespace StaffScheduling.Web.Controllers
         {
         }
 
+        //Check for user authentication and if not continue normally else send user to dashboard
         public async Task<IActionResult> Index()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User?.Identity?.IsAuthenticated ?? false)
             {
                 return RedirectToAction("Index", "Dashboard");
             }

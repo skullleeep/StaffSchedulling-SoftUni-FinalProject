@@ -9,6 +9,7 @@ namespace StaffScheduling.Web.Controllers
     public class DashboardController(ICompanyService _companyService) : Controller
     {
 
+        //Get all companies - Owned and Joined
         public async Task<IActionResult> Index()
         {
             string? currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
@@ -18,8 +19,10 @@ namespace StaffScheduling.Web.Controllers
             return View(model);
         }
 
-        [HttpGet("Dashboard/Join/{inviteCode}")]
-        public async Task<IActionResult> Join(string inviteCode)
+
+        //Get request when trying to join a company
+        [HttpGet("Dashboard/Join/{inviteCode?}")]
+        public async Task<IActionResult> Join(string? inviteCode)
         {
             if (inviteCode == null)
             {

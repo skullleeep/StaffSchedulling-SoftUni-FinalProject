@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StaffScheduling.Data;
+using StaffScheduling.Web.Services.DbServices.Contracts;
 
-namespace StaffScheduling.Web.Services.DbServices.Contracts
+namespace StaffScheduling.Web.Services.DbServices
 {
     public class EmployeeInfoService(ApplicationDbContext _dbContext) : IEmployeeInfoService
     {

@@ -32,7 +32,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return new StatusReport() { Ok = true };
         }
 
-        public async Task<CompanyJoinViewModel> GetCompanyFromInviteLinkAsync(Guid invite)
+        public async Task<CompanyViewModel> GetCompanyFromInviteLinkAsync(Guid invite)
         {
             //Check if company with this GUID exists
             var entity = await _dbContext
@@ -43,7 +43,7 @@ namespace StaffScheduling.Web.Services.DbServices
                 return null;
             }
 
-            return new CompanyJoinViewModel
+            return new CompanyViewModel
             {
                 Id = entity.Id,
                 Name = entity.Name

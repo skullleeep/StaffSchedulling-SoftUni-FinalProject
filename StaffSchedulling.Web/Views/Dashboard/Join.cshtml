@@ -1,5 +1,5 @@
 ﻿@using StaffScheduling.Web.Models.ViewModels.Company;
-@model CompanyJoinViewModel
+@model CompanyViewModel
 
 @{
     ViewData["Title"] = "Join Company";
@@ -8,15 +8,10 @@
 <h1>Join Company</h1>
 
 <!-- Display company name -->
-<p>You are about to join the company: <strong>@Model.Name</strong></p>
+<p>You are about to join the company: <span style="font-size: 1.25rem; font-weight: 500;">@Model.Name</span></p>
 
 <!-- Display error message if there are any -->
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div class="alert alert-danger">
-        @Model.ErrorMessage
-    </div>
-}
+<div asp-validation-summary="All" class="text-danger"></div>
 
 <!-- Form for joining the company -->
 <form asp-action="Join" method="post">

@@ -27,6 +27,12 @@ body {
 }
 
 
+/* _Layout */
+.footer-absolute {
+    position: fixed;
+    bottom: 0px;
+}
+
 /* Home - Index */
 .hero-section {
     background-color: #258cfb;
