@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using StaffScheduling.Common.Enums;
 using StaffScheduling.Data;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Web.Services.DbServices;
@@ -60,22 +61,22 @@ namespace StaffScheduling.Web
             app.MapRazorPages();
 
             //Add custom roles
-            /*            using (var scope = app.Services.CreateScope())
-                        {
-                            var roleManager =
-                                scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager =
+                    scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-                            //Get roles from enum
-                            string[] roles = Enum.GetNames(typeof(UserRole));
+                //Get roles from enum
+                string[] roles = Enum.GetNames(typeof(UserRole));
 
-                            foreach (var role in roles)
-                            {
-                                if (!await roleManager.RoleExistsAsync(role))
-                                {
-                                    await roleManager.CreateAsync(new IdentityRole(role));
-                                }
-                            }
-                        }*/
+                foreach (var role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole(role));
+                    }
+                }
+            }
 
             //Add custom admin
             /*            using (var scope = app.Services.CreateScope())
