@@ -1,4 +1,4 @@
-﻿@using static StaffScheduling.Common.DataConstants.Web;
+﻿@using static StaffScheduling.Common.ApplicationConstants;
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -6,24 +6,38 @@
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container">
-        <h1>Staff Scheduling Made Simple</h1>
-        <p>Your go-to solution for easy staff management and scheduling for businesses of all sizes.</p>
+        <h1>Vacation Scheduling Made Simple</h1>
+        <p>Your go-to solution for easy staff vacation management for businesses of all sizes.</p>
+        <p>Don't worry about the type of account you create as owners can always become employees in other companies and employees can always create their own companies!</p>
     </div>
 </section>
 
-<!-- Call to Action Section -->
-<section class="cta-section">
-    <div class="container text-center">
-        <h2>Are You a Company Owner?</h2>
-        <p>Sign up and manage your staff schedules with ease. Reduce administrative burden and focus on growing your business.</p>
-        <a asp-area="Identity" asp-page="/Account/RegisterCompany" class="btn btn-outline-primary btn-lg">Register as a Company Owner</a>
+<div class="row">
+    <div class="col-md-6">
+        <section class="cta-section bg-light">
+            <div class="container text-center">
+                <h2>Are You a Company Owner?</h2>
+                <p>Sign up and manage your staff's vacations with ease. Reduce administrative burden and focus on growing your business.</p>
+                <a asp-area="Identity" asp-page="/Account/RegisterCompany" class="btn btn-outline-primary btn-lg">Register as a Company Owner</a>
+            </div>
+        </section>
     </div>
+    <div class="col-md-6">
+        <section class="cta-section bg-light">
+            <div class="container text-center">
+                <h2>Are You an Employee?</h2>
+                <p>Register and schedule vacations directly from home. No need to go to work and ask your supervisor as you can do it through your PC!</p>
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-secondary btn-lg">Register as an Employee</a>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section style="text-align: center;">
+    <p style="margin-bottom: 0; margin-top: 1em"><b>Don't worry about the type of account you create!</b></p>
+    <p style="margin: 0"><b>Owners can always become employees of other companies!</b></p>
+    <p style="margin: 0"><b>Employees can always create their own companies!</b></p>
 </section>
 
-<section class="cta-section bg-light">
-    <div class="container text-center">
-        <h2>Are You an Employee?</h2>
-        <p>Register and request schedule changes directly from home. Stay organized and up-to-date with your shifts.</p>
-        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-secondary btn-lg">Register as an Employee</a>
-    </div>
-</section>
+
+

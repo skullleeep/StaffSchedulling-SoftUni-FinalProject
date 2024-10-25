@@ -1,70 +1,113 @@
 ﻿@using StaffScheduling.Web.Models.ViewModels.Company;
-@using static StaffScheduling.Common.DataConstants.Web;
+@using static StaffScheduling.Common.ApplicationConstants;
 @model DashboardCompaniesViewModel
 
 @{
     ViewData["Title"] = "Dashboard";
 
     string inviteLinkBase = String.Format(InviteLinkEmptyFormat, Context.Request.Scheme, Context.Request.Host);
+    string sortFilter = ViewData["SortFilter"]?.ToString() ?? "NameAsc";
 }
 
 <h1>Dashboard</h1>
 <br />
 
-<h2>Companies Owned</h2>
-<hr />
-@if (Model.OwnedCompanies.Any())
+<!-- Filter -->
+@if (Model.OwnedCompanies.Any() || Model.JoinedCompanies.Any())
 {
-    <div class="row row-cols-1 row-cols-md-4 g-4">
-        @{
-            foreach (var company in Model.OwnedCompanies.OrderBy(c => c.Name))
-            {
-                string inviteLink = inviteLinkBase + company.Invite.ToString();
+    <form id="sortForm" method="get" class="form-inline mb-3">
+        <label for="sortFilter" class="mr-2">Sort by:</label>
+        <select id="sortFilter" name="sortFilter" class="custom-select" onchange="document.getElementById('sortForm').submit();">
+            <!option value="NameAsc" @(sortFilter == "NameAsc" ? "selected" : "")>Name Ascending</!option>
+            <!option value="NameDesc" @(sortFilter == "NameDesc" ? "selected" : "")>Name Descending</!option>
+        </select>
+    </form>
+}
 
-                <div class="col h-100" style="text-align: center;">
-                    <div class="card bg-light mb-3" style="max-width: 18rem;">
-                        <div class="card-header" style="font-weight: 400;"><b>@company.Name</b></div>
-                        <div class="card-body">
-                            <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
-                            <a href="#" class="btn btn-outline-dark"><i class="bi bi-pencil-square"></i> Manage Company</a>
-                            <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link"><i class="bi bi-copy"></i> <span>Copy Invite Link</span></button>
+<div class="row">
+    <!-- Companies Owned Section -->
+    <div class="col-md-6">
+        <h2>Companies Owned</h2>
+        <hr />
+            @if (Model.OwnedCompanies.Any())
+            {
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    @{
+                        foreach (var company in (sortFilter == "NameAsc"
+                                                    ? Model.OwnedCompanies.OrderBy(c => c.Name)
+                                                    : Model.OwnedCompanies.OrderByDescending(c => c.Name)
+                                                ))
+                        {
+                            string inviteLink = inviteLinkBase + company.Invite.ToString();
+
+                            <div class="col h-100" style="text-align: center;">
+                            <div class="card shadow bg-light mb-3" style="max-width: 18rem;">
+                                    <div class="card-header" style="font-weight: 400;"><b>@company.Name</b></div>
+                                    <div class="card-body">
+                                        <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
+                                        <a href="#" class="btn btn-outline-dark"><i class="bi bi-pencil-square"></i> Manage Company</a>
+                                        <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link"><i class="bi bi-copy"></i> <span>Copy Invite Link</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <!-- Create New Company Card -->
+                    <div class="col h-100" style="text-align: center;">
+                        <div class="card bg-dark-subtle mb-3" style="max-width: 18rem;">
+                            <div class="card-header" style="font-weight: 400;"><b>Create New Company</b></div>
+                            <div class="card-body">
+                                <a href="#" class="btn btn-svg-info">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             }
-        }
-    </div>
-}
-else
-{
-    <p>You do not own any companies.</p>
-}
-
-<h2>Companies Joined</h2>
-<hr />
-@if (Model.JoinedCompanies.Any())
-{
-    <div class="row row-cols-1 row-cols-md-4 g-4">
-        @{
-            foreach (var company in Model.JoinedCompanies.OrderBy(c => c.Name))
+            else
             {
-                string inviteLink = inviteLinkBase + company.Invite.ToString();
+                <p>You do not own any companies.</p>
+                <p>You can always <a asp-controller="Company" asp-action="Create">create a new company</a>!</p>
 
-                <div class="col h-100" style="text-align: center;">
-                    <div class="card bg-light mb-3" style="max-width: 18rem;">
-                        <div class="card-header">@company.Name</div>
-                        <div class="card-body">
-                            <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
-                            <a href="#" class="btn btn-outline-dark"><i class="bi bi-calendar4-week"></i> Manage Schedule</a>
-                            <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link"><i class="bi bi-copy"></i> <span>Copy Invite Link</span></button>
-                        </div>
-                    </div>
+            }
+        </div>
+    <!-- Companies Joined Section -->
+    <div class="col-md-6">
+        <h2>Companies Joined</h2>
+        <hr />
+            @if (Model.JoinedCompanies.Any())
+            {
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    @{
+                        foreach (var company in (sortFilter == "NameAsc"
+                                                    ? Model.JoinedCompanies.OrderBy(c => c.Name)
+                                                    : Model.JoinedCompanies.OrderByDescending(c => c.Name)
+                                                ))
+                        {
+                            string inviteLink = inviteLinkBase + company.Invite.ToString();
+
+                            <div class="col h-100" style="text-align: center;">
+                            <div class="card shadow bg-light mb-3" style="max-width: 18rem;">
+                                    <div class="card-header">@company.Name</div>
+                                    <div class="card-body">
+                                        <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
+                                        <a href="#" class="btn btn-outline-dark"><i class="bi bi-calendar4-week"></i> Manage Schedule</a>
+                                        <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link"><i class="bi bi-copy"></i> <span>Copy Invite Link</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
                 </div>
             }
-        }
+            else
+            {
+                <p>You have not joined any companies.</p>
+                <p>To join a company get the 'Invite Link' from the company's owner or any other employee that has already joined!</p>
+            }
     </div>
-}
-else
-{
-    <p>You have not joined any companies.</p>
-}
+</div>

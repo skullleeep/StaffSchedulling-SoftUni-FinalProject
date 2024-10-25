@@ -9,8 +9,8 @@ using StaffScheduling.Common.Enums;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Web.Extensions;
 using System.ComponentModel.DataAnnotations;
+using static StaffScheduling.Common.ApplicationConstants;
 using static StaffScheduling.Common.DataConstants.ApplicationUser;
-using static StaffScheduling.Common.DataConstants.Web;
 using static StaffScheduling.Common.DataErrorMessages.ApplicationUser;
 
 namespace StaffScheduling.Web.Areas.Identity.Pages.Account

@@ -252,7 +252,7 @@ namespace StaffScheduling.Data.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("StaffScheduling.Data.Models.CompanyAdmin", b =>
@@ -267,7 +267,7 @@ namespace StaffScheduling.Data.Migrations
 
                     b.HasIndex("AdminId");
 
-                    b.ToTable("CompaniesAdmins");
+                    b.ToTable("CompaniesAdmins", (string)null);
                 });
 
             modelBuilder.Entity("StaffScheduling.Data.Models.Department", b =>
@@ -295,7 +295,7 @@ namespace StaffScheduling.Data.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("StaffScheduling.Data.Models.EmployeeInfo", b =>
@@ -327,7 +327,7 @@ namespace StaffScheduling.Data.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("EmployeesInfo");
+                    b.ToTable("EmployeesInfo", (string)null);
                 });
 
             modelBuilder.Entity("StaffScheduling.Data.Models.Vacation", b =>
@@ -367,7 +367,7 @@ namespace StaffScheduling.Data.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Vacations");
+                    b.ToTable("Vacations", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

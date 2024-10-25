@@ -59,3 +59,17 @@ body {
 .cta-section {
     padding: 40px 0;
 }
+
+/* Dashboard - Index */
+select#sortFilter {
+    border: 0px;
+    outline: 0px;
+}
+
+.btn-svg-info {
+    --bs-btn-color: #55595C;
+    --bs-btn-hover-color: #000;
+    --bs-btn-active-color: #000;
+    --bs-btn-disabled-color: #55595C;
+    --bs-gradient: none;
+}

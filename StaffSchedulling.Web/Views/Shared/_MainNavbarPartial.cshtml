@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using StaffScheduling.Common.Enums
+@using StaffScheduling.Data.Models
+@using StaffScheduling.Web.Services.UserServices
+@inject SignInManager<ApplicationUser> SignInManager
+
+<ul class="navbar-nav flex-grow-1">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-kanban"></i> Dashboard</a>
+        </li>
+        if (User.IsInRole(UserRole.Administrator.ToString()))
+        {
+            //TODO:
+            <a class="nav-link text-dark" asp-area="Administration" asp-controller="Manage" asp-action="Index">Administration Dashboard</a>
+        }
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door"></i> Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield"></i> Privacy</a>
+        </li>
+    }
+</ul>
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Manage Account">
+                <i class="bi bi-person-circle"></i> @User.FindFirst("FullName")?.Value
+            </a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn btn-link text-dark"><i class="bi bi-box-arrow-left"></i> Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        @*     <li class="nav-item">
+    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li> *@
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+        </li>
+    }
+</ul>

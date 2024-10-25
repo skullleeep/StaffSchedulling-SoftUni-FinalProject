@@ -3,14 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StaffScheduling.Data.Models;
-using StaffScheduling.Web.Services.DbServices.Contracts;
 
 namespace StaffScheduling.Web.Services.UserServices
 {
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
-        private IEmployeeInfoService _employeeInfoService;
-
         public ApplicationUserManager(IUserStore<ApplicationUser> store,
             IOptions<IdentityOptions> optionsAccessor,
             IPasswordHasher<ApplicationUser> passwordHasher,

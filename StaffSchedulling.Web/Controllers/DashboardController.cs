@@ -10,32 +10,15 @@ namespace StaffScheduling.Web.Controllers
     {
 
         //Get all companies - Owned and Joined
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(string? sortFilter)
         {
-            string? currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
+            string? currentUserEmail = User.FindFirstValue(ClaimTypes.Email) ?? "";
 
             var model = await _companyService.GetOwnedAndJoinedCompaniesFromUserEmailAsync(currentUserEmail);
 
-            return View(model);
-        }
-
-
-        //Get request when trying to join a company
-        [HttpGet("Dashboard/Join/{inviteCode?}")]
-        public async Task<IActionResult> Join(string? inviteCode)
-        {
-            if (inviteCode == null)
-            {
-                return RedirectToAction(nameof(Index), "Home");
-            }
-
-            Guid inviteGuid = Guid.Empty;
-            if (Guid.TryParse(inviteCode, out inviteGuid) == false)
-            {
-                return RedirectToAction(nameof(Index), "Home");
-            }
-
-            var model = await _companyService.GetCompanyFromInviteLinkAsync(inviteGuid);
+            //Set default sortFilter to 'Name Ascending' and change it up if sort is different
+            ViewData["SortFilter"] = String.IsNullOrEmpty(sortFilter) ? "NameAsc" : sortFilter;
 
             return View(model);
         }
