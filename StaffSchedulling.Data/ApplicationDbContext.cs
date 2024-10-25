@@ -16,6 +16,8 @@ namespace StaffScheduling.Data
 
         public virtual DbSet<Company> Companies { get; set; }
 
+        public virtual DbSet<CompanyAdmin> CompaniesAdmins { get; set; }
+
         public virtual DbSet<Department> Departments { get; set; }
 
         public virtual DbSet<EmployeeInfo> EmployeesInfo { get; set; }
