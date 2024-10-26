@@ -12,7 +12,6 @@ using StaffScheduling.Common.Enums;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Web.Areas.Identity.InputModels;
 using StaffScheduling.Web.Extensions;
-using StaffScheduling.Web.Models.Dtos;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
 using System.Text;
@@ -104,21 +103,32 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                         return Page();
                     }
 
-                    //Create new Company and add it to DB
-                    var newCompany = new CompanyDto()
-                    {
-                        Name = Input.CompanyName.TrimEnd(),
-                        OwnerId = user.Id
-                    };
-                    var resultAddingCompany = await _companyService.AddCompanyAsync(newCompany);
-                    if (!resultAddingCompany.Ok)
+                    //Add User to role User
+                    var resultAssignment = await _userManager.AddToRoleAsync(user, UserRole.User.ToString());
+                    if (!resultAssignment.Succeeded)
                     {
                         //Delete user
                         await _userManager.DeleteAsync(user);
 
-                        ModelState.AddModelError(String.Empty, resultAddingCompany.Message);
+                        ModelState.AddModelError(String.Empty, $"Couldn't add role {UserRole.User} to newely created user!");
                         return Page();
                     }
+
+                    /*                    //Create new Company and add it to DB
+                                        var newCompany = new CompanyDto()
+                                        {
+                                            Name = Input.CompanyName.TrimEnd(),
+                                            OwnerId = user.Id
+                                        };
+                                        var resultAddingCompany = await _companyService.AddCompanyAsync(newCompany);
+                                        if (!resultAddingCompany.Ok)
+                                        {
+                                            //Delete user
+                                            await _userManager.DeleteAsync(user);
+
+                                            ModelState.AddModelError(String.Empty, resultAddingCompany.Message);
+                                            return Page();
+                                        }*/
 
 
                     var userId = await _userManager.GetUserIdAsync(user);
@@ -140,7 +150,10 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+
+                        //Redirect to 'Company/Create' action
+                        return RedirectToAction("Create", "Company", new { area = "", companyName = Input.CompanyName.TrimEnd() });
+                        //return LocalRedirect(returnUrl);
                     }
                 }
                 foreach (var error in result.Errors)

@@ -95,6 +95,17 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                         return Page();
                     }
 
+                    //Add User to role User
+                    var resultAssignment = await _userManager.AddToRoleAsync(user, UserRole.User.ToString());
+                    if (!resultAssignment.Succeeded)
+                    {
+                        //Delete user
+                        await _userManager.DeleteAsync(user);
+
+                        ModelState.AddModelError(String.Empty, $"Couldn't add role {UserRole.User} to newely created user!");
+                        return Page();
+                    }
+
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

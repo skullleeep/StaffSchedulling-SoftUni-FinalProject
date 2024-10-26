@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="InputModels\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\StaffSchedulling.Common\StaffScheduling.Common.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Data.Models\StaffScheduling.Data.Models.csproj" />
   </ItemGroup>

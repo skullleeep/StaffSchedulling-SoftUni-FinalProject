@@ -1,0 +1,24 @@
+﻿@using StaffScheduling.Web.Models.InputModels.Company;
+@model CompanyCreateFormModel
+
+@{
+    ViewData["Title"] = "Create Company";
+}
+
+<div class="form-custom">
+    <form id="createForm" method="post">
+        <h2>Create Company</h2>
+        <hr />
+        <div class="form-floating mb-3">
+            <input asp-for="Name" class="form-control" autocomplete="company-name" aria-required="true" placeholder="Example Company" />
+            <label asp-for="Name">@Model.Name</label>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="AdminEmail" class="form-control" autocomplete="admin-email" aria-required="true" placeholder="example@email.com" />
+            <label asp-for="AdminEmail">@Model.AdminEmail</label>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+    </form>
+</div>

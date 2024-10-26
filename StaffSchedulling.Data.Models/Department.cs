@@ -16,10 +16,7 @@ namespace StaffScheduling.Data.Models
         [Required]
         public int CompanyId { get; set; }
 
-        public string? SupervisorId { get; set; }
-
         //Navigation
-        public virtual ApplicationUser Supervisor { get; set; }
 
         [ForeignKey(nameof(CompanyId))]
         public virtual Company Company { get; set; }

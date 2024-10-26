@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StaffScheduling.Common;
+using StaffScheduling.Web.Models.InputModels.Company;
+using StaffScheduling.Web.Models.ViewModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
+using System.Security.Claims;
 
 namespace StaffScheduling.Web.Controllers
 {
     [Authorize]
-    public class CompanyController(ICompanyService _companyService) : Controller
+    public class CompanyController(ICompanyService _companyService, IEmployeeInfoService _employeeInfoService) : Controller
     {
-        [HttpGet]
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         //Get request when trying to join a company
         [HttpGet("Company/Join/{inviteCode?}")]
         public async Task<IActionResult> Join(string? inviteCode)
@@ -29,6 +27,53 @@ namespace StaffScheduling.Web.Controllers
             }
 
             var model = await _companyService.GetCompanyFromInviteLinkAsync(inviteGuid);
+            if (model == null)
+            {
+                return RedirectToAction(nameof(Index), "Dashboard");
+            }
+
+            return View(model);
+        }
+
+        //Post request when trying to join a company
+        [HttpPost("Company/Join/{inviteCode}")]
+        public async Task<IActionResult> Join(CompanyViewModel model, string inviteCode)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var hasCompany = await _companyService.HasCompanyWithIdAsync(model.Id);
+            if (hasCompany == false)
+            {
+                ModelState.AddModelError(String.Empty, "Couldn't find company!");
+                return View(model);
+            }
+
+            string? currentUserEmail = User.FindFirstValue(ClaimTypes.Email) ?? "";
+            StatusReport status = await _employeeInfoService.JoinCompanyWithIdAsync(model.Id, currentUserEmail);
+            if (status.Ok == false)
+            {
+                ModelState.AddModelError(String.Empty, status.Message);
+                return View(model);
+            }
+
+            return RedirectToAction("Index", "Dashboard");
+        }
+
+        //Get request when trying to join a company
+        //[HttpGet("Company/Create/{companyName?}")]
+        [HttpGet]
+        public async Task<IActionResult> Create(string? companyName)
+        {
+
+            var model = new CompanyCreateFormModel();
+
+            if (!String.IsNullOrEmpty(companyName))
+            {
+                model.Name = companyName;
+            }
 
             return View(model);
         }

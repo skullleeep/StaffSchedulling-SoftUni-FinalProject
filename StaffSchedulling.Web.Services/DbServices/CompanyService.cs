@@ -46,7 +46,8 @@ namespace StaffScheduling.Web.Services.DbServices
             return new CompanyViewModel
             {
                 Id = entity.Id,
-                Name = entity.Name
+                Name = entity.Name,
+                Invite = entity.Invite
             };
         }
 
@@ -81,6 +82,22 @@ namespace StaffScheduling.Web.Services.DbServices
                 OwnedCompanies = ownedCompanies,
                 JoinedCompanies = joinedCompanies
             };
+        }
+
+        public async Task<bool> HasCompanyWithIdAsync(int id)
+        {
+            //Check if company with this GUID exists
+            var entity = await _dbContext
+                .Companies
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (entity == null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

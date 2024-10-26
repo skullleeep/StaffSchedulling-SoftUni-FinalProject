@@ -23,8 +23,9 @@ namespace StaffScheduling.Data.Models
         [ForeignKey(nameof(OwnerId))]
         public ApplicationUser Owner { get; set; }
 
-        public virtual ICollection<CompanyAdmin> CompaniesAdmins { get; set; } = new HashSet<CompanyAdmin>();
-        public virtual ICollection<EmployeeInfo> CompanyEmployees { get; set; } = new HashSet<EmployeeInfo>();
+        public virtual ICollection<EmployeeInfo> CompanyEmployeesInfo { get; set; } = new HashSet<EmployeeInfo>();
         public virtual ICollection<Department> Departments { get; set; } = new HashSet<Department>();
+
+        public virtual ICollection<Vacation> Vacations { get; set; } = new HashSet<Vacation>();
     }
 }

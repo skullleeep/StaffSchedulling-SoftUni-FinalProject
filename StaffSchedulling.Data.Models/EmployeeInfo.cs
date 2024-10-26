@@ -14,6 +14,9 @@ namespace StaffScheduling.Data.Models
         public string Email { get; set; } = null!;
 
         [Required]
+        public bool IsAdmin { get; set; } = false;
+
+        [Required]
         public bool IsSuperior { get; set; } = false;
 
         [Required]
@@ -22,8 +25,11 @@ namespace StaffScheduling.Data.Models
         [Required]
         public int CompanyId { get; set; }
 
-        [ForeignKey(nameof(Department))]
-        public int? DepartmentId { get; set; }
+        //Foreign Key in EmployeeInfoConfiguration because it needs to be optional
+        public int? DepartmentId { get; set; } = null;
+
+        //Foreign Key in EmployeeInfoConfiguration because it needs to be optional
+        public string? UserId { get; set; }
 
         //Navigation
 
@@ -31,5 +37,9 @@ namespace StaffScheduling.Data.Models
         public virtual Company Company { get; set; } = null!;
 
         public virtual Department Department { get; set; }
+
+        public virtual ApplicationUser User { get; set; }
+
+        public virtual ICollection<Vacation> Vacations { get; set; } = new HashSet<Vacation>();
     }
 }

@@ -32,5 +32,17 @@ namespace StaffScheduling.Web.Services.UserServices
 
             return user.CompaniesOwned.Select(c => c.Id).ToList();
         }
+
+        public async Task<bool> HasUserWithEmailAsync(string email)
+        {
+            var user = await Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+                return false;
+
+            return true;
+        }
     }
 }

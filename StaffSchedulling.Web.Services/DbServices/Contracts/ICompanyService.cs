@@ -11,5 +11,7 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
         public Task<CompanyViewModel> GetCompanyFromInviteLinkAsync(Guid invite);
 
         public Task<DashboardCompaniesViewModel> GetOwnedAndJoinedCompaniesFromUserEmailAsync(string emailId);
+
+        public Task<bool> HasCompanyWithIdAsync(int id);
     }
 }

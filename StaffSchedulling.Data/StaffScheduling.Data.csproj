@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20241026130502_RemoveEntityCompanyAdminRemoveAlmostAllApplicationUserDependenciesAndAddApplicationUserToEmployeeInfoInsteadAndAddEmployeeInfoConfigurationForOptionalForeignKeys.cs\**" />
+    <EmbeddedResource Remove="Migrations\20241026130502_RemoveEntityCompanyAdminRemoveAlmostAllApplicationUserDependenciesAndAddApplicationUserToEmployeeInfoInsteadAndAddEmployeeInfoConfigurationForOptionalForeignKeys.cs\**" />
+    <None Remove="Migrations\20241026130502_RemoveEntityCompanyAdminRemoveAlmostAllApplicationUserDependenciesAndAddApplicationUserToEmployeeInfoInsteadAndAddEmployeeInfoConfigurationForOptionalForeignKeys.cs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>

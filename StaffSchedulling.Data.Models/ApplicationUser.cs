@@ -13,10 +13,6 @@ namespace StaffScheduling.Data.Models
         //Navigation
         public virtual ICollection<Company> CompaniesOwned { get; set; } = new HashSet<Company>();
 
-        public virtual ICollection<CompanyAdmin> CompaniesAdmins { get; set; } = new HashSet<CompanyAdmin>();
-
-        public virtual ICollection<Department> DepartmentsWhereSupervisor { get; set; } = new HashSet<Department>();
-
-        public virtual ICollection<Vacation> Vacations { get; set; } = new HashSet<Vacation>();
+        public virtual ICollection<EmployeeInfo> EmployeeInfoInCompanies { get; set; } = new HashSet<EmployeeInfo>();
     }
 }

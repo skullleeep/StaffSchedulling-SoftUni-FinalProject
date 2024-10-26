@@ -10,13 +10,13 @@ namespace StaffScheduling.Data.Models
         public int Id { get; set; }
 
         [Required]
-        public string EmployeeId { get; set; } = null!;
+        public Guid EmployeeId { get; set; }
+
+        [Required]
+        public int CompanyId { get; set; }
 
         [Required]
         public int DepartmentId { get; set; }
-
-        [Required]
-        public int VacationId { get; set; }
 
         [Required]
         public DateOnly StartDate { get; set; }
@@ -33,7 +33,12 @@ namespace StaffScheduling.Data.Models
 
         //Navigation
         [ForeignKey(nameof(EmployeeId))]
-        public virtual ApplicationUser Employee { get; set; } = null!;
+        [DeleteBehavior(DeleteBehavior.NoAction)]
+        public virtual EmployeeInfo Employee { get; set; } = null!;
+
+        [ForeignKey(nameof(CompanyId))]
+        [DeleteBehavior(DeleteBehavior.NoAction)]
+        public virtual Company Company { get; set; } = null!;
 
         [ForeignKey(nameof(DepartmentId))]
         [DeleteBehavior(DeleteBehavior.NoAction)]
