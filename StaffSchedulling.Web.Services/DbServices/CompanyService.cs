@@ -34,9 +34,9 @@ namespace StaffScheduling.Web.Services.DbServices
 
         public async Task<CompanyViewModel> GetCompanyFromInviteLinkAsync(Guid invite)
         {
-            //Check if company with this GUID exists
             var entity = await _dbContext
                 .Companies
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Invite == invite);
             if (entity == null)
             {
@@ -63,6 +63,7 @@ namespace StaffScheduling.Web.Services.DbServices
                     Name = c.Name,
                     Invite = c.Invite
                 })
+                .AsNoTracking()
                 .ToList();
 
             var joinedCompanyIds = await _employeeInfoService.GetJoinedCompanyIdsFromEmailAsync(email);
@@ -75,6 +76,7 @@ namespace StaffScheduling.Web.Services.DbServices
                     Name = c.Name,
                     Invite = c.Invite
                 })
+                .AsNoTracking()
                 .ToList();
 
             return new DashboardCompaniesViewModel
@@ -82,6 +84,22 @@ namespace StaffScheduling.Web.Services.DbServices
                 OwnedCompanies = ownedCompanies,
                 JoinedCompanies = joinedCompanies
             };
+        }
+
+        public async Task<string> GetCompanyOwnerEmailFromIdAsync(int id)
+        {
+            var entity = await _dbContext
+                .Companies
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
+            if (entity == null)
+            {
+                return String.Empty;
+            }
+
+            string ownerEmail = await _userManager.GetUserEmailFromIdAsync(entity.OwnerId);
+
+            return ownerEmail;
         }
 
         public async Task<bool> HasCompanyWithIdAsync(int id)

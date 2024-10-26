@@ -6,6 +6,6 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
     {
         public Task<List<int>> GetJoinedCompanyIdsFromEmailAsync(string email);
 
-        public Task<StatusReport> JoinCompanyWithIdAsync(int companyId, string email);
+        public Task<StatusReport> JoinCompanyWithIdAsync(int companyId, string companyOwnerEmail, string userId);
     }
 }

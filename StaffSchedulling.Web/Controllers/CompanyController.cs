@@ -51,8 +51,9 @@ namespace StaffScheduling.Web.Controllers
                 return View(model);
             }
 
-            string? currentUserEmail = User.FindFirstValue(ClaimTypes.Email) ?? "";
-            StatusReport status = await _employeeInfoService.JoinCompanyWithIdAsync(model.Id, currentUserEmail);
+            string companyOwnerEmail = await _companyService.GetCompanyOwnerEmailFromIdAsync(model.Id);
+            string currentUserId = GetCurrentUserId() ?? "";
+            StatusReport status = await _employeeInfoService.JoinCompanyWithIdAsync(model.Id, companyOwnerEmail, currentUserId);
             if (status.Ok == false)
             {
                 ModelState.AddModelError(String.Empty, status.Message);
@@ -76,6 +77,11 @@ namespace StaffScheduling.Web.Controllers
             }
 
             return View(model);
+        }
+
+        private string? GetCurrentUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }

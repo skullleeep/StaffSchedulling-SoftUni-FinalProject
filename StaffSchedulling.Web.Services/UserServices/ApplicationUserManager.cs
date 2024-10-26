@@ -25,6 +25,7 @@ namespace StaffScheduling.Web.Services.UserServices
         {
             var user = await Users
                 .Include(u => u.CompaniesOwned)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null)
@@ -43,6 +44,18 @@ namespace StaffScheduling.Web.Services.UserServices
                 return false;
 
             return true;
+        }
+
+        public async Task<string> GetUserEmailFromIdAsync(string id)
+        {
+            var user = await Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+                return String.Empty;
+
+            return user.Email ?? String.Empty;
         }
     }
 }
