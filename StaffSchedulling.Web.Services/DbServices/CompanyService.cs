@@ -16,6 +16,7 @@ namespace StaffScheduling.Web.Services.DbServices
             var newEntity = new Company()
             {
                 Name = model.Name,
+                MaxVacationDaysPerYear = model.MaxVacationDaysPerYear,
                 OwnerId = model.OwnerId,
             };
 
@@ -24,9 +25,9 @@ namespace StaffScheduling.Web.Services.DbServices
                 await _dbContext.Companies.AddAsync(newEntity);
                 await _dbContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new StatusReport() { Ok = false, Message = "Could not add new Company" };
+                return new StatusReport() { Ok = false, Message = $"Database Error: {ex.Message}" };
             }
 
             return new StatusReport() { Ok = true };
