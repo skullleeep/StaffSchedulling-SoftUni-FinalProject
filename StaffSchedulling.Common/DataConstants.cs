@@ -19,6 +19,10 @@
             public const int NameMinLength = 5;
             public const int NameMaxLength = 160;
 
+            public const int MaxVacationDaysPerYearDefaultValue = 10;
+            public const int MaxVacationDaysPerYearMinValue = 1;
+            public const int MaxVacationDaysPerYearMaxValue = 365;
+
             public const string NameRegexPattern = @"^[A-Z]([a-zA-Z0-9]|[\s\-@.,\'#&£$€¥])*$";
         }
         public static class Department

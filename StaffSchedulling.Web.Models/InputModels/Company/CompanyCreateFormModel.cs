@@ -13,8 +13,9 @@ namespace StaffScheduling.Web.Models.InputModels.Company
         [RegularExpression(NameRegexPattern, ErrorMessage = NameError)]
         public string Name { get; set; } = null!;
 
-        [EmailAddress]
-        [Display(Name = "Admin's Email (Not Required)")]
-        public string? AdminEmail { get; set; } = null!;
+        [Required]
+        [Range(MaxVacationDaysPerYearMinValue, MaxVacationDaysPerYearMaxValue)]
+        [Display(Name = "Maximum Vacation Days Per Year (For each employee)")]
+        public int MaxVacationDaysPerYear { get; set; }
     }
 }

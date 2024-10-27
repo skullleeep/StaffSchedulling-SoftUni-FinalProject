@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static StaffScheduling.Common.DataConstants.Company;
 
@@ -18,6 +19,10 @@ namespace StaffScheduling.Data.Models
 
         [Required]
         public Guid Invite { get; set; } = Guid.NewGuid();
+
+        [Required]
+        [Comment("Maximum vacation days per year that an employee working at the company is given")]
+        public int MaxVacationDaysPerYear { get; set; } = MaxVacationDaysPerYearDefaultValue;
 
         //Navigation
         [ForeignKey(nameof(OwnerId))]
