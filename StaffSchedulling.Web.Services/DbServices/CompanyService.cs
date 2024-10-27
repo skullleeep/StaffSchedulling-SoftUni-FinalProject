@@ -32,7 +32,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return new StatusReport() { Ok = true };
         }
 
-        public async Task<CompanyViewModel> GetCompanyFromInviteLinkAsync(Guid invite)
+        public async Task<CompanyViewModel?> GetCompanyFromInviteLinkAsync(Guid invite)
         {
             var entity = await _dbContext
                 .Companies
@@ -58,17 +58,17 @@ namespace StaffScheduling.Web.Services.DbServices
             var ownedCompanyIds = await _userManager.GetOwnedCompanyIdsFromUserEmailAsync(email);
             if (ownedCompanyIds != null)
             {
-                _dbContext
-                .Companies
-                .Where(c => ownedCompanyIds.Contains(c.Id))
-                .Select(c => new CompanyViewModel()
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Invite = c.Invite
-                })
-                .AsNoTracking()
-                .ToList();
+                ownedCompanies = await _dbContext
+                                            .Companies
+                                            .Where(c => ownedCompanyIds.Contains(c.Id))
+                                            .Select(c => new CompanyViewModel()
+                                            {
+                                                Id = c.Id,
+                                                Name = c.Name,
+                                                Invite = c.Invite
+                                            })
+                                            .AsNoTracking()
+                                            .ToListAsync();
             }
 
             var joinedCompanies = new List<CompanyViewModel>();
@@ -76,17 +76,17 @@ namespace StaffScheduling.Web.Services.DbServices
             var joinedCompanyIds = await _userManager.GetJoinedCompanyIdsFromUserEmailAsync(email);
             if (joinedCompanyIds != null)
             {
-                _dbContext
-                .Companies
-                .Where(c => joinedCompanyIds.Contains(c.Id))
-                .Select(c => new CompanyViewModel()
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Invite = c.Invite
-                })
-                .AsNoTracking()
-                .ToList();
+                joinedCompanies = await _dbContext
+                                            .Companies
+                                            .Where(c => joinedCompanyIds.Contains(c.Id))
+                                            .Select(c => new CompanyViewModel()
+                                            {
+                                                Id = c.Id,
+                                                Name = c.Name,
+                                                Invite = c.Invite
+                                            })
+                                            .AsNoTracking()
+                                            .ToListAsync();
             }
 
             return new DashboardCompaniesViewModel

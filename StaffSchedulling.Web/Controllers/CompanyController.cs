@@ -4,12 +4,11 @@ using StaffScheduling.Common;
 using StaffScheduling.Web.Models.InputModels.Company;
 using StaffScheduling.Web.Models.ViewModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
-using System.Security.Claims;
 
 namespace StaffScheduling.Web.Controllers
 {
     [Authorize]
-    public class CompanyController(ICompanyService _companyService, IEmployeeInfoService _employeeInfoService) : Controller
+    public class CompanyController(ICompanyService _companyService, IEmployeeInfoService _employeeInfoService) : BaseController
     {
         //Get request when trying to join a company
         [HttpGet("Company/Join/{inviteCode?}")]
@@ -77,11 +76,6 @@ namespace StaffScheduling.Web.Controllers
             }
 
             return View(model);
-        }
-
-        private string? GetCurrentUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }

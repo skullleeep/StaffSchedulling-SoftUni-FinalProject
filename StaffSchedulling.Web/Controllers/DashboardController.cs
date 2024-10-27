@@ -6,7 +6,7 @@ using System.Security.Claims;
 namespace StaffScheduling.Web.Controllers
 {
     [Authorize]
-    public class DashboardController(ICompanyService _companyService) : Controller
+    public class DashboardController(ICompanyService _companyService) : BaseController
     {
 
         //Get all companies - Owned and Joined
