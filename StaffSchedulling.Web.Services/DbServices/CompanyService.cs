@@ -9,7 +9,7 @@ using StaffScheduling.Web.Services.UserServices;
 
 namespace StaffScheduling.Web.Services.DbServices
 {
-    public class CompanyService(ApplicationDbContext _dbContext, ApplicationUserManager _userManager, IEmployeeInfoService _employeeInfoService) : ICompanyService
+    public class CompanyService(ApplicationDbContext _dbContext, ApplicationUserManager _userManager) : ICompanyService
     {
         public async Task<StatusReport> AddCompanyAsync(CompanyDto model)
         {
@@ -53,8 +53,12 @@ namespace StaffScheduling.Web.Services.DbServices
 
         public async Task<DashboardCompaniesViewModel> GetOwnedAndJoinedCompaniesFromUserEmailAsync(string email)
         {
+            var ownedCompanies = new List<CompanyViewModel>();
+
             var ownedCompanyIds = await _userManager.GetOwnedCompanyIdsFromUserEmailAsync(email);
-            var ownedCompanies = _dbContext
+            if (ownedCompanyIds != null)
+            {
+                _dbContext
                 .Companies
                 .Where(c => ownedCompanyIds.Contains(c.Id))
                 .Select(c => new CompanyViewModel()
@@ -65,9 +69,14 @@ namespace StaffScheduling.Web.Services.DbServices
                 })
                 .AsNoTracking()
                 .ToList();
+            }
 
-            var joinedCompanyIds = await _employeeInfoService.GetJoinedCompanyIdsFromEmailAsync(email);
-            var joinedCompanies = _dbContext
+            var joinedCompanies = new List<CompanyViewModel>();
+
+            var joinedCompanyIds = await _userManager.GetJoinedCompanyIdsFromUserEmailAsync(email);
+            if (joinedCompanyIds != null)
+            {
+                _dbContext
                 .Companies
                 .Where(c => joinedCompanyIds.Contains(c.Id))
                 .Select(c => new CompanyViewModel()
@@ -78,6 +87,7 @@ namespace StaffScheduling.Web.Services.DbServices
                 })
                 .AsNoTracking()
                 .ToList();
+            }
 
             return new DashboardCompaniesViewModel
             {

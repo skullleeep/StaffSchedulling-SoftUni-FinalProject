@@ -63,7 +63,7 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Index", "Dashboard");
         }
 
-        //Get request when trying to join a company
+        //Get request when trying to create a company
         //[HttpGet("Company/Create/{companyName?}")]
         [HttpGet]
         public async Task<IActionResult> Create(string? companyName)
