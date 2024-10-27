@@ -12,6 +12,7 @@ using StaffScheduling.Common.Enums;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Web.Areas.Identity.InputModels;
 using StaffScheduling.Web.Extensions;
+using StaffScheduling.Web.Models.Dtos;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
 using System.Text;
@@ -114,21 +115,21 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                         return Page();
                     }
 
-                    /*                    //Create new Company and add it to DB
-                                        var newCompany = new CompanyDto()
-                                        {
-                                            Name = Input.CompanyName.TrimEnd(),
-                                            OwnerId = user.Id
-                                        };
-                                        var resultAddingCompany = await _companyService.AddCompanyAsync(newCompany);
-                                        if (!resultAddingCompany.Ok)
-                                        {
-                                            //Delete user
-                                            await _userManager.DeleteAsync(user);
+                    //Create new Company and add it to DB
+                    var newCompany = new CompanyDto()
+                    {
+                        Name = Input.CompanyName.TrimEnd(),
+                        OwnerId = user.Id
+                    };
+                    var resultAddingCompany = await _companyService.AddCompanyAsync(newCompany);
+                    if (!resultAddingCompany.Ok)
+                    {
+                        //Delete user
+                        await _userManager.DeleteAsync(user);
 
-                                            ModelState.AddModelError(String.Empty, resultAddingCompany.Message);
-                                            return Page();
-                                        }*/
+                        ModelState.AddModelError(String.Empty, resultAddingCompany.Message);
+                        return Page();
+                    }
 
 
                     var userId = await _userManager.GetUserIdAsync(user);
@@ -151,8 +152,8 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
 
-                        //Redirect to 'Company/Create' action
-                        return RedirectToAction("Create", "Company", new { area = "", companyName = Input.CompanyName.TrimEnd() });
+                        //Redirect to 'Company/Edit' action
+                        return RedirectToAction("Edit", "Company", new { area = "" });
                         //return LocalRedirect(returnUrl);
                     }
                 }
