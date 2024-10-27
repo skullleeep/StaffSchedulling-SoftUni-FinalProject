@@ -11,6 +11,7 @@
         public static class Company
         {
             public const string NameError = "Company Name can have: Minimum 5 characters, Maximum 160 characters, should start with big letter and allowed symbols (- @ . , ' # & £ $ € ¥)";
+            public const string MaxVacationDaysPerYearError = "Maximum Vacation Days Per Year has to be: between 1 and 365";
         }
     }
 }

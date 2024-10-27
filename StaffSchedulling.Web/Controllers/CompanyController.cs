@@ -63,17 +63,10 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Get request when trying to create a company
-        //[HttpGet("Company/Create/{companyName?}")]
         [HttpGet]
-        public async Task<IActionResult> Create(string? companyName)
+        public async Task<IActionResult> Create()
         {
-
             var model = new CompanyCreateFormModel();
-
-            if (!String.IsNullOrEmpty(companyName))
-            {
-                model.Name = companyName;
-            }
 
             return View(model);
         }

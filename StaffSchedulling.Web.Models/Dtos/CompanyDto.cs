@@ -11,6 +11,10 @@ namespace StaffScheduling.Web.Models.Dtos
         public string Name { get; set; } = null!;
 
         [Required]
+        [Range(MaxVacationDaysPerYearMinValue, MaxVacationDaysPerYearMaxValue)]
+        public int MaxVacationDaysPerYear { get; set; }
+
+        [Required]
         public string OwnerId { get; set; } = null!;
     }
 }

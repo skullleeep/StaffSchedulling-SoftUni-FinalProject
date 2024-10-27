@@ -119,6 +119,7 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                     var newCompany = new CompanyDto()
                     {
                         Name = Input.CompanyName.TrimEnd(),
+                        MaxVacationDaysPerYear = Input.MaxVacationDaysPerYear,
                         OwnerId = user.Id
                     };
                     var resultAddingCompany = await _companyService.AddCompanyAsync(newCompany);
