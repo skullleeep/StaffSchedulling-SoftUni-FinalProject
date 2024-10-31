@@ -4,7 +4,7 @@ using static StaffScheduling.Common.DataErrorMessages.Company;
 
 namespace StaffScheduling.Web.Models.InputModels.Company
 {
-    public class CompanyCreateFormModel
+    public class CompanyCreateInputModel
     {
         [Required]
         [MinLength(NameMinLength)]

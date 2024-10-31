@@ -66,7 +66,7 @@ namespace StaffScheduling.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var model = new CompanyCreateFormModel();
+            var model = new CompanyCreateInputModel();
 
             return View(model);
         }
