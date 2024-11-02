@@ -37,7 +37,10 @@
                 <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
             </p>
             <p>
-                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                <a asp-page="./RegisterCompany" asp-route-returnUrl="@Model.ReturnUrl">Register as a new company owner</a>
+            </p>
+            <p>
+                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new employee</a>
             </p>
             <p>
                 <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
