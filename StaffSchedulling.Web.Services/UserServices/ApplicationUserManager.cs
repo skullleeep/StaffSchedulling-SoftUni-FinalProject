@@ -36,7 +36,7 @@ namespace StaffScheduling.Web.Services.UserServices
 
         public async Task<List<int>?> GetJoinedCompanyIdsFromUserEmailAsync(string email)
         {
-            var user = await GetUserFromEmailAsync(email);
+            var user = await GetUserWithEmployeeInfoInCompaniesFromEmailAsync(email);
             if (user == null)
             {
                 return null;
@@ -69,9 +69,11 @@ namespace StaffScheduling.Web.Services.UserServices
             return user.Email ?? String.Empty;
         }
 
-        private async Task<ApplicationUser?> GetUserFromEmailAsync(string email)
+        private async Task<ApplicationUser?> GetUserWithEmployeeInfoInCompaniesFromEmailAsync(string email)
         {
-            return await Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await Users
+                .Include(u => u.EmployeeInfoInCompanies)
+                .FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }

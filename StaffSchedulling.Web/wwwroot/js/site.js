@@ -1,9 +1,9 @@
-﻿function copyInviteCode(companyId) {
+﻿function copyInviteCode(customId) {
     // Get the invite link value from the hidden input field
-    var inviteLink = document.getElementById("inviteCode_" + companyId).value;
+    var inviteLink = document.getElementById("inviteCode_" + customId).value;
 
     //Get button's span child
-    var buttonSpanElement = document.querySelector('#copyBtn_' + companyId + ' span')
+    var buttonSpanElement = document.querySelector('#copyBtn_' + customId + ' span')
 
     // Use the Clipboard API to copy the invite code to the clipboard
     navigator.clipboard.writeText(inviteLink).then(function () {

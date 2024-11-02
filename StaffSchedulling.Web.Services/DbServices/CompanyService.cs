@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StaffScheduling.Common;
+using StaffScheduling.Common.Enums;
 using StaffScheduling.Data;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Web.Models.Dtos;
@@ -54,7 +55,7 @@ namespace StaffScheduling.Web.Services.DbServices
 
         public async Task<DashboardCompaniesViewModel> GetOwnedAndJoinedCompaniesFromUserEmailAsync(string email)
         {
-            var ownedCompanies = new List<CompanyViewModel>();
+            var ownedCompanies = new List<CompanyDashboardViewModel>();
 
             var ownedCompanyIds = await _userManager.GetOwnedCompanyIdsFromUserEmailAsync(email);
             if (ownedCompanyIds != null)
@@ -62,17 +63,19 @@ namespace StaffScheduling.Web.Services.DbServices
                 ownedCompanies = await _dbContext
                                             .Companies
                                             .Where(c => ownedCompanyIds.Contains(c.Id))
-                                            .Select(c => new CompanyViewModel()
+                                            .Include(c => c.CompanyEmployeesInfo)
+                                            .Select(c => new CompanyDashboardViewModel()
                                             {
                                                 Id = c.Id,
                                                 Name = c.Name,
-                                                Invite = c.Invite
+                                                Invite = c.Invite,
+                                                UserCanManage = true
                                             })
                                             .AsNoTracking()
                                             .ToListAsync();
             }
 
-            var joinedCompanies = new List<CompanyViewModel>();
+            var joinedCompanies = new List<CompanyDashboardViewModel>();
 
             var joinedCompanyIds = await _userManager.GetJoinedCompanyIdsFromUserEmailAsync(email);
             if (joinedCompanyIds != null)
@@ -80,11 +83,15 @@ namespace StaffScheduling.Web.Services.DbServices
                 joinedCompanies = await _dbContext
                                             .Companies
                                             .Where(c => joinedCompanyIds.Contains(c.Id))
-                                            .Select(c => new CompanyViewModel()
+                                            .Include(c => c.CompanyEmployeesInfo)
+                                            .Select(c => new CompanyDashboardViewModel()
                                             {
                                                 Id = c.Id,
                                                 Name = c.Name,
-                                                Invite = c.Invite
+                                                Invite = c.Invite,
+                                                UserCanManage = c.CompanyEmployeesInfo.Where(ef => ef.Email == email)
+                                                                    .Select(ef => ef.Role)
+                                                                    .Any(role => role == EmployeeRole.Admin || role == EmployeeRole.Supervisor),
                                             })
                                             .AsNoTracking()
                                             .ToListAsync();

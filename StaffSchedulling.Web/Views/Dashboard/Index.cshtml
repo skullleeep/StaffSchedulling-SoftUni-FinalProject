@@ -1,4 +1,5 @@
 ﻿@using StaffScheduling.Web.Models.ViewModels.Company;
+@using StaffScheduling.Common.Enums;
 @using static StaffScheduling.Common.ApplicationConstants;
 @model DashboardCompaniesViewModel
 
@@ -7,13 +8,17 @@
 
     string inviteLinkBase = String.Format(InviteLinkEmptyFormat, Context.Request.Scheme, Context.Request.Host);
     string sortFilter = ViewData["SortFilter"]?.ToString() ?? "NameAsc";
+
+    //Used so that every copyInviteLink element is unique
+    //I don't use the company's Id for security as I don't want it to be exposed unnecessarily
+    int globalCompanyCount = 0;
 }
 
 <h1>Dashboard</h1>
 <br />
 
 <!-- Filter -->
-@if (Model.OwnedCompanies.Any() || Model.JoinedCompanies.Any())
+@if (Model.OwnedCompanies.Count > 1 || Model.JoinedCompanies.Count > 1)
 {
     <form id="sortForm" method="get" class="form-inline mb-3">
         <label for="sortFilter" class="mr-2">Sort by:</label>
@@ -39,16 +44,17 @@
                                                 ))
                         {
                             string inviteLink = inviteLinkBase + company.Invite.ToString();
+                            globalCompanyCount += 1;
 
                             <div class="col h-100" style="text-align: center;">
                             <div class="card shadow bg-light mb-3" style="max-width: 18rem;">
                                     <div class="card-header" style="font-weight: 400;"><b>@company.Name</b></div>
                                     <div class="card-body">
-                                        <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
+                                    <input type="hidden" id="inviteCode_@globalCompanyCount" value="@inviteLink" />
                                     <a href="#" class="btn btn-outline-dark">
-                                            <i class="bi bi-pencil-square"></i> Manage Company
-                                        </a>
-                                        <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link">
+                                        <i class="bi bi-pencil-square"></i> Manage Company
+                                    </a>
+                                    <button id="copyBtn_@globalCompanyCount" onclick="copyInviteCode('@globalCompanyCount')" class="btn btn-link">
                                             <i class="bi bi-copy"></i> <span>Copy Invite Link</span>
                                         </button>
                                     </div>
@@ -86,26 +92,36 @@
             @if (Model.JoinedCompanies.Any())
             {
                 <div class="row row-cols-1 row-cols-md-2 g-4">
-                    @{
-                        foreach (var company in (sortFilter == "NameAsc"
-                                                    ? Model.JoinedCompanies.OrderBy(c => c.Name)
-                                                    : Model.JoinedCompanies.OrderByDescending(c => c.Name)
-                                                ))
-                        {
+                @{
+                    foreach (var company in (sortFilter == "NameAsc"
+                                                        ? Model.JoinedCompanies.OrderBy(c => c.Name)
+                                                        : Model.JoinedCompanies.OrderByDescending(c => c.Name)
+                                                    ))
+                    {
                             string inviteLink = inviteLinkBase + company.Invite.ToString();
+                            globalCompanyCount += 1;
 
                             <div class="col h-100" style="text-align: center;">
                             <div class="card shadow bg-light mb-3" style="max-width: 18rem;">
-                                    <div class="card-header">@company.Name</div>
+                                <div class="card-header" style="font-weight: 400;"><b>@company.Name</b></div>
                                     <div class="card-body">
-                                        <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
-                                        <a href="#" class="btn btn-outline-dark"><i class="bi bi-calendar4-week"></i> Manage Schedule</a>
-                                        <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link"><i class="bi bi-copy"></i> <span>Copy Invite Link</span></button>
+                                    <input type="hidden" id="inviteCode_@globalCompanyCount" value="@inviteLink" />
+                                    <a href="#" class="btn btn-outline-dark">
+                                        <i class="bi bi-calendar4-week"></i> Manage Schedule
+                                    </a>
+                                    <br />
+                                    @if (company.UserCanManage)
+                                    {
+                                        <a href="#" class="btn btn-outline-secondary" style="margin-top: 1.15em;">
+                                            <i class="bi bi-pencil-square"></i> Manage Company&nbsp;
+                                        </a>
+                                    }
+                                    <button id="copyBtn_@globalCompanyCount" onclick="copyInviteCode('@globalCompanyCount')" class="btn btn-link"><i class="bi bi-copy"></i> <span>Copy Invite Link</span></button>
                                     </div>
                                 </div>
                             </div>
-                        }
                     }
+                }
                 </div>
             }
             else

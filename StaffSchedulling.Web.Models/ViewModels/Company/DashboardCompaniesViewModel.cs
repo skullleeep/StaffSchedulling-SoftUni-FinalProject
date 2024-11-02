@@ -2,8 +2,8 @@
 {
     public class DashboardCompaniesViewModel
     {
-        public ICollection<CompanyViewModel> OwnedCompanies { get; set; } = new List<CompanyViewModel>();
+        public ICollection<CompanyDashboardViewModel> OwnedCompanies { get; set; } = new List<CompanyDashboardViewModel>();
 
-        public ICollection<CompanyViewModel> JoinedCompanies { get; set; } = new List<CompanyViewModel>();
+        public ICollection<CompanyDashboardViewModel> JoinedCompanies { get; set; } = new List<CompanyDashboardViewModel>();
     }
 }

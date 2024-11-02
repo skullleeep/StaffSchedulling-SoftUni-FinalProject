@@ -12,14 +12,18 @@
         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
         <div class="form-floating mb-3">
             <input asp-for="Name" class="form-control" autocomplete="company-name" aria-required="true" placeholder="Example Company" />
-            <label asp-for="Name">@Model.Name</label>
+            <label asp-for="Name"></label>
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="form-floating mb-3">
-            <input asp-for="MaxVacationDaysPerYear" class="form-control" autocomplete="max-vacation-days-per-year" aria-required="true" placeholder="e.g. 10" />
-            <label asp-for="MaxVacationDaysPerYear">@Model.MaxVacationDaysPerYear</label>
+            <input asp-for="MaxVacationDaysPerYear" class="form-control" autocomplete="max-vacation-days-per-year" aria-required="true" placeholder="e.g. 10"/>
+            <label asp-for="MaxVacationDaysPerYear"></label>
             <span asp-validation-for="MaxVacationDaysPerYear" class="text-danger"></span>
         </div>
         <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Create</button>
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

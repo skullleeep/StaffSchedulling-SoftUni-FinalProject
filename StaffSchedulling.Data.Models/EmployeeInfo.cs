@@ -34,9 +34,9 @@ namespace StaffScheduling.Data.Models
         [ForeignKey(nameof(CompanyId))]
         public virtual Company Company { get; set; } = null!;
 
-        public virtual Department Department { get; set; }
+        public virtual Department? Department { get; set; }
 
-        public virtual ApplicationUser User { get; set; }
+        public virtual ApplicationUser? User { get; set; }
 
         public virtual ICollection<Vacation> Vacations { get; set; } = new HashSet<Vacation>();
     }
