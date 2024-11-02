@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StaffScheduling.Common.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static StaffScheduling.Common.DataConstants.EmployeeInfo;
 
@@ -14,10 +15,7 @@ namespace StaffScheduling.Data.Models
         public string Email { get; set; } = null!;
 
         [Required]
-        public bool IsAdmin { get; set; } = false;
-
-        [Required]
-        public bool IsSuperior { get; set; } = false;
+        public EmployeeRole Role { get; set; } = EmployeeRole.Employee;
 
         [Required]
         public bool HasJoined { get; set; } = false;
@@ -29,7 +27,7 @@ namespace StaffScheduling.Data.Models
         public int? DepartmentId { get; set; } = null;
 
         //Foreign Key in EmployeeInfoConfiguration because it needs to be optional
-        public string? UserId { get; set; }
+        public string? UserId { get; set; } = null;
 
         //Navigation
 
