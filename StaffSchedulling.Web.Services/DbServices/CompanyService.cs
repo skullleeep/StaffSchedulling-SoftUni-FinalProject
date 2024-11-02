@@ -3,7 +3,6 @@ using StaffScheduling.Common;
 using StaffScheduling.Common.Enums;
 using StaffScheduling.Data;
 using StaffScheduling.Data.Models;
-using StaffScheduling.Web.Models.Dtos;
 using StaffScheduling.Web.Models.InputModels.Company;
 using StaffScheduling.Web.Models.ViewModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
@@ -15,28 +14,6 @@ namespace StaffScheduling.Web.Services.DbServices
 {
     public class CompanyService(ApplicationDbContext _dbContext, ApplicationUserManager _userManager) : ICompanyService
     {
-        public async Task<StatusReport> AddCompanyAsync(CompanyDto model)
-        {
-            var newEntity = new Company()
-            {
-                Name = model.Name,
-                MaxVacationDaysPerYear = model.MaxVacationDaysPerYear,
-                OwnerId = model.OwnerId,
-            };
-
-            try
-            {
-                await _dbContext.Companies.AddAsync(newEntity);
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                return new StatusReport() { Ok = false, Message = $"Database Error: {ex.Message}" };
-            }
-
-            return new StatusReport() { Ok = true };
-        }
-
         public async Task<StatusReport> CreateCompanyAsync(CompanyCreateInputModel model, string userId)
         {
             var entityFound = await _dbContext

@@ -8,11 +8,12 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using StaffScheduling.Common;
 using StaffScheduling.Common.Enums;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Web.Areas.Identity.InputModels;
 using StaffScheduling.Web.Extensions;
-using StaffScheduling.Web.Models.Dtos;
+using StaffScheduling.Web.Models.InputModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
 using System.Text;
@@ -115,25 +116,26 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                         return Page();
                     }
 
+                    //Get user id
+                    var userId = await _userManager.GetUserIdAsync(user);
+
                     //Create new Company and add it to DB
-                    var newCompany = new CompanyDto()
+                    var newCompany = new CompanyCreateInputModel()
                     {
-                        Name = Input.CompanyName.TrimEnd(),
+                        Name = Input.CompanyName,
                         MaxVacationDaysPerYear = Input.MaxVacationDaysPerYear,
-                        OwnerId = user.Id
                     };
-                    var resultAddingCompany = await _companyService.AddCompanyAsync(newCompany);
-                    if (!resultAddingCompany.Ok)
+                    StatusReport resultCreatingCompany = await _companyService.CreateCompanyAsync(newCompany, userId);
+                    if (!resultCreatingCompany.Ok)
                     {
                         //Delete user
                         await _userManager.DeleteAsync(user);
 
-                        ModelState.AddModelError(String.Empty, resultAddingCompany.Message);
+                        ModelState.AddModelError(String.Empty, resultCreatingCompany.Message);
                         return Page();
                     }
 
 
-                    var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

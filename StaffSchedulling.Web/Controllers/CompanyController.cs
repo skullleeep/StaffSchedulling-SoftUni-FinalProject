@@ -19,7 +19,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for non-valid string or guid
             if (IsGuidValid(inviteCode, ref inviteGuid) == false)
             {
-                return RedirectToAction(nameof(Index), "Dashboard");
+                return RedirectToAction("Index", "Dashboard");
             }
 
             var model = await _companyService.GetCompanyFromInviteLinkAsync(inviteGuid);
@@ -27,7 +27,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for wrong id
             if (model == null)
             {
-                return RedirectToAction(nameof(Index), "Dashboard");
+                return RedirectToAction("Index", "Dashboard");
             }
 
             return View(model);
@@ -55,6 +55,7 @@ namespace StaffScheduling.Web.Controllers
             string companyOwnerEmail = await _companyService.GetCompanyOwnerEmailFromIdAsync(model.Id);
             string currentUserId = GetCurrentUserId() ?? "";
 
+            //Join company
             StatusReport status = await _employeeInfoService.JoinCompanyWithIdAsync(model.Id, companyOwnerEmail, currentUserId);
 
             //Check for errors
@@ -88,7 +89,7 @@ namespace StaffScheduling.Web.Controllers
 
             string userId = GetCurrentUserId() ?? String.Empty;
 
-            //Add company to database
+            //Create company
             StatusReport status = await _companyService.CreateCompanyAsync(model, userId);
 
             //Check for errors
