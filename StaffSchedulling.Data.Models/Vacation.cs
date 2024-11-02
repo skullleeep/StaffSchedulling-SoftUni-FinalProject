@@ -7,16 +7,16 @@ namespace StaffScheduling.Data.Models
     public class Vacation
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         public Guid EmployeeId { get; set; }
 
         [Required]
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
 
         [Required]
-        public int DepartmentId { get; set; }
+        public Guid DepartmentId { get; set; }
 
         [Required]
         public DateOnly StartDate { get; set; }

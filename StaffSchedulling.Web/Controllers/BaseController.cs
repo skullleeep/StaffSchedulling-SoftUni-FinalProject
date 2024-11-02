@@ -9,5 +9,23 @@ namespace StaffScheduling.Web.Controllers
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
+
+        public bool IsGuidValid(string? id, ref Guid parsedGuid)
+        {
+            //Check for non-valid string
+            if (String.IsNullOrWhiteSpace(id))
+            {
+                return false;
+            }
+
+            //Check for invalid guid
+            bool isGuidValid = Guid.TryParse(id, out parsedGuid);
+            if (!isGuidValid)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

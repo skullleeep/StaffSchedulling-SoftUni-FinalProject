@@ -21,10 +21,10 @@ namespace StaffScheduling.Data.Models
         public bool HasJoined { get; set; } = false;
 
         [Required]
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
 
         //Foreign Key in EmployeeInfoConfiguration because it needs to be optional
-        public int? DepartmentId { get; set; } = null;
+        public Guid? DepartmentId { get; set; } = null;
 
         //Foreign Key in EmployeeInfoConfiguration because it needs to be optional
         public string? UserId { get; set; } = null;

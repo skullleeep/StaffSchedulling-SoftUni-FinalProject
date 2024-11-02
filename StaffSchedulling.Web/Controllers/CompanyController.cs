@@ -14,18 +14,17 @@ namespace StaffScheduling.Web.Controllers
         [HttpGet("Company/Join/{inviteCode?}")]
         public async Task<IActionResult> Join(string? inviteCode)
         {
-            if (inviteCode == null)
-            {
-                return RedirectToAction(nameof(Index), "Dashboard");
-            }
-
             Guid inviteGuid = Guid.Empty;
-            if (Guid.TryParse(inviteCode, out inviteGuid) == false)
+
+            //Check for non-valid string or guid
+            if (IsGuidValid(inviteCode, ref inviteGuid) == false)
             {
                 return RedirectToAction(nameof(Index), "Dashboard");
             }
 
             var model = await _companyService.GetCompanyFromInviteLinkAsync(inviteGuid);
+
+            //Check for wrong id
             if (model == null)
             {
                 return RedirectToAction(nameof(Index), "Dashboard");
@@ -38,12 +37,15 @@ namespace StaffScheduling.Web.Controllers
         [HttpPost("Company/Join/{inviteCode}")]
         public async Task<IActionResult> Join(CompanyViewModel model, string inviteCode)
         {
+            //Check for model errors
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
             var hasCompany = await _companyService.HasCompanyWithIdAsync(model.Id);
+
+            //Check if company id is wrong
             if (hasCompany == false)
             {
                 ModelState.AddModelError(String.Empty, "Couldn't find company!");
@@ -52,7 +54,10 @@ namespace StaffScheduling.Web.Controllers
 
             string companyOwnerEmail = await _companyService.GetCompanyOwnerEmailFromIdAsync(model.Id);
             string currentUserId = GetCurrentUserId() ?? "";
+
             StatusReport status = await _employeeInfoService.JoinCompanyWithIdAsync(model.Id, companyOwnerEmail, currentUserId);
+
+            //Check for errors
             if (status.Ok == false)
             {
                 ModelState.AddModelError(String.Empty, status.Message);
@@ -69,6 +74,31 @@ namespace StaffScheduling.Web.Controllers
             var model = new CompanyCreateInputModel();
 
             return View(model);
+        }
+
+        //Post request when trying to create a company
+        [HttpPost]
+        public async Task<IActionResult> Create(CompanyCreateInputModel model)
+        {
+            //Check for model errors
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            string userId = GetCurrentUserId() ?? String.Empty;
+
+            //Add company to database
+            StatusReport status = await _companyService.CreateCompanyAsync(model, userId);
+
+            //Check for errors
+            if (status.Ok == false)
+            {
+                ModelState.AddModelError(String.Empty, status.Message);
+                return View(model);
+            }
+
+            return RedirectToAction("Index", "Dashboard");
         }
     }
 }

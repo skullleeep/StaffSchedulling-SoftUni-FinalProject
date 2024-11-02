@@ -17,6 +17,6 @@ namespace StaffScheduling.Web.Areas.Identity.InputModels
         [Required]
         [Range(MaxVacationDaysPerYearMinValue, MaxVacationDaysPerYearMaxValue, ErrorMessage = MaxVacationDaysPerYearError)]
         [Display(Name = "Maximum Vacation Days Per Year (For each employee)")]
-        public int MaxVacationDaysPerYear { get; set; }
+        public int MaxVacationDaysPerYear { get; set; } = MaxVacationDaysPerYearDefaultValue;
     }
 }

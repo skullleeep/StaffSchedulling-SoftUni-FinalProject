@@ -3,27 +3,26 @@ using StaffScheduling.Common;
 using StaffScheduling.Data;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
+using static StaffScheduling.Common.ServiceErrorMessages;
 using static StaffScheduling.Common.ServiceErrorMessages.EmployeeInfoService;
 
 namespace StaffScheduling.Web.Services.DbServices
 {
     public class EmployeeInfoService(ApplicationDbContext _dbContext, ApplicationUserManager _userManager) : IEmployeeInfoService
     {
-        public async Task<StatusReport> JoinCompanyWithIdAsync(int companyId, string companyOwnerEmail, string userId)
+        public async Task<StatusReport> JoinCompanyWithIdAsync(Guid companyId, string companyOwnerEmail, string userId)
         {
 
             var userEmail = await _userManager.GetUserEmailFromIdAsync(userId);
+
+            //Check for wrong userId
             if (String.IsNullOrEmpty(userEmail))
             {
                 return new StatusReport { Ok = false, Message = CouldNotFindUserEmail };
             }
 
-            if (await _userManager.HasUserWithEmailAsync(userEmail) == false)
-            {
-                return new StatusReport { Ok = false, Message = CouldNotFindUser };
-            }
-
-            if (companyOwnerEmail == await _userManager.GetUserEmailFromIdAsync(userId))
+            //Check if user trying to join is the company's owner
+            if (companyOwnerEmail == userEmail)
             {
                 return new StatusReport { Ok = false, Message = OwnerCouldNotHisJoinCompany };
             }
@@ -34,11 +33,13 @@ namespace StaffScheduling.Web.Services.DbServices
                 .Where(e => e.CompanyId == companyId)
                 .FirstOrDefaultAsync();
 
+            //Check for wrong employeeInfo
             if (employeeInfo == null)
             {
                 return new StatusReport { Ok = false, Message = String.Format(CouldNotFindEmployeeInfoFormat, userEmail) };
             }
 
+            //Check if employee has already joined
             if (employeeInfo.HasJoined == true)
             {
                 return new StatusReport { Ok = false, Message = CouldNotJoinAlreadyJoinedCompany };

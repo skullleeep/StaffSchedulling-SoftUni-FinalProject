@@ -4,9 +4,12 @@ using StaffScheduling.Common.Enums;
 using StaffScheduling.Data;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Web.Models.Dtos;
+using StaffScheduling.Web.Models.InputModels.Company;
 using StaffScheduling.Web.Models.ViewModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
+using static StaffScheduling.Common.ServiceErrorMessages;
+using static StaffScheduling.Common.ServiceErrorMessages.CompanyService;
 
 namespace StaffScheduling.Web.Services.DbServices
 {
@@ -29,6 +32,38 @@ namespace StaffScheduling.Web.Services.DbServices
             catch (Exception ex)
             {
                 return new StatusReport() { Ok = false, Message = $"Database Error: {ex.Message}" };
+            }
+
+            return new StatusReport() { Ok = true };
+        }
+
+        public async Task<StatusReport> CreateCompanyAsync(CompanyCreateInputModel model, string userId)
+        {
+            var entityFound = await _dbContext
+                .Companies
+                .FirstOrDefaultAsync(c => c.OwnerId == userId && c.Name == model.Name);
+
+            //Check if user already has a company with same name
+            if (entityFound != null)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(CanNotCreateCompanyWithSameNameFormat, model.Name) };
+            }
+
+            var newEntity = new Company()
+            {
+                Name = model.Name,
+                MaxVacationDaysPerYear = model.MaxVacationDaysPerYear,
+                OwnerId = userId
+            };
+
+            try
+            {
+                await _dbContext.Companies.AddAsync(newEntity);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusReport() { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
             }
 
             return new StatusReport() { Ok = true };
@@ -104,7 +139,7 @@ namespace StaffScheduling.Web.Services.DbServices
             };
         }
 
-        public async Task<string> GetCompanyOwnerEmailFromIdAsync(int id)
+        public async Task<string> GetCompanyOwnerEmailFromIdAsync(Guid id)
         {
             var entity = await _dbContext
                 .Companies
@@ -120,7 +155,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return ownerEmail;
         }
 
-        public async Task<bool> HasCompanyWithIdAsync(int id)
+        public async Task<bool> HasCompanyWithIdAsync(Guid id)
         {
             //Check if company with this GUID exists
             var entity = await _dbContext

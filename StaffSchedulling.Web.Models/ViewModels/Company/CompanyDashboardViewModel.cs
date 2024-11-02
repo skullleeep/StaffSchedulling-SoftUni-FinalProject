@@ -6,7 +6,7 @@ namespace StaffScheduling.Web.Models.ViewModels.Company
     public class CompanyDashboardViewModel
     {
         [Required]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [MinLength(NameMinLength)]

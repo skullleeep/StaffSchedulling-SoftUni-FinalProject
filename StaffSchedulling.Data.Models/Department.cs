@@ -7,14 +7,14 @@ namespace StaffScheduling.Data.Models
     public class Department
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
 
         [Required]
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
 
         //Navigation
 

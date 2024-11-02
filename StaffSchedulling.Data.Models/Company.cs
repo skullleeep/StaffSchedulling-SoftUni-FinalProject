@@ -8,7 +8,7 @@ namespace StaffScheduling.Data.Models
     public class Company
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [MaxLength(NameMaxLength)]
         [Required]

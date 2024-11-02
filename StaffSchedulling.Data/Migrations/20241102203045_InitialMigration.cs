@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -22,21 +21,15 @@ namespace StaffScheduling.Data.Migrations
                 name: "Companies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(160)", maxLength: 160, nullable: false),
                     OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AdminId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Invite = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Invite = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MaxVacationDaysPerYear = table.Column<int>(type: "int", defaultValue: 10, nullable: false, comment: "Maximum vacation days per year that an employee working at the company is given")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Companies", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Companies_AspNetUsers_AdminId",
-                        column: x => x.AdminId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Companies_AspNetUsers_OwnerId",
                         column: x => x.OwnerId,
@@ -49,20 +42,13 @@ namespace StaffScheduling.Data.Migrations
                 name: "Departments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: false),
-                    SupervisorId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Departments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Departments_AspNetUsers_SupervisorId",
-                        column: x => x.SupervisorId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Departments_Companies_CompanyId",
                         column: x => x.CompanyId,
@@ -77,13 +63,20 @@ namespace StaffScheduling.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(320)", maxLength: 320, nullable: false),
-                    IsSuperior = table.Column<bool>(type: "bit", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: false),
-                    DepartmentId = table.Column<int>(type: "int", nullable: true)
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    HasJoined = table.Column<bool>(type: "bit", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DepartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmployeesInfo", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmployeesInfo_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_EmployeesInfo_Companies_CompanyId",
                         column: x => x.CompanyId,
@@ -101,11 +94,10 @@ namespace StaffScheduling.Data.Migrations
                 name: "Vacations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false),
-                    VacationId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DepartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Days = table.Column<int>(type: "int", nullable: false),
@@ -115,22 +107,21 @@ namespace StaffScheduling.Data.Migrations
                 {
                     table.PrimaryKey("PK_Vacations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vacations_AspNetUsers_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Vacations_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Vacations_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Vacations_EmployeesInfo_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "EmployeesInfo",
+                        principalColumn: "Id");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Companies_AdminId",
-                table: "Companies",
-                column: "AdminId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Companies_OwnerId",
@@ -143,11 +134,6 @@ namespace StaffScheduling.Data.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Departments_SupervisorId",
-                table: "Departments",
-                column: "SupervisorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_EmployeesInfo_CompanyId",
                 table: "EmployeesInfo",
                 column: "CompanyId");
@@ -156,6 +142,16 @@ namespace StaffScheduling.Data.Migrations
                 name: "IX_EmployeesInfo_DepartmentId",
                 table: "EmployeesInfo",
                 column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmployeesInfo_UserId",
+                table: "EmployeesInfo",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vacations_CompanyId",
+                table: "Vacations",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vacations_DepartmentId",
@@ -172,10 +168,10 @@ namespace StaffScheduling.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "EmployeesInfo");
+                name: "Vacations");
 
             migrationBuilder.DropTable(
-                name: "Vacations");
+                name: "EmployeesInfo");
 
             migrationBuilder.DropTable(
                 name: "Departments");
