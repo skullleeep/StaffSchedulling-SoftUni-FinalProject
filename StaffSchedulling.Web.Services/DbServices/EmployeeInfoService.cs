@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StaffScheduling.Common;
-using StaffScheduling.Data;
+using StaffScheduling.Data.Models;
+using StaffScheduling.Data.Repository.Contracts;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
 using static StaffScheduling.Common.ServiceErrorMessages;
@@ -8,7 +9,7 @@ using static StaffScheduling.Common.ServiceErrorMessages.EmployeeInfoService;
 
 namespace StaffScheduling.Web.Services.DbServices
 {
-    public class EmployeeInfoService(ApplicationDbContext _dbContext, ApplicationUserManager _userManager) : IEmployeeInfoService
+    public class EmployeeInfoService(IGuidRepository<EmployeeInfo> _employeeInfoRepo, ApplicationUserManager _userManager) : IEmployeeInfoService
     {
         public async Task<StatusReport> JoinCompanyWithIdAsync(Guid companyId, string companyOwnerEmail, string userId)
         {
@@ -27,8 +28,8 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = false, Message = OwnerCouldNotHisJoinCompany };
             }
 
-            var employeeInfo = await _dbContext
-                .EmployeesInfo
+            var employeeInfo = await _employeeInfoRepo
+                .All()
                 .Where(e => e.Email == userEmail)
                 .Where(e => e.CompanyId == companyId)
                 .FirstOrDefaultAsync();
@@ -49,7 +50,7 @@ namespace StaffScheduling.Web.Services.DbServices
             {
                 employeeInfo.HasJoined = true;
                 employeeInfo.UserId = userId;
-                await _dbContext.SaveChangesAsync();
+                await _employeeInfoRepo.SaveAsync();
 
                 return new StatusReport { Ok = true };
             }

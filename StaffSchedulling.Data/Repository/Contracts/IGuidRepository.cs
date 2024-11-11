@@ -2,11 +2,11 @@
 
 namespace StaffScheduling.Data.Repository.Contracts
 {
-    public interface IGenericRepository<TType, TId>
+    public interface IGuidRepository<TType>
     {
-        TType? GetById(TId id);
+        TType? GetById(Guid id);
 
-        Task<TType?> GetByIdAsync(TId id);
+        Task<TType?> GetByIdAsync(Guid id);
 
         TType? FirstOrDefault(Func<TType, bool> predicate);
 
@@ -28,9 +28,9 @@ namespace StaffScheduling.Data.Repository.Contracts
 
         void Update(TType item);
 
-        bool Delete(TId id);
+        bool Delete(Guid id);
 
-        Task<bool> DeleteAsync(TId id);
+        Task<bool> DeleteAsync(Guid id);
 
         bool DeleteRange(TType[] items);
 

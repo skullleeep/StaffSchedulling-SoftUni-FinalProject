@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StaffScheduling.Common;
 using StaffScheduling.Common.Enums;
-using StaffScheduling.Data;
 using StaffScheduling.Data.Models;
+using StaffScheduling.Data.Repository.Contracts;
 using StaffScheduling.Web.Models.InputModels.Company;
 using StaffScheduling.Web.Models.ViewModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
@@ -12,12 +12,11 @@ using static StaffScheduling.Common.ServiceErrorMessages.CompanyService;
 
 namespace StaffScheduling.Web.Services.DbServices
 {
-    public class CompanyService(ApplicationDbContext _dbContext, ApplicationUserManager _userManager) : ICompanyService
+    public class CompanyService(IGuidRepository<Company> _companyRepo, ApplicationUserManager _userManager) : ICompanyService
     {
         public async Task<StatusReport> CreateCompanyAsync(CompanyCreateInputModel model, string userId)
         {
-            var entityFound = await _dbContext
-                .Companies
+            var entityFound = await _companyRepo
                 .FirstOrDefaultAsync(c => c.OwnerId == userId && c.Name == model.Name);
 
             //Check if user already has a company with same name
@@ -35,8 +34,8 @@ namespace StaffScheduling.Web.Services.DbServices
 
             try
             {
-                await _dbContext.Companies.AddAsync(newEntity);
-                await _dbContext.SaveChangesAsync();
+                await _companyRepo.AddAsync(newEntity);
+                await _companyRepo.SaveAsync();
             }
             catch (Exception ex)
             {
@@ -48,8 +47,8 @@ namespace StaffScheduling.Web.Services.DbServices
 
         public async Task<CompanyViewModel?> GetCompanyFromInviteLinkAsync(Guid invite)
         {
-            var entity = await _dbContext
-                .Companies
+            var entity = await _companyRepo
+                .All()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Invite == invite);
             if (entity == null)
@@ -72,8 +71,8 @@ namespace StaffScheduling.Web.Services.DbServices
             var ownedCompanyIds = await _userManager.GetOwnedCompanyIdsFromUserEmailAsync(email);
             if (ownedCompanyIds != null)
             {
-                ownedCompanies = await _dbContext
-                                            .Companies
+                ownedCompanies = await _companyRepo
+                                            .All()
                                             .Where(c => ownedCompanyIds.Contains(c.Id))
                                             .Include(c => c.CompanyEmployeesInfo)
                                             .Select(c => new CompanyDashboardViewModel()
@@ -92,8 +91,8 @@ namespace StaffScheduling.Web.Services.DbServices
             var joinedCompanyIds = await _userManager.GetJoinedCompanyIdsFromUserEmailAsync(email);
             if (joinedCompanyIds != null)
             {
-                joinedCompanies = await _dbContext
-                                            .Companies
+                joinedCompanies = await _companyRepo
+                                            .All()
                                             .Where(c => joinedCompanyIds.Contains(c.Id))
                                             .Include(c => c.CompanyEmployeesInfo)
                                             .Select(c => new CompanyDashboardViewModel()
@@ -118,8 +117,8 @@ namespace StaffScheduling.Web.Services.DbServices
 
         public async Task<string> GetCompanyOwnerEmailFromIdAsync(Guid id)
         {
-            var entity = await _dbContext
-                .Companies
+            var entity = await _companyRepo
+                .All()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
             if (entity == null)
@@ -135,8 +134,8 @@ namespace StaffScheduling.Web.Services.DbServices
         public async Task<bool> HasCompanyWithIdAsync(Guid id)
         {
             //Check if company with this GUID exists
-            var entity = await _dbContext
-                .Companies
+            var entity = await _companyRepo
+                .All()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 

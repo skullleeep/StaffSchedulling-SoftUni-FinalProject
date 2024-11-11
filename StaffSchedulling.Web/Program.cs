@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using StaffScheduling.Common.Enums;
 using StaffScheduling.Data;
 using StaffScheduling.Data.Models;
-using StaffScheduling.Web.Services.DbServices;
-using StaffScheduling.Web.Services.DbServices.Contracts;
+using StaffScheduling.Web.Extensions;
 using StaffScheduling.Web.Services.UserServices;
 
 namespace StaffScheduling.Web
@@ -27,9 +26,9 @@ namespace StaffScheduling.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddUserManager<ApplicationUserManager>();
 
-            builder.Services
-                .AddScoped<IEmployeeInfoService, EmployeeInfoService>()
-                .AddScoped<ICompanyService, CompanyService>();
+            //Custom extensions
+            builder.Services.RegisterRepositories();
+            builder.Services.RegisterServices();
 
             builder.Services.AddControllersWithViews();
 

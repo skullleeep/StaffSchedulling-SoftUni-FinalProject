@@ -4,14 +4,13 @@ using System.Linq.Expressions;
 
 namespace StaffScheduling.Data.Repository
 {
-    public class BaseRepository<TType, TId> : IGenericRepository<TType, TId>
+    public class GuidRepository<TType> : IGuidRepository<TType>
         where TType : class
-        where TId : notnull
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly DbSet<TType> _dbSet;
 
-        public BaseRepository(ApplicationDbContext dbContext)
+        public GuidRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
             _dbSet = _dbContext.Set<TType>();
@@ -43,7 +42,7 @@ namespace StaffScheduling.Data.Repository
             await _dbSet.AddRangeAsync(items);
         }
 
-        public bool Delete(TId id)
+        public bool Delete(Guid id)
         {
             var entity = GetById(id);
             if (entity == null)
@@ -55,7 +54,7 @@ namespace StaffScheduling.Data.Repository
             return true;
         }
 
-        public async Task<bool> DeleteAsync(TId id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await GetByIdAsync(id);
             if (entity == null)
@@ -90,27 +89,27 @@ namespace StaffScheduling.Data.Repository
             return await _dbSet.FirstOrDefaultAsync(predicate);
         }
 
-        public IEnumerable<TType> GetAll()
-        {
-            return _dbSet.ToList();
-        }
-
-        public async Task<IEnumerable<TType>> GetAllAsync()
-        {
-            return await _dbSet.ToListAsync();
-        }
-
-        public IQueryable<TType> GetAllAttached()
+        public IQueryable<TType> All()
         {
             return _dbSet.AsQueryable();
         }
 
-        public TType? GetById(TId id)
+        public IEnumerable<TType> GetAllNotAttached()
+        {
+            return _dbSet.ToList();
+        }
+
+        public async Task<IEnumerable<TType>> GetAllNotAttachedAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
+        public TType? GetById(Guid id)
         {
             return _dbSet.Find(id);
         }
 
-        public async Task<TType?> GetByIdAsync(TId id)
+        public async Task<TType?> GetByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }
