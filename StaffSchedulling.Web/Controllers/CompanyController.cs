@@ -53,7 +53,7 @@ namespace StaffScheduling.Web.Controllers
             }
 
             string companyOwnerEmail = await _companyService.GetCompanyOwnerEmailFromIdAsync(model.Id);
-            string currentUserId = GetCurrentUserId() ?? "";
+            string currentUserId = GetCurrentUserId() ?? String.Empty;
 
             //Join company
             StatusReport status = await _employeeInfoService.JoinCompanyWithIdAsync(model.Id, companyOwnerEmail, currentUserId);

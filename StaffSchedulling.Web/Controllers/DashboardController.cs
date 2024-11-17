@@ -13,7 +13,7 @@ namespace StaffScheduling.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string? sortFilter)
         {
-            string? currentUserEmail = User.FindFirstValue(ClaimTypes.Email) ?? "";
+            string? currentUserEmail = User.FindFirstValue(ClaimTypes.Email) ?? String.Empty;
 
             var model = await _companyService.GetOwnedAndJoinedCompaniesFromUserEmailAsync(currentUserEmail);
 
