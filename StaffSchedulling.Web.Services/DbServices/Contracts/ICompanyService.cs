@@ -8,12 +8,12 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
     {
         public Task<StatusReport> CreateCompanyAsync(CompanyCreateInputModel model, string userId);
 
-        public Task<CompanyViewModel?> GetCompanyFromInviteLinkAsync(Guid invite);
+        public Task<CompanyJoinViewModel?> GetCompanyFromInviteLinkAsync(Guid invite);
 
         public Task<DashboardCompaniesViewModel> GetOwnedAndJoinedCompaniesFromUserEmailAsync(string email);
 
-        public Task<string> GetCompanyOwnerEmailFromIdAsync(Guid id);
+        public Task<CompanyManageViewModel?> GetCompanyFromIdAsync(Guid id, bool UserCanEdit, bool UserCanDelete);
 
-        public Task<bool> HasCompanyWithIdAsync(Guid id);
+        public Task<string?> GetCompanyOwnerEmailFromIdAsync(Guid id);
     }
 }

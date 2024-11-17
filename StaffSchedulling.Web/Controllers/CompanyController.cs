@@ -35,7 +35,7 @@ namespace StaffScheduling.Web.Controllers
 
         //Post request when trying to join a company
         [HttpPost("Company/Join/{inviteCode}")]
-        public async Task<IActionResult> Join(CompanyViewModel model, string inviteCode)
+        public async Task<IActionResult> Join(CompanyJoinViewModel model, string inviteCode)
         {
             //Check for model errors
             if (!ModelState.IsValid)
@@ -43,16 +43,15 @@ namespace StaffScheduling.Web.Controllers
                 return View(model);
             }
 
-            var hasCompany = await _companyService.HasCompanyWithIdAsync(model.Id);
+            //Get company owner email and at the same time check if company id is wrong
+            string companyOwnerEmail = await _companyService.GetCompanyOwnerEmailFromIdAsync(model.Id) ?? String.Empty;
 
-            //Check if company id is wrong
-            if (hasCompany == false)
+            if (String.IsNullOrEmpty(companyOwnerEmail))
             {
                 ModelState.AddModelError(String.Empty, "Couldn't find company!");
                 return View(model);
             }
 
-            string companyOwnerEmail = await _companyService.GetCompanyOwnerEmailFromIdAsync(model.Id);
             string currentUserId = GetCurrentUserId() ?? String.Empty;
 
             //Join company

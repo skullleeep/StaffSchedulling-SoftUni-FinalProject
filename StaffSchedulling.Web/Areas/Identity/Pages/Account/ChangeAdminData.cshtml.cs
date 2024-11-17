@@ -110,7 +110,7 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                 admin = _userManager.Users.FirstOrDefault(u => u.Email == Input.Email);
 
                 //Update FullName claim as FullName has changed
-                var statusClaimUpdate = await _userManager.AddUpdateUserClaimAsync(admin, ClaimType.FullName, Input.FullName);
+                var statusClaimUpdate = await _userManager.AddUpdateUserClaimAsync(admin, CustomClaimType.FullName, Input.FullName);
                 if (!statusClaimUpdate.Ok)
                 {
                     ModelState.AddModelError(string.Empty, statusClaimUpdate.Message);

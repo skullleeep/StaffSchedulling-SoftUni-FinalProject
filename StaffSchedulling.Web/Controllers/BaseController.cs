@@ -3,14 +3,19 @@ using System.Security.Claims;
 
 namespace StaffScheduling.Web.Controllers
 {
-    public abstract class BaseController : Controller
+    public abstract class BaseController() : Controller
     {
         protected string? GetCurrentUserId()
         {
             return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
-        public bool IsGuidValid(string? id, ref Guid parsedGuid)
+        protected string? GetCurrentUserEmail()
+        {
+            return User.FindFirstValue(ClaimTypes.Email);
+        }
+
+        protected bool IsGuidValid(string? id, ref Guid parsedGuid)
         {
             //Check for non-valid string
             if (String.IsNullOrWhiteSpace(id))

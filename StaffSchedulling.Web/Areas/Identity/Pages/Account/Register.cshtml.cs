@@ -88,7 +88,7 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     //Add FullName Claim
-                    var resultClaimAdd = await _userManager.AddUpdateUserClaimAsync(user, ClaimType.FullName, fullName);
+                    var resultClaimAdd = await _userManager.AddUpdateUserClaimAsync(user, CustomClaimType.FullName, fullName);
                     if (!resultClaimAdd.Ok)
                     {
                         ModelState.AddModelError(String.Empty, resultClaimAdd.Message);

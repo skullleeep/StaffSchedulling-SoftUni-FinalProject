@@ -7,5 +7,7 @@
 
         public const string SiteName = "Staff Scheduling";
         public const string InviteLinkEmptyFormat = "{0}://{1}/Company/Join/";
+
+        public const int UserJoinedCompaniesLimit = 20;
     }
 }

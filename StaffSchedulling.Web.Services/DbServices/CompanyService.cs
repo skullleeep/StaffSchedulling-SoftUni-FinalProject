@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StaffScheduling.Common;
-using StaffScheduling.Common.Enums;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Data.Repository.Contracts;
+using StaffScheduling.Web.Models.Dtos;
 using StaffScheduling.Web.Models.InputModels.Company;
 using StaffScheduling.Web.Models.ViewModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
+using System.Data;
+using static StaffScheduling.Common.Enums.CustomRoles;
 using static StaffScheduling.Common.ServiceErrorMessages;
 using static StaffScheduling.Common.ServiceErrorMessages.CompanyService;
 
@@ -45,7 +47,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return new StatusReport() { Ok = true };
         }
 
-        public async Task<CompanyViewModel?> GetCompanyFromInviteLinkAsync(Guid invite)
+        public async Task<CompanyJoinViewModel?> GetCompanyFromInviteLinkAsync(Guid invite)
         {
             var entity = await _companyRepo
                 .All()
@@ -56,7 +58,7 @@ namespace StaffScheduling.Web.Services.DbServices
                 return null;
             }
 
-            return new CompanyViewModel
+            return new CompanyJoinViewModel
             {
                 Id = entity.Id,
                 Name = entity.Name,
@@ -91,21 +93,32 @@ namespace StaffScheduling.Web.Services.DbServices
             var joinedCompanyIds = await _userManager.GetJoinedCompanyIdsFromUserEmailAsync(email);
             if (joinedCompanyIds != null)
             {
-                joinedCompanies = await _companyRepo
-                                            .All()
-                                            .Where(c => joinedCompanyIds.Contains(c.Id))
-                                            .Include(c => c.CompanyEmployeesInfo)
+                var companyData = await _companyRepo
+                    .All()
+                    .Where(c => joinedCompanyIds.Contains(c.Id))
+                    .Include(c => c.CompanyEmployeesInfo)
+                    .Select(c => new CompanyDashboardDto()
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        Invite = c.Invite,
+                        Role = c.CompanyEmployeesInfo
+                            .Where(ef => ef.Email == email)
+                            .Select(ef => ef.Role)
+                            .FirstOrDefault()
+                    })
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                joinedCompanies = companyData
                                             .Select(c => new CompanyDashboardViewModel()
                                             {
                                                 Id = c.Id,
                                                 Name = c.Name,
                                                 Invite = c.Invite,
-                                                UserCanManage = c.CompanyEmployeesInfo.Where(ef => ef.Email == email)
-                                                                    .Select(ef => ef.Role)
-                                                                    .Any(role => role == EmployeeRole.Admin || role == EmployeeRole.Supervisor),
+                                                UserCanManage = RoleMapping[c.Role] >= PermissionRole.Editor,
                                             })
-                                            .AsNoTracking()
-                                            .ToListAsync();
+                                            .ToList();
             }
 
             return new DashboardCompaniesViewModel
@@ -115,7 +128,29 @@ namespace StaffScheduling.Web.Services.DbServices
             };
         }
 
-        public async Task<string> GetCompanyOwnerEmailFromIdAsync(Guid id)
+        public async Task<CompanyManageViewModel?> GetCompanyFromIdAsync(Guid id, bool UserCanEdit, bool UserCanDelete)
+        {
+            var entity = await _companyRepo
+                .All()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return new CompanyManageViewModel
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                MaxVacationDaysPerYear = entity.MaxVacationDaysPerYear,
+                UserCanEdit = UserCanEdit,
+                UserCanDelete = UserCanDelete
+            };
+        }
+
+        public async Task<string?> GetCompanyOwnerEmailFromIdAsync(Guid id)
         {
             var entity = await _companyRepo
                 .All()
@@ -123,28 +158,12 @@ namespace StaffScheduling.Web.Services.DbServices
                 .FirstOrDefaultAsync(c => c.Id == id);
             if (entity == null)
             {
-                return String.Empty;
+                return null;
             }
 
             string ownerEmail = await _userManager.GetUserEmailFromIdAsync(entity.OwnerId);
 
             return ownerEmail;
-        }
-
-        public async Task<bool> HasCompanyWithIdAsync(Guid id)
-        {
-            //Check if company with this GUID exists
-            var entity = await _companyRepo
-                .All()
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (entity == null)
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

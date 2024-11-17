@@ -17,9 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{E1DEE13B-239
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Web.Extensions", "StaffSchedulling.Web.Extensions\StaffScheduling.Web.Extensions.csproj", "{6FEFD72C-5FFF-4D7B-A7BB-EC63645E5258}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffScheduling.Web.Services", "StaffSchedulling.Web.Services\StaffScheduling.Web.Services.csproj", "{3C53F644-E08B-48A2-AE37-34CE7C00BFC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Web.Services", "StaffSchedulling.Web.Services\StaffScheduling.Web.Services.csproj", "{3C53F644-E08B-48A2-AE37-34CE7C00BFC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffScheduling.Web.Models", "StaffSchedulling.Web.Models\StaffScheduling.Web.Models.csproj", "{915D1B9C-5058-4CD5-8444-3663D243DC5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Web.Models", "StaffSchedulling.Web.Models\StaffScheduling.Web.Models.csproj", "{915D1B9C-5058-4CD5-8444-3663D243DC5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{94DC5911-5313-4F09-A5BA-6181A43366CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

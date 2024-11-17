@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using static StaffScheduling.Common.DataConstants.Company;
+using static StaffScheduling.Common.Enums.CustomRoles;
 
-namespace StaffScheduling.Web.Models.ViewModels.Company
+namespace StaffScheduling.Web.Models.Dtos
 {
-    public class CompanyViewModel
+    public class CompanyDashboardDto
     {
         [Required]
         public Guid Id { get; set; }
@@ -15,5 +16,8 @@ namespace StaffScheduling.Web.Models.ViewModels.Company
 
         [Required]
         public Guid Invite { get; set; }
+
+        [Required]
+        public EmployeeRole Role { get; set; }
     }
 }

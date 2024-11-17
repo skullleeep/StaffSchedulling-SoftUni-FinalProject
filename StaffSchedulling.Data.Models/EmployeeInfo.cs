@@ -1,7 +1,7 @@
-﻿using StaffScheduling.Common.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static StaffScheduling.Common.DataConstants.EmployeeInfo;
+using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Data.Models
 {

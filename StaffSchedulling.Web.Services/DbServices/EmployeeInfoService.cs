@@ -4,6 +4,8 @@ using StaffScheduling.Data.Models;
 using StaffScheduling.Data.Repository.Contracts;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
+using static StaffScheduling.Common.ApplicationConstants;
+using static StaffScheduling.Common.Enums.CustomRoles;
 using static StaffScheduling.Common.ServiceErrorMessages;
 using static StaffScheduling.Common.ServiceErrorMessages.EmployeeInfoService;
 
@@ -28,10 +30,19 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = false, Message = OwnerCouldNotHisJoinCompany };
             }
 
+            int joinedCompaniesCount = await _employeeInfoRepo
+                .All()
+                .Where(e => e.Email == userEmail && e.HasJoined == true)
+                .AsNoTracking()
+                .CountAsync();
+            if (joinedCompaniesCount >= UserJoinedCompaniesLimit)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(JoinedCompaniesLimitHitFormat, UserJoinedCompaniesLimit) };
+            }
+
             var employeeInfo = await _employeeInfoRepo
                 .All()
-                .Where(e => e.Email == userEmail)
-                .Where(e => e.CompanyId == companyId)
+                .Where(e => e.CompanyId == companyId && e.Email == userEmail)
                 .FirstOrDefaultAsync();
 
             //Check for wrong employeeInfo
@@ -58,6 +69,26 @@ namespace StaffScheduling.Web.Services.DbServices
             {
                 return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
             }
+        }
+
+        public async Task<PermissionRole> GetRoleOfEmployeeInCompanyAsync(Guid companyId, string companyOwnerEmail, string userEmail)
+        {
+            if (userEmail == companyOwnerEmail)
+            {
+                return PermissionRole.Owner;
+            }
+
+            var entity = await _employeeInfoRepo
+                .All()
+                .Where(e => e.Email == userEmail && e.CompanyId == companyId)
+                .FirstOrDefaultAsync();
+
+            if (entity == null)
+            {
+                return PermissionRole.None;
+            }
+
+            return RoleMapping[entity.Role];
         }
     }
 }
