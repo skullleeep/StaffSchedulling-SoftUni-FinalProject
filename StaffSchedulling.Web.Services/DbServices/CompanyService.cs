@@ -2,7 +2,6 @@
 using StaffScheduling.Common;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Data.Repository.Contracts;
-using StaffScheduling.Web.Models.Dtos;
 using StaffScheduling.Web.Models.InputModels.Company;
 using StaffScheduling.Web.Models.ViewModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
@@ -93,32 +92,28 @@ namespace StaffScheduling.Web.Services.DbServices
             var joinedCompanyIds = await _userManager.GetJoinedCompanyIdsFromUserEmailAsync(email);
             if (joinedCompanyIds != null)
             {
-                var companyData = await _companyRepo
+                //Get EmployeeRoles which can have >= PermissionRole that is needed to manage
+                //Doing this cause RoleMapping[EmployeeRole] can't be translated into SQL from entity
+                List<EmployeeRole> rolesWithAccess = RoleMapping
+                    .Where(rm => rm.Value >= PermissionRole.Editor)
+                    .Select(rm => rm.Key)
+                    .ToList();
+
+                joinedCompanies = await _companyRepo
                     .All()
                     .Where(c => joinedCompanyIds.Contains(c.Id))
                     .Include(c => c.CompanyEmployeesInfo)
-                    .Select(c => new CompanyDashboardDto()
+                    .Select(c => new CompanyDashboardViewModel()
                     {
                         Id = c.Id,
                         Name = c.Name,
                         Invite = c.Invite,
-                        Role = c.CompanyEmployeesInfo
-                            .Where(ef => ef.Email == email)
-                            .Select(ef => ef.Role)
-                            .FirstOrDefault()
+                        UserCanManage = c.CompanyEmployeesInfo.Where(ef => ef.Email == email)
+                                                                    .Select(ef => ef.Role)
+                                                                    .Any(role => rolesWithAccess.Contains(role)),
                     })
                     .AsNoTracking()
                     .ToListAsync();
-
-                joinedCompanies = companyData
-                                            .Select(c => new CompanyDashboardViewModel()
-                                            {
-                                                Id = c.Id,
-                                                Name = c.Name,
-                                                Invite = c.Invite,
-                                                UserCanManage = RoleMapping[c.Role] >= PermissionRole.Editor,
-                                            })
-                                            .ToList();
             }
 
             return new DashboardCompaniesViewModel
