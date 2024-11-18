@@ -34,6 +34,7 @@ namespace StaffScheduling.Data.Models
         [ForeignKey(nameof(CompanyId))]
         public virtual Company Company { get; set; } = null!;
 
+        //DeleteBehavior in EmployeeInfoConfiguration
         public virtual Department? Department { get; set; }
 
         public virtual ApplicationUser? User { get; set; }

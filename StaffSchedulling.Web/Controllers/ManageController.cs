@@ -11,10 +11,10 @@ namespace StaffScheduling.Web.Controllers
         [HttpGet("Manage/Company/{id?}")]
         public async Task<IActionResult> Company(string id)
         {
-            Guid companyId = Guid.Empty;
+            Guid companyGuid = Guid.Empty;
 
             //Check for non-valid string or guid
-            if (IsGuidValid(id, ref companyId) == false)
+            if (IsGuidValid(id, ref companyGuid) == false)
             {
                 return RedirectToAction("Index", "Dashboard");
             }
@@ -22,15 +22,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail() ?? String.Empty;
 
-            //Get company owner email and at the same time check if company id is wrong
-            string companyOwnerEmail = await _companyService.GetCompanyOwnerEmailFromIdAsync(companyId) ?? String.Empty;
-
-            if (String.IsNullOrEmpty(companyOwnerEmail))
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-
-            PermissionRole role = await _employeeInfoService.GetRoleOfEmployeeInCompanyAsync(companyId, companyOwnerEmail, userEmail);
+            PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
             //Check for access permission
             if (role < PermissionRole.Editor)
@@ -42,7 +34,7 @@ namespace StaffScheduling.Web.Controllers
             bool canUserEdit = role >= PermissionRole.Manager ? true : false; //Check for edit permission
             bool canUserDelete = role == PermissionRole.Owner ? true : false; //Check for delete permission
 
-            var model = await _companyService.GetCompanyFromIdAsync(companyId, canUserEdit, canUserDelete);
+            var model = await _companyService.GetCompanyFromIdAsync(companyGuid, canUserEdit, canUserDelete);
 
             //Check if entity exists
             if (model == null)

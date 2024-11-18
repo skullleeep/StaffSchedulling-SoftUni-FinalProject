@@ -4,6 +4,7 @@ using StaffScheduling.Common;
 using StaffScheduling.Web.Models.InputModels.Company;
 using StaffScheduling.Web.Models.ViewModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
+using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Web.Controllers
 {
@@ -43,19 +44,14 @@ namespace StaffScheduling.Web.Controllers
                 return View(model);
             }
 
-            //Get company owner email and at the same time check if company id is wrong
-            string companyOwnerEmail = await _companyService.GetCompanyOwnerEmailFromIdAsync(model.Id) ?? String.Empty;
+            //Get user mail
+            string userEmail = GetCurrentUserEmail() ?? String.Empty;
 
-            if (String.IsNullOrEmpty(companyOwnerEmail))
-            {
-                ModelState.AddModelError(String.Empty, "Couldn't find company!");
-                return View(model);
-            }
-
-            string currentUserId = GetCurrentUserId() ?? String.Empty;
+            //Get user email
+            string userId = GetCurrentUserId() ?? String.Empty;
 
             //Join company
-            StatusReport status = await _employeeInfoService.JoinCompanyWithIdAsync(model.Id, companyOwnerEmail, currentUserId);
+            StatusReport status = await _employeeInfoService.JoinCompanyWithIdAsync(model.Id, userId, userEmail);
 
             //Check for errors
             if (status.Ok == false)
@@ -96,6 +92,38 @@ namespace StaffScheduling.Web.Controllers
             {
                 ModelState.AddModelError(String.Empty, status.Message);
                 return View(model);
+            }
+
+            return RedirectToAction("Index", "Dashboard");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            Guid companyGuid = Guid.Empty;
+
+            //Check for non-valid string or guid
+            if (IsGuidValid(id, ref companyGuid) == false)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            //Get user email
+            string userEmail = GetCurrentUserEmail() ?? String.Empty;
+
+            PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
+
+            //Check for access permission
+            if (role < PermissionRole.Owner)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            StatusReport status = await _companyService.DeleteCompanyAsync(companyGuid);
+            if (status.Ok == false)
+            {
+                TempData["DeleteError"] = status.Message;
+                return RedirectToAction("Company", "Manage", new { id = id });
             }
 
             return RedirectToAction("Index", "Dashboard");

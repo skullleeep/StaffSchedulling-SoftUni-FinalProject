@@ -1,9 +1,14 @@
 ﻿@using StaffScheduling.Web.Models.ViewModels.Company;
+@using static StaffScheduling.Common.ApplicationConstants;
 @model CompanyManageViewModel
 
 @{
     ViewData["Title"] = "Manage Company";
+
+    string inviteLink = String.Format(InviteLinkEmptyFormat, Context.Request.Scheme, Context.Request.Host) + Model.Invite.ToString();
 }
+
+<partial name="_ConfirmationModal">
 
 <div class="container mt-5">
     <div class="card shadow-lg">
@@ -19,18 +24,22 @@
                         <span class="text-muted">Company Name:</span> <strong>@Model.Name</strong>
                     </li>
                     <li class="list-group-item">
-                        <span class="text-muted">Maximum Vacation Days Per Year (For each employee):</span> <strong>@Model.MaxVacationDaysPerYear<strong>
+                        <span class="text-muted">Maximum Vacation Days Per Year (For each employee):</span> <strong>@Model.MaxVacationDaysPerYear</strong>
                     </li>
                 </ul>
-                @if (Model.UserCanEdit)
-                {
-                    <div class="text-center mt-4">
+                <div class="text-center mt-4">
+                    <input type="hidden" id="inviteCode_@Model.Id" value="@inviteLink" />
+                    <button id="copyBtn_@Model.Id" onclick="copyInviteCode('@Model.Id')" class="btn btn-link">
+                        <i class="bi bi-copy"></i> <span>Copy Invite Link</span>
+                    </button>
+                    @if (Model.UserCanEdit)
+                    {
                         <a asp-controller="Company" asp-action="Edit" asp-route-id="@Model.Id"
                         class="btn btn-outline-dark btn-lg px-5 py-3">
                             Edit Company Details
                         </a>
-                    </div>
-                }
+                    }
+                </div>
             </div>
 
             <hr class="my-5" />
@@ -64,13 +73,37 @@
             @if (Model.UserCanDelete)
             {
                 <div class="text-center mt-5">
-                    <form asp-controller="Manage" asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this company?');">
-                    <button type="submit" class="btn btn-danger btn-lg px-5 py-3">
-                        Delete Company
-                    </button>
-                </form>
-            </div>
+                    <div class="text-danger" role="alert">
+                        @if(String.IsNullOrEmpty(TempData["DeleteError"] as String) == false){
+                            <p>@TempData["DeleteError"]</p>
+                        }
+                    </div>
+                    <form id="deleteForm" asp-controller="Company" asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirmDelete(event, '@(Model.Name)')">
+                        <button type="submit" class="btn btn-danger btn-lg px-5 py-3">
+                            Delete Company
+                        </button>
+                    </form>
+                </div>
             }
         </div>
     </div>
 </div>
+
+    <script src="~/js/confirmation-modal.js"></script>
+    <script>
+        function confirmDelete(event, companyName) {
+            // Prevent the form from submitting immediately
+            event.preventDefault();
+
+            // Show the confirmation modal
+            showConfirmationModal(
+                `Are you sure you want to delete company '${companyName}'?`,
+                () => event.target.submit(), // Resubmit the form upon confirmation
+                "btn-danger",
+                "Delete"
+            );
+
+            // Return false to prevent immediate submission
+            return false;
+        }
+    </script>

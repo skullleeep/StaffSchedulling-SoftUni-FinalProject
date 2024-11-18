@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Web.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Web.Models", "StaffSchedulling.Web.Models\StaffScheduling.Web.Models.csproj", "{915D1B9C-5058-4CD5-8444-3663D243DC5C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{94DC5911-5313-4F09-A5BA-6181A43366CF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

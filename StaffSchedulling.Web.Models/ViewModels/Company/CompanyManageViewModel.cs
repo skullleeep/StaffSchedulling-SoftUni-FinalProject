@@ -16,6 +16,9 @@ namespace StaffScheduling.Web.Models.ViewModels.Company
         public string Name { get; set; } = null!;
 
         [Required]
+        public Guid Invite { get; set; }
+
+        [Required]
         [Range(MaxVacationDaysPerYearMinValue, MaxVacationDaysPerYearMaxValue, ErrorMessage = MaxVacationDaysPerYearError)]
         public int MaxVacationDaysPerYear { get; set; } = MaxVacationDaysPerYearDefaultValue;
 

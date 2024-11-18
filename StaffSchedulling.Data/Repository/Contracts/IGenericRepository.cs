@@ -33,9 +33,5 @@ namespace StaffScheduling.Data.Repository.Contracts
         Task<bool> DeleteAsync(TId id);
 
         bool DeleteRange(TType[] items);
-
-        int Save();
-
-        Task<int> SaveAsync();
     }
 }

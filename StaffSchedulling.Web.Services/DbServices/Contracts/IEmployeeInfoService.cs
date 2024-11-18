@@ -5,8 +5,8 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
 {
     public interface IEmployeeInfoService
     {
-        public Task<StatusReport> JoinCompanyWithIdAsync(Guid companyId, string companyOwnerEmail, string userId);
+        public Task<StatusReport> JoinCompanyWithIdAsync(Guid companyId, string userId, string userEmail);
 
-        public Task<PermissionRole> GetRoleOfEmployeeInCompanyAsync(Guid companyId, string companyOwnerEmail, string userEmail);
+        public Task<PermissionRole> GetUserPermissionInCompanyAsync(Guid companyId, string userEmail);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StaffScheduling.Common;
-using StaffScheduling.Data.Models;
-using StaffScheduling.Data.Repository.Contracts;
+using StaffScheduling.Data.UnitOfWork.Contracts;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
 using static StaffScheduling.Common.ApplicationConstants;
@@ -11,18 +10,30 @@ using static StaffScheduling.Common.ServiceErrorMessages.EmployeeInfoService;
 
 namespace StaffScheduling.Web.Services.DbServices
 {
-    public class EmployeeInfoService(IGuidRepository<EmployeeInfo> _employeeInfoRepo, ApplicationUserManager _userManager) : IEmployeeInfoService
+    public class EmployeeInfoService(IUnitOfWork _unitOfWork, ApplicationUserManager _userManager) : IEmployeeInfoService
     {
-        public async Task<StatusReport> JoinCompanyWithIdAsync(Guid companyId, string companyOwnerEmail, string userId)
+        public async Task<StatusReport> JoinCompanyWithIdAsync(Guid companyId, string userId, string userEmail)
         {
-
-            var userEmail = await _userManager.GetUserEmailFromIdAsync(userId);
-
-            //Check for wrong userId
-            if (String.IsNullOrEmpty(userEmail))
+            //Check if userId is valid
+            if (string.IsNullOrWhiteSpace(userId))
             {
-                return new StatusReport { Ok = false, Message = CouldNotFindUserEmail };
+                return new StatusReport { Ok = false, Message = CouldNotFindUser };
             }
+
+            var entityCompany = await _unitOfWork
+                            .Companies
+                            .All()
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(c => c.Id == companyId);
+
+            //Check if company with id exists
+            if (entityCompany == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindCompany };
+            }
+
+            //Get company owner's email
+            string companyOwnerEmail = await _userManager.GetUserEmailFromIdAsync(entityCompany.OwnerId);
 
             //Check if user trying to join is the company's owner
             if (companyOwnerEmail == userEmail)
@@ -30,17 +41,21 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = false, Message = OwnerCouldNotHisJoinCompany };
             }
 
-            int joinedCompaniesCount = await _employeeInfoRepo
+            int joinedCompaniesCount = await _unitOfWork
+                .EmployeesInfo
                 .All()
                 .Where(e => e.Email == userEmail && e.HasJoined == true)
                 .AsNoTracking()
                 .CountAsync();
+
+            //Check if user has hit joined companies limit
             if (joinedCompaniesCount >= UserJoinedCompaniesLimit)
             {
-                return new StatusReport { Ok = false, Message = String.Format(JoinedCompaniesLimitHitFormat, UserJoinedCompaniesLimit) };
+                return new StatusReport { Ok = false, Message = String.Format(JoinedCompaniesLimitHitFormat, joinedCompaniesCount) };
             }
 
-            var employeeInfo = await _employeeInfoRepo
+            var employeeInfo = await _unitOfWork
+                .EmployeesInfo
                 .All()
                 .Where(e => e.CompanyId == companyId && e.Email == userEmail)
                 .FirstOrDefaultAsync();
@@ -61,7 +76,7 @@ namespace StaffScheduling.Web.Services.DbServices
             {
                 employeeInfo.HasJoined = true;
                 employeeInfo.UserId = userId;
-                await _employeeInfoRepo.SaveAsync();
+                await _unitOfWork.SaveChangesAsync();
 
                 return new StatusReport { Ok = true };
             }
@@ -71,16 +86,31 @@ namespace StaffScheduling.Web.Services.DbServices
             }
         }
 
-        public async Task<PermissionRole> GetRoleOfEmployeeInCompanyAsync(Guid companyId, string companyOwnerEmail, string userEmail)
+        public async Task<PermissionRole> GetUserPermissionInCompanyAsync(Guid companyId, string userEmail)
         {
+            var entityCompany = await _unitOfWork
+                .Companies
+                .All()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == companyId);
+
+            //Check if company with id exists
+            if (entityCompany == null)
+            {
+                return PermissionRole.None;
+            }
+
+            string companyOwnerEmail = await _userManager.GetUserEmailFromIdAsync(entityCompany.OwnerId);
+
             if (userEmail == companyOwnerEmail)
             {
                 return PermissionRole.Owner;
             }
 
-            var entity = await _employeeInfoRepo
+            var entity = await _unitOfWork
+                .EmployeesInfo
                 .All()
-                .Where(e => e.Email == userEmail && e.CompanyId == companyId)
+                .Where(e => e.HasJoined == true && e.Email == userEmail && e.CompanyId == companyId)
                 .FirstOrDefaultAsync();
 
             if (entity == null)

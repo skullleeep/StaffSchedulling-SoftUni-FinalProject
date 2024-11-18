@@ -8,10 +8,6 @@
 
     string inviteLinkBase = String.Format(InviteLinkEmptyFormat, Context.Request.Scheme, Context.Request.Host);
     string sortFilter = ViewData["SortFilter"]?.ToString() ?? "NameAsc";
-
-    //Used so that every copyInviteLink element is unique
-    //I don't use the company's Id for security as I don't want it to be exposed unnecessarily
-    int globalCompanyCount = 0;
 }
 
 <h1>Dashboard</h1>
@@ -44,19 +40,18 @@
                                                 ))
                         {
                             string inviteLink = inviteLinkBase + company.Invite.ToString();
-                            globalCompanyCount += 1;
 
                             <div class="col h-100" style="text-align: center;">
                             <div class="card shadow bg-light mb-3" style="max-width: 18rem;">
                                     <div class="card-header" style="font-weight: 400;"><b>@company.Name</b></div>
                                     <div class="card-body">
-                                    <input type="hidden" id="inviteCode_@globalCompanyCount" value="@inviteLink" />
+                                    <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
                                     <a asp-controller="Manage" asp-action="Company" asp-route-id="@company.Id" class="btn btn-outline-dark">
                                         <i class="bi bi-pencil-square"></i> Manage Company
                                     </a>
-                                    <button id="copyBtn_@globalCompanyCount" onclick="copyInviteCode('@globalCompanyCount')" class="btn btn-link">
+                                    <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link">
                                             <i class="bi bi-copy"></i> <span>Copy Invite Link</span>
-                                        </button>
+                                    </button>
                                     </div>
                                 </div>
                             </div>
@@ -99,13 +94,12 @@
                                                     ))
                     {
                             string inviteLink = inviteLinkBase + company.Invite.ToString();
-                            globalCompanyCount += 1;
 
                             <div class="col h-100" style="text-align: center;">
                             <div class="card shadow bg-light mb-3" style="max-width: 18rem;">
                                 <div class="card-header" style="font-weight: 400;"><b>@company.Name</b></div>
                                     <div class="card-body">
-                                    <input type="hidden" id="inviteCode_@globalCompanyCount" value="@inviteLink" />
+                                    <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
                                     <a href="#" class="btn btn-outline-dark">
                                         <i class="bi bi-calendar4-week"></i> Manage Schedule
                                     </a>
@@ -116,7 +110,7 @@
                                             <i class="bi bi-pencil-square"></i> Manage Company&nbsp;
                                         </a>
                                     }
-                                    <button id="copyBtn_@globalCompanyCount" onclick="copyInviteCode('@globalCompanyCount')" class="btn btn-link"><i class="bi bi-copy"></i> <span>Copy Invite Link</span></button>
+                                    <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link"><i class="bi bi-copy"></i> <span>Copy Invite Link</span></button>
                                     </div>
                                 </div>
                             </div>

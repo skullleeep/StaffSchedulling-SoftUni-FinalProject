@@ -114,14 +114,14 @@ namespace StaffScheduling.Data.Repository
             return await _dbSet.FindAsync(id);
         }
 
-        public int Save()
-        {
-            return _dbContext.SaveChanges();
-        }
+        /*        public int Save()
+                {
+                    return _dbContext.SaveChanges();
+                }
 
-        public async Task<int> SaveAsync()
-        {
-            return await _dbContext.SaveChangesAsync();
-        }
+                public async Task<int> SaveAsync()
+                {
+                    return await _dbContext.SaveChangesAsync();
+                }*/
     }
 }
