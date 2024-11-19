@@ -13,8 +13,8 @@
         {
             None = 0,
             Visitor = 1,
-            Editor = 2,
-            Manager = 3,
+            Manager = 2,
+            Editor = 3,
             Owner = 4
         }
 
@@ -22,8 +22,8 @@
         public static readonly Dictionary<EmployeeRole, PermissionRole> RoleMapping = new()
         {
             { EmployeeRole.Employee, PermissionRole.Visitor },
-            { EmployeeRole.Supervisor, PermissionRole.Editor },
-            { EmployeeRole.Admin, PermissionRole.Manager }
+            { EmployeeRole.Supervisor, PermissionRole.Manager },
+            { EmployeeRole.Admin, PermissionRole.Editor }
         };
     }
 }

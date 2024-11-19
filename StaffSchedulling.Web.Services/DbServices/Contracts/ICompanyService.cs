@@ -8,6 +8,8 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
     {
         public Task<StatusReport> CreateCompanyAsync(CompanyCreateInputModel model, string userId);
 
+        public Task<StatusReport> EditCompanyAsync(CompanyEditInputModel model, string userId);
+
         public Task<StatusReport> DeleteCompanyAsync(Guid id);
 
         public Task<CompanyJoinViewModel?> GetCompanyFromInviteLinkAsync(Guid invite);
@@ -16,6 +18,6 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
 
         public Task<CompanyManageViewModel?> GetCompanyFromIdAsync(Guid id, bool UserCanEdit, bool UserCanDelete);
 
-        public Task<string?> GetCompanyOwnerEmailFromIdAsync(Guid id);
+        public Task<CompanyEditInputModel?> GetCompanyEditInputModelAsync(Guid id);
     }
 }

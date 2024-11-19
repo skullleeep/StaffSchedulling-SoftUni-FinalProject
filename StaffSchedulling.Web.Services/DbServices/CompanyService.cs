@@ -61,6 +61,47 @@ namespace StaffScheduling.Web.Services.DbServices
             return new StatusReport() { Ok = true };
         }
 
+        public async Task<StatusReport> EditCompanyAsync(CompanyEditInputModel model, string userId)
+        {
+            var entityFound = await _unitOfWork
+                .Companies
+                .FirstOrDefaultAsync(c => c.OwnerId == userId && c.Name == model.Name);
+
+            //Check if user already has a company with same name
+            if (entityFound != null)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(CanNotEditCompanyWithSameNameFormat, model.Name) };
+            }
+
+            var entity = await _unitOfWork
+                .Companies
+                .FirstOrDefaultAsync(c => c.Id == model.Id);
+
+            //Check if company with id exists
+            if (entity == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindCompany };
+            }
+
+            try
+            {
+                entity.Name = model.Name;
+                entity.MaxVacationDaysPerYear = model.MaxVacationDaysPerYear;
+
+                _unitOfWork
+                    .Companies
+                    .Update(entity);
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
+            }
+
+            return new StatusReport { Ok = true };
+        }
+
         public async Task<StatusReport> DeleteCompanyAsync(Guid id)
         {
             var entityCompany = await _unitOfWork
@@ -147,7 +188,7 @@ namespace StaffScheduling.Web.Services.DbServices
                 //Get EmployeeRoles which can have >= PermissionRole that is needed to manage
                 //Doing this because RoleMapping[EmployeeRole] can't be translated into SQL from entity
                 List<EmployeeRole> rolesWithAccess = RoleMapping
-                    .Where(rm => rm.Value >= PermissionRole.Editor)
+                    .Where(rm => rm.Value >= PermissionRole.Manager)
                     .Select(rm => rm.Key)
                     .ToList();
 
@@ -201,21 +242,26 @@ namespace StaffScheduling.Web.Services.DbServices
             };
         }
 
-        public async Task<string?> GetCompanyOwnerEmailFromIdAsync(Guid id)
+        public async Task<CompanyEditInputModel?> GetCompanyEditInputModelAsync(Guid id)
         {
             var entity = await _unitOfWork
                 .Companies
                 .All()
+                .Where(c => c.Id == id)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync();
+
             if (entity == null)
             {
                 return null;
             }
 
-            string ownerEmail = await _userManager.GetUserEmailFromIdAsync(entity.OwnerId);
-
-            return ownerEmail;
+            return new CompanyEditInputModel
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                MaxVacationDaysPerYear = entity.MaxVacationDaysPerYear
+            };
         }
     }
 }

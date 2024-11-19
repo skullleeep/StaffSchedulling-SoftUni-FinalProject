@@ -1,14 +1,14 @@
 ﻿@using StaffScheduling.Web.Models.InputModels.Company;
-@model CompanyCreateInputModel
+@model CompanyEditInputModel
 
 @{
-    ViewData["Title"] = "Create Company";
+    ViewData["Title"] = "Edit Company";
 }
 
 <div class="container mt-5 d-flex justify-content-center">
     <div class="card shadow-lg" style="max-width: 800px; width: 100%;">
         <div class="card-body p-5">
-            <h1 class="card-title text-center mb-4 display-5">Create Company</h1>
+            <h1 class="card-title text-center mb-4 display-5">Edit Company</h1>
             <hr class="mb-5" />
             <form id="createForm" method="post">
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
@@ -28,8 +28,8 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button id="registerSubmit" type="submit" class="btn btn-dark btn-lg w-100 py-3">
-                    Create
+                <button type="submit" class="btn btn-dark btn-lg w-100 py-3">
+                    Save Changes
                 </button>
             </form>
         </div>

@@ -6,18 +6,18 @@ namespace StaffScheduling.Data.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly IGuidRepository<Company> _companies;
-        private readonly IGuidRepository<Department> _departments;
-        private readonly IGuidRepository<EmployeeInfo> _employeesInfo;
-        private readonly IGuidRepository<Vacation> _vacations;
+        private readonly IGenericRepository<Company, Guid> _companies;
+        private readonly IGenericRepository<Department, Guid> _departments;
+        private readonly IGenericRepository<EmployeeInfo, Guid> _employeesInfo;
+        private readonly IGenericRepository<Vacation, Guid> _vacations;
         private readonly ApplicationDbContext _context;
 
         // Inject repositories into the constructor
         public UnitOfWork(
-            IGuidRepository<Company> companies,
-            IGuidRepository<Department> departments,
-            IGuidRepository<EmployeeInfo> employeesInfo,
-            IGuidRepository<Vacation> vacations,
+            IGenericRepository<Company, Guid> companies,
+            IGenericRepository<Department, Guid> departments,
+            IGenericRepository<EmployeeInfo, Guid> employeesInfo,
+            IGenericRepository<Vacation, Guid> vacations,
             ApplicationDbContext context)
         {
             _companies = companies;
@@ -27,10 +27,10 @@ namespace StaffScheduling.Data.UnitOfWork
             _context = context;
         }
 
-        public IGuidRepository<Company> Companies => _companies;
-        public IGuidRepository<Department> Departments => _departments;
-        public IGuidRepository<EmployeeInfo> EmployeesInfo => _employeesInfo;
-        public IGuidRepository<Vacation> Vacations => _vacations;
+        public IGenericRepository<Company, Guid> Companies => _companies;
+        public IGenericRepository<Department, Guid> Departments => _departments;
+        public IGenericRepository<EmployeeInfo, Guid> EmployeesInfo => _employeesInfo;
+        public IGenericRepository<Vacation, Guid> Vacations => _vacations;
 
         public async Task<int> SaveChangesAsync()
         {

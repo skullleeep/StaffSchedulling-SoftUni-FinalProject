@@ -5,14 +5,14 @@ namespace StaffScheduling.Web.Controllers
 {
     public abstract class BaseController() : Controller
     {
-        protected string? GetCurrentUserId()
+        protected string GetCurrentUserId()
         {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         }
 
-        protected string? GetCurrentUserEmail()
+        protected string GetCurrentUserEmail()
         {
-            return User.FindFirstValue(ClaimTypes.Email);
+            return User.FindFirstValue(ClaimTypes.Email)!;
         }
 
         protected bool IsGuidValid(string? id, ref Guid parsedGuid)

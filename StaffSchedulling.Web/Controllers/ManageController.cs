@@ -20,18 +20,18 @@ namespace StaffScheduling.Web.Controllers
             }
 
             //Get user email
-            string userEmail = GetCurrentUserEmail() ?? String.Empty;
+            string userEmail = GetCurrentUserEmail();
 
             PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
             //Check for access permission
-            if (role < PermissionRole.Editor)
+            if (role < PermissionRole.Manager)
             {
                 return RedirectToAction("Index", "Dashboard");
             }
 
 
-            bool canUserEdit = role >= PermissionRole.Manager ? true : false; //Check for edit permission
+            bool canUserEdit = role >= PermissionRole.Editor ? true : false; //Check for edit permission
             bool canUserDelete = role == PermissionRole.Owner ? true : false; //Check for delete permission
 
             var model = await _companyService.GetCompanyFromIdAsync(companyGuid, canUserEdit, canUserDelete);

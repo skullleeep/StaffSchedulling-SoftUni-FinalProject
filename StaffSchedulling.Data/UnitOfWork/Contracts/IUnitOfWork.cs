@@ -5,10 +5,10 @@ namespace StaffScheduling.Data.UnitOfWork.Contracts
 {
     public interface IUnitOfWork : IDisposable
     {
-        IGuidRepository<Company> Companies { get; }
-        IGuidRepository<Department> Departments { get; }
-        IGuidRepository<EmployeeInfo> EmployeesInfo { get; }
-        IGuidRepository<Vacation> Vacations { get; }
+        IGenericRepository<Company, Guid> Companies { get; }
+        IGenericRepository<Department, Guid> Departments { get; }
+        IGenericRepository<EmployeeInfo, Guid> EmployeesInfo { get; }
+        IGenericRepository<Vacation, Guid> Vacations { get; }
         Task<int> SaveChangesAsync();
     }
 

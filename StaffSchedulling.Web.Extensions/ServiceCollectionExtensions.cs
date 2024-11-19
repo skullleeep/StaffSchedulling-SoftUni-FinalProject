@@ -15,17 +15,17 @@ namespace StaffScheduling.Web.Extensions
         {
             services
                 //Company
-                .AddScoped<IGuidRepository<Company>,
-                            GuidRepository<Company>>()
+                .AddScoped<IGenericRepository<Company, Guid>,
+                            GenericRepository<Company, Guid>>()
                 //Department
-                .AddScoped<IGuidRepository<Department>,
-                            GuidRepository<Department>>()
+                .AddScoped<IGenericRepository<Department, Guid>,
+                            GenericRepository<Department, Guid>>()
                 //EmployeeInfo
-                .AddScoped<IGuidRepository<EmployeeInfo>,
-                            GuidRepository<EmployeeInfo>>()
+                .AddScoped<IGenericRepository<EmployeeInfo, Guid>,
+                            GenericRepository<EmployeeInfo, Guid>>()
                 //Vacation
-                .AddScoped<IGuidRepository<Vacation>,
-                            GuidRepository<Vacation>>();
+                .AddScoped<IGenericRepository<Vacation, Guid>,
+                            GenericRepository<Vacation, Guid>>();
         }
 
         public static void RegisterUnitOfWork(this IServiceCollection services)

@@ -29,14 +29,14 @@
                 </ul>
                 <div class="text-center mt-4">
                     <input type="hidden" id="inviteCode_@Model.Id" value="@inviteLink" />
-                    <button id="copyBtn_@Model.Id" onclick="copyInviteCode('@Model.Id')" class="btn btn-link">
+                        <button id="copyBtn_@Model.Id" onclick="copyInviteCode('@Model.Id')" class="btn btn-link btn-lg px-5 py-3">
                         <i class="bi bi-copy"></i> <span>Copy Invite Link</span>
                     </button>
                     @if (Model.UserCanEdit)
                     {
                         <a asp-controller="Company" asp-action="Edit" asp-route-id="@Model.Id"
                         class="btn btn-outline-dark btn-lg px-5 py-3">
-                            Edit Company Details
+                                <i class="bi bi-pencil"></i> Edit Company Details
                         </a>
                     }
                 </div>
@@ -49,7 +49,7 @@
                 <div class="col-md-4 mb-3">
                     <a asp-controller="Manage" asp-action="Employees" asp-route-id="@Model.Id"
                        class="btn btn-dark btn-lg w-100 py-4">
-                        Manage Employees
+                        <i class="bi bi-person-fill"></i> Manage Employees
                     </a>
                 </div>
                 @if (Model.UserCanEdit)
@@ -57,14 +57,14 @@
                     <div class="col-md-4 mb-3">
                         <a asp-controller="Manage" asp-action="Departments" asp-route-id="@Model.Id"
                         class="btn btn-dark btn-lg w-100 py-4">
-                            Manage Departments
+                                <i class="bi bi-building-fill"></i> Manage Departments
                         </a>
                     </div>
                 }
                 <div class="col-md-4 mb-3">
                     <a asp-controller="Manage" asp-action="Vacations" asp-route-id="@Model.Id"
                        class="btn btn-dark btn-lg w-100 py-4">
-                        Manage Vacations
+                            <i class="bi bi-suitcase2-fill"></i> Manage Vacations
                     </a>
                 </div>
             </div>
@@ -78,9 +78,10 @@
                             <p>@TempData["DeleteError"]</p>
                         }
                     </div>
-                    <form id="deleteForm" asp-controller="Company" asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirmDelete(event, '@(Model.Name)')">
-                        <button type="submit" class="btn btn-danger btn-lg px-5 py-3">
-                            Delete Company
+                    <form id="deleteForm" asp-controller="Company" asp-action="Delete" method="post">@*  onsubmit="return confirmDelete(event, '@(Model.Name)')"> *@
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="button" class="btn btn-danger btn-lg px-5 py-3" onclick="confirmDelete('@(Model.Name)')">
+                                <i class="bi bi-trash3-fill"></i> Delete Company
                         </button>
                     </form>
                 </div>
@@ -91,19 +92,13 @@
 
     <script src="~/js/confirmation-modal.js"></script>
     <script>
-        function confirmDelete(event, companyName) {
-            // Prevent the form from submitting immediately
-            event.preventDefault();
-
+        function confirmDelete(companyName) {
             // Show the confirmation modal
             showConfirmationModal(
                 `Are you sure you want to delete company '${companyName}'?`,
-                () => event.target.submit(), // Resubmit the form upon confirmation
+                () => document.getElementById('deleteForm').submit(), // Resubmit the form upon confirmation
                 "btn-danger",
                 "Delete"
             );
-
-            // Return false to prevent immediate submission
-            return false;
         }
     </script>

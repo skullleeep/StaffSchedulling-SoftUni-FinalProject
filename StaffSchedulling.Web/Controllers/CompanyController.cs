@@ -45,10 +45,10 @@ namespace StaffScheduling.Web.Controllers
             }
 
             //Get user mail
-            string userEmail = GetCurrentUserEmail() ?? String.Empty;
+            string userEmail = GetCurrentUserEmail();
 
             //Get user email
-            string userId = GetCurrentUserId() ?? String.Empty;
+            string userId = GetCurrentUserId();
 
             //Join company
             StatusReport status = await _employeeInfoService.JoinCompanyWithIdAsync(model.Id, userId, userEmail);
@@ -82,7 +82,7 @@ namespace StaffScheduling.Web.Controllers
                 return View(model);
             }
 
-            string userId = GetCurrentUserId() ?? String.Empty;
+            string userId = GetCurrentUserId();
 
             //Create company
             StatusReport status = await _companyService.CreateCompanyAsync(model, userId);
@@ -97,6 +97,71 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Index", "Dashboard");
         }
 
+        //Get request when trying to edit a company
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            Guid companyGuid = Guid.Empty;
+
+            //Check for non-valid string or guid
+            if (IsGuidValid(id, ref companyGuid) == false)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            //Get user email
+            string userEmail = GetCurrentUserEmail();
+
+            PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
+
+            //Check for access permission
+            if (role < PermissionRole.Editor)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            var model = await _companyService.GetCompanyEditInputModelAsync(companyGuid);
+
+            return View(model);
+        }
+
+        //Post request when trying to edit a company
+        [HttpPost]
+        public async Task<IActionResult> Edit(CompanyEditInputModel model, string id)
+        {
+            //Check for model errors
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            //Get user email
+            string userEmail = GetCurrentUserEmail();
+
+            PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.Id, userEmail);
+
+            //Check for access permission
+            if (role < PermissionRole.Editor)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            string userId = GetCurrentUserId();
+
+            //Edit company
+            StatusReport status = await _companyService.EditCompanyAsync(model, userId);
+
+            //Check for errors
+            if (status.Ok == false)
+            {
+                ModelState.AddModelError(String.Empty, status.Message);
+                return View(model);
+            }
+
+            return RedirectToAction("Index", "Dashboard");
+        }
+
+        //Post request when trying to delete a company
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
@@ -109,7 +174,7 @@ namespace StaffScheduling.Web.Controllers
             }
 
             //Get user email
-            string userEmail = GetCurrentUserEmail() ?? String.Empty;
+            string userEmail = GetCurrentUserEmail();
 
             PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
@@ -119,7 +184,10 @@ namespace StaffScheduling.Web.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
 
+            //Delete company
             StatusReport status = await _companyService.DeleteCompanyAsync(companyGuid);
+
+            //Check for errors
             if (status.Ok == false)
             {
                 TempData["DeleteError"] = status.Message;
