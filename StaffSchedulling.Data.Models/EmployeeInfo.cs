@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static StaffScheduling.Common.DataConstants.EmployeeInfo;
 using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Data.Models
 {
+    [Index(nameof(CompanyId), nameof(Email), IsUnique = true)]
     public class EmployeeInfo
     {
         [Key]
