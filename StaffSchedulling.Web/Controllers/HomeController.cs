@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using StaffScheduling.Web.Models;
+using StaffScheduling.Web.Models.ErrorModels;
 using System.Diagnostics;
 
 namespace StaffScheduling.Web.Controllers

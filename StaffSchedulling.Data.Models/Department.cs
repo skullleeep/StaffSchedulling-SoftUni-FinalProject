@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static StaffScheduling.Common.DataConstants.Department;
+using static StaffScheduling.Common.Constants.DataConstants.Department;
 
 namespace StaffScheduling.Data.Models
 {

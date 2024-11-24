@@ -7,10 +7,10 @@ using StaffScheduling.Web.Models.ViewModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using StaffScheduling.Web.Services.UserServices;
 using System.Data;
-using static StaffScheduling.Common.ApplicationConstants;
+using static StaffScheduling.Common.Constants.ApplicationConstants;
 using static StaffScheduling.Common.Enums.CustomRoles;
-using static StaffScheduling.Common.ServiceErrorMessages;
-using static StaffScheduling.Common.ServiceErrorMessages.CompanyService;
+using static StaffScheduling.Common.ErrorMessages.ServiceErrorMessages;
+using static StaffScheduling.Common.ErrorMessages.ServiceErrorMessages.CompanyService;
 
 namespace StaffScheduling.Web.Services.DbServices
 {
@@ -185,7 +185,7 @@ namespace StaffScheduling.Web.Services.DbServices
             var joinedCompanyIds = await _userManager.GetJoinedCompanyIdsFromUserEmailAsync(email);
             if (joinedCompanyIds != null)
             {
-                //Get EmployeeRoles which can have >= PermissionRole that is needed to manage
+                //Get EmployeeRole roles which can have >= PermissionRole that is needed to manage
                 //Doing this because RoleMapping[EmployeeRole] can't be translated into SQL from entity
                 List<EmployeeRole> rolesWithAccess = RoleMapping
                     .Where(rm => rm.Value >= PermissionRole.Manager)

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static StaffScheduling.Common.DataConstants.ApplicationUser;
-using static StaffScheduling.Common.DataErrorMessages.ApplicationUser;
+using static StaffScheduling.Common.Constants.DataConstants.ApplicationUser;
+using static StaffScheduling.Common.ErrorMessages.DataErrorMessages.ApplicationUser;
 
 namespace StaffScheduling.Web.Areas.Identity.InputModels
 {

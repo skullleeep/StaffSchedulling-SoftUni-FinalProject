@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using static StaffScheduling.Common.DataConstants.ApplicationUser;
+using static StaffScheduling.Common.Constants.DataConstants.ApplicationUser;
 
 namespace StaffScheduling.Data.Models
 {

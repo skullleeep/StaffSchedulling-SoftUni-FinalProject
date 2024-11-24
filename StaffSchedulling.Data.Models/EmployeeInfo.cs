@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static StaffScheduling.Common.DataConstants.EmployeeInfo;
+using static StaffScheduling.Common.Constants.DataConstants.EmployeeInfo;
 using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Data.Models
@@ -36,7 +36,6 @@ namespace StaffScheduling.Data.Models
         [ForeignKey(nameof(CompanyId))]
         public virtual Company Company { get; set; } = null!;
 
-        //DeleteBehavior in EmployeeInfoConfiguration
         public virtual Department? Department { get; set; }
 
         public virtual ApplicationUser? User { get; set; }

@@ -1,0 +1,227 @@
+﻿@using StaffScheduling.Common
+@using StaffScheduling.Common.Enums
+@using StaffScheduling.Web.Models.ViewModels.EmployeeInfo
+@model ManageEmployeesInfoViewModel
+
+@{
+    ViewData["Title"] = $"Manage Employees";
+}
+
+<div class="container mt-4">
+    <div class="row mb-3">
+        <!-- Header Section -->
+        <div class="col-md-8">
+            <h1 class="h3">Manage Employees</h1>
+        </div>
+        <!-- Back to Company Button -->
+        <div class="col-md-4 text-end">
+            <div class="col-md-12 text-end">
+                <a asp-controller="Manage" asp-action="Company" asp-route-id="@Model.CompanyId" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Company
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="row mb-4">
+        <form method="get" asp-action="Index" class="input-group">
+            <input type="text" asp-for="SearchQuery" class="form-control" placeholder="Search employees" value="@Model.SearchQuery" />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <!-- Employee Adding Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <!-- Add Employee Manually -->
+                <div class="col-md-8">
+                    <form asp-action="AddEmployee" method="post" class="row g-2">
+                        <div class="col-md-8">
+                            <input type="email" name="email" class="form-control" placeholder="Enter employee email" required />
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button type="submit" class="btn btn-success w-100">Add Employee</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Vertical Line -->
+                <div class="col-md-1 d-flex justify-content-center">
+                    <div style="height: 100%; padding-left: 10px; padding-right: 10px; padding-top:10px;">
+                        <h3>OR</h3>
+                    </div>
+                </div>
+
+                <!-- Upload Employees -->
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-info w-100">Upload Excel With Employees</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><input type="checkbox" id="selectAll" /></th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Has Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Employees != null && Model.Employees.Any())
+                        {
+                            foreach (var employee in Model.Employees)
+                            {
+                                <tr>
+                                    <td><input type="checkbox" class="select-employee" value="@employee.Id" /></td>
+                                    <td>@employee.Name</td>
+                                    <td>@employee.Email</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <select name="role" class="form-select form-select-sm w-auto">
+                                                <!-- Populate roles dynamically -->
+                                                @foreach (var role in Helper.EnumArray<CustomRoles.EmployeeRole>())
+                                                {
+                                                    if(role == employee.Role)
+                                                    {
+                                                        <option value="@((int)role)" selected>@role.ToString()</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@((int)role)">@role.ToString()</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <button class="btn btn-primary btn-sm ms-2">Change Role</button>
+                                        </div>
+                                    </td>
+                                    <td>@employee.Department</td>
+                                    <td>
+                                        @if (employee.HasJoined)
+                                        {
+                                            <span class="badge bg-success">Joined</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">Pending</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center">No employees found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Actions Section -->
+    <div class="card mb-4 mt-4">
+        <div class="card-body">
+            <div class="row">
+                <!-- Change Department Of Selected -->
+                @if (Model.Departments.Any())
+                {
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center gap-2 h-100">
+                            <select name="department" class="form-select w-100 h-100">
+                                <!-- Populate departments dynamically -->
+                                @foreach (var department in Model.Departments)
+                                {
+                                    <option value="@department.Id">@department.Name</option>
+                                }
+                            </select>
+                            <button class="btn btn-primary w-100 w-md-auto">Change Department Of Selected</button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center gap-2 h-100">
+                            <select name="department" class="form-select w-100 h-100">
+                                <option>No Departments Found</option>
+                            </select>
+                            <button disabled="disabled" class="btn btn-primary w-100 w-md-auto">Change Department Of Selected</button>
+                        </div>
+                    </div>
+                }
+
+                <!-- Vertical Line -->
+                <div class="col-md-1 d-flex justify-content-center">
+                    <div style="height: 100%; padding-left: 10px; padding-right: 10px; padding-top:10px;">
+                        <h3>OR</h3>
+                    </div>
+                </div>
+
+                <!-- Delete Selected -->
+                <div class="col-md-3">
+                    <button id="deleteSelected" class="btn btn-danger w-100">Delete Selected</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Pagination Section -->
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="?page=@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<script>
+    // Handle the "select all" functionality
+    document.getElementById("selectAll").addEventListener("change", function () {
+        const checkboxes = document.querySelectorAll(".employee-checkbox");
+        checkboxes.forEach((checkbox) => {
+            checkbox.checked = this.checked;
+        });
+    });
+
+    // Handle delete selected employees
+    document.getElementById("deleteSelectedBtn").addEventListener("click", function () {
+        const selectedIds = [];
+        const checkboxes = document.querySelectorAll(".employee-checkbox:checked");
+        checkboxes.forEach((checkbox) => {
+            selectedIds.push(checkbox.value);
+        });
+
+        if (selectedIds.length > 0) {
+            if (confirm("Are you sure you want to delete the selected employees?")) {
+                // You can submit the deletion via AJAX or form submission
+                document.getElementById("manageEmployeesForm").action = "/Employee/DeleteSelectedEmployees";
+                document.getElementById("manageEmployeesForm").submit(); // Submit the form with the selected employees
+            }
+        } else {
+            alert("Please select at least one employee.");
+        }
+    });
+</script>
+

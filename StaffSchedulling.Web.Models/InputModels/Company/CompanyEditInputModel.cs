@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static StaffScheduling.Common.DataConstants.Company;
-using static StaffScheduling.Common.DataErrorMessages.Company;
+using static StaffScheduling.Common.Constants.DataConstants.Company;
+using static StaffScheduling.Common.ErrorMessages.DataErrorMessages.Company;
 
 namespace StaffScheduling.Web.Models.InputModels.Company
 {

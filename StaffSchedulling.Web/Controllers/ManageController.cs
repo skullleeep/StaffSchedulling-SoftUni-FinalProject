@@ -44,5 +44,32 @@ namespace StaffScheduling.Web.Controllers
 
             return View(model);
         }
+
+        [HttpGet("Manage/Employees/{id?}")]
+        public async Task<IActionResult> Employees(string id)
+        {
+            Guid companyGuid = Guid.Empty;
+
+            //Check for non-valid string or guid
+            if (IsGuidValid(id, ref companyGuid) == false)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            //Get user email
+            string userEmail = GetCurrentUserEmail();
+
+            PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
+
+            //Check for access permission
+            if (role < PermissionRole.Editor)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            var model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(companyGuid, string.Empty);
+
+            return View(model);
+        }
     }
 }

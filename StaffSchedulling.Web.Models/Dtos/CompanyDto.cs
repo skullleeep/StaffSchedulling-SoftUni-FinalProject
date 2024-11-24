@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static StaffScheduling.Common.DataConstants.Company;
+using static StaffScheduling.Common.Constants.DataConstants.Company;
 
 namespace StaffScheduling.Web.Models.Dtos
 {

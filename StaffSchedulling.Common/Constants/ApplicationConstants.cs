@@ -1,4 +1,4 @@
-﻿namespace StaffScheduling.Common
+﻿namespace StaffScheduling.Common.Constants
 {
     public static class ApplicationConstants
     {

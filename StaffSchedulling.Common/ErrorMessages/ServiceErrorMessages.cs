@@ -1,4 +1,4 @@
-﻿namespace StaffScheduling.Common
+﻿namespace StaffScheduling.Common.ErrorMessages
 {
     public static class ServiceErrorMessages
     {

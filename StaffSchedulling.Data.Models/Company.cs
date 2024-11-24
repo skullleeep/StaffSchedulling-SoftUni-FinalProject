@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static StaffScheduling.Common.DataConstants.Company;
+using static StaffScheduling.Common.Constants.DataConstants.Company;
 
 namespace StaffScheduling.Data.Models
 {

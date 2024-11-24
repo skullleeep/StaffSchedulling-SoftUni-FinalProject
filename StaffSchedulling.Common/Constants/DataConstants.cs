@@ -1,4 +1,4 @@
-﻿namespace StaffScheduling.Common
+﻿namespace StaffScheduling.Common.Constants
 {
     public static class DataConstants
     {
@@ -35,9 +35,6 @@
         {
             public const int EmailMinLength = 5;
             public const int EmailMaxLength = 320;
-
-            public const int FullNameMinLength = 3;
-            public const int FullNameMaxLength = 128;
         }
     }
 }

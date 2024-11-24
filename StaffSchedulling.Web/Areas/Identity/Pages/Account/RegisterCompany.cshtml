@@ -1,4 +1,5 @@
 ﻿@page
+@using StaffScheduling.Common.Constants
 @model RegisterCompanyModel
 @{
     ViewData["Title"] = "Register - Owner";
@@ -41,7 +42,7 @@
             <span asp-validation-for="Input.CompanyName" class="text-danger"></span>
         </div>
         <div class="form-floating mb-3">
-            <input asp-for="Input.MaxVacationDaysPerYear" class="form-control" autocomplete="max-vaction-day-per-year" aria-required="true" placeholder="e.g 10" value="@StaffScheduling.Common.DataConstants.Company.MaxVacationDaysPerYearDefaultValue" />
+            <input asp-for="Input.MaxVacationDaysPerYear" class="form-control" autocomplete="max-vaction-day-per-year" aria-required="true" placeholder="e.g 10" value="@DataConstants.Company.MaxVacationDaysPerYearDefaultValue" />
             <label asp-for="Input.MaxVacationDaysPerYear"></label>
             <span asp-validation-for="Input.MaxVacationDaysPerYear" class="text-danger"></span>
         </div>
