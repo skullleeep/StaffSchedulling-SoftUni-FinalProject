@@ -10,5 +10,7 @@
 
         public const int UserJoinedCompaniesLimit = 20;
         public const int UserCreatedCompaniesLimit = 20;
+
+        public const int CompanyEmployeesLimit = 500;
     }
 }

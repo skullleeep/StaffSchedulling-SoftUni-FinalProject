@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StaffScheduling.Common.Enums.Filters;
+using StaffScheduling.Web.Models.ViewModels.EmployeeInfo;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using static StaffScheduling.Common.Enums.CustomRoles;
 
@@ -47,7 +48,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         [HttpGet("[controller]/[action]/{id?}")]
-        public async Task<IActionResult> Employees(string id, string? searchQuery, EmployeeSearchFilter? searchFilter)
+        public async Task<IActionResult> Employees(string id, string? searchQuery, EmployeeSearchFilter? searchFilter, int page = 1)
         {
             Guid companyGuid = Guid.Empty;
 
@@ -68,7 +69,8 @@ namespace StaffScheduling.Web.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
 
-            var model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(companyGuid, searchQuery, searchFilter);
+
+            ManageEmployeesInfoViewModel model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(companyGuid, searchQuery, searchFilter, page);
 
             return View(model);
         }

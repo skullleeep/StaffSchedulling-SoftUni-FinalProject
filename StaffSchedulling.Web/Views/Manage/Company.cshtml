@@ -90,15 +90,15 @@
     </div>
 </div>
 
-    <script src="~/js/confirmation-modal.js"></script>
-    <script>
-        function confirmDelete(companyName) {
-            // Show the confirmation modal
-            showConfirmationModal(
-                `Are you sure you want to delete company '${companyName}'?`,
-                () => document.getElementById('deleteForm').submit(), // Resubmit the form upon confirmation
-                "btn-danger",
-                "Delete"
-            );
-        }
-    </script>
+<script src="~/js/confirmation-modal.js"></script>
+<script>
+    function confirmDelete(companyName) {
+        // Show the confirmation modal
+        showConfirmationModal(
+            `Are you sure you want to delete company '${companyName}'?`,
+            () => document.getElementById('deleteForm').submit(), // Resubmit the form upon confirmation
+            "btn-danger",
+            "Delete"
+        );
+    }
+</script>

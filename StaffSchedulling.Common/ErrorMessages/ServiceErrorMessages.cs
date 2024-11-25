@@ -12,9 +12,10 @@
             public const string CouldNotJoinAlreadyJoinedCompany = "Couldn't join company because you have already joined!";
             public const string OwnerCouldNotHisJoinCompany = "You can't join the company because you are it's owner!";
 
-            public const string EmployeeWithEmailExistsFormat = "You can't add employee because one with such email ({0}) already already exists!";
             public const string JoinedCompaniesLimitHitFormat = "You can't join the company because you have already joined {0} companies! Leave some if you want to join new ones!";
             public const string CouldNotFindEmployeeInfoFormat = "Couldn't find employee with email ({0}) in company database. Tell the company's admin to add you into the company's employee database!";
+            public const string EmployeeWithEmailExistsFormat = "You can't add employee because one with such email ({0}) already already exists!";
+            public const string EmployeeLimitHitFormat = "You can't add more employees because you have hit the employee limit (Limit: {0})!";
         }
 
         public static class CompanyService

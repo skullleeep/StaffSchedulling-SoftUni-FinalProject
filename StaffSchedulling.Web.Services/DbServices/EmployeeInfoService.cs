@@ -105,10 +105,24 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = false, Message = CouldNotFindCompany };
             }
 
+            int employeeCount = await _unitOfWork
+                .EmployeesInfo
+                .All()
+                .AsNoTracking()
+                .Where(ef => ef.CompanyId == model.CompanyId)
+                .CountAsync();
+
+            //Check if employee limit has been hit
+            if (employeeCount >= CompanyEmployeesLimit)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(EmployeeLimitHitFormat, CompanyEmployeesLimit) };
+            }
+
             var entityFound = await _unitOfWork
                 .EmployeesInfo
                 .All()
                 .AsNoTracking()
+                .Where(ef => ef.CompanyId == model.CompanyId)
                 .FirstOrDefaultAsync(ef => ef.Email.ToLower() == model.Email.ToLower());
 
             //Check if employee with same email already exists
@@ -173,7 +187,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return RoleMapping[entity.Role];
         }
 
-        public async Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page = 1, int pageSize = 10)
+        public async Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page, int pageSize = 10)
         {
             //Search by Email by default
             if (searchFilter.HasValue == false)
@@ -223,7 +237,7 @@ namespace StaffScheduling.Web.Services.DbServices
             int totalPages = (int)Math.Ceiling(totalEmployees / (double)pageSize);
 
             List<EmployeeInfoViewModel> employeesInfo = await selectedEmployeesInfo
-                .OrderBy(e => e.Email)
+                .Skip((page - 1) * pageSize)
                 .Select(ef => new EmployeeInfoViewModel()
                 {
                     Id = ef.Id,
@@ -231,8 +245,12 @@ namespace StaffScheduling.Web.Services.DbServices
                     Email = ef.Email,
                     Department = ef.Department == null ? null : ef.Department.Name,
                     HasJoined = ef.HasJoined,
-                    Role = ef.Role
+                    Role = ef.Role,
                 })
+                .Take(pageSize)
+                .OrderByDescending(e => e.HasJoined) //Show joined first
+                .ThenBy(e => e.Name)
+                .ThenBy(e => e.Email)
                 .ToListAsync();
 
             //Get company departments

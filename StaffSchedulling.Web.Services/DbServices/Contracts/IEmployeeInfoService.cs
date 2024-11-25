@@ -14,6 +14,6 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
 
         public Task<PermissionRole> GetUserPermissionInCompanyAsync(Guid companyId, string userEmail);
 
-        public Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page = 1, int pageSize = 10);
+        public Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page, int pageSize = 10);
     }
 }

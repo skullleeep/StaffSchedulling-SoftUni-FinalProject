@@ -70,7 +70,7 @@
                     <partial name="_AddEmployeeManuallyForm" model="@new AddEmployeeInfoManuallyInputModel() { CompanyId = Model.CompanyId }" />
                 </div>
 
-                <!-- Vertical Line -->
+                <!-- OR -->
                 <div class="col-md-1 d-flex justify-content-center">
                     <div style="height: 100%; padding-left: 10px; padding-right: 10px; padding-top:10px;">
                         <h3>OR</h3>
@@ -107,7 +107,7 @@
                             foreach (var employee in Model.Employees)
                             {
                                 <tr>
-                                    <td><input type="checkbox" class="select-employee" value="@employee.Id" /></td>
+                                    <td><input type="checkbox" class="employee-checkbox" value="@employee.Id" /></td>
                                     <td>
                                         @if (!String.IsNullOrEmpty(employee.Name))
                                         {
@@ -208,7 +208,7 @@
                     </div>
                 }
 
-                <!-- Vertical Line -->
+                <!-- OR -->
                 <div class="col-md-1 d-flex justify-content-center">
                     <div style="height: 100%; padding-left: 10px; padding-right: 10px; padding-top:10px;">
                         <h3>OR</h3>
@@ -217,7 +217,7 @@
 
                 <!-- Delete Selected -->
                 <div class="col-md-3">
-                    <button id="deleteSelected" class="btn btn-danger w-100">Delete Selected</button>
+                    <button id="deleteSelectedBtn" class="btn btn-danger w-100">Delete Selected</button>
                 </div>
             </div>
         </div>
@@ -237,32 +237,8 @@
     </nav>
 </div>
 
-<script>
-    // Handle the "select all" functionality
-    document.getElementById("selectAll").addEventListener("change", function () {
-        const checkboxes = document.querySelectorAll(".employee-checkbox");
-        checkboxes.forEach((checkbox) => {
-            checkbox.checked = this.checked;
-        });
-    });
-
-    // Handle delete selected employees
-    document.getElementById("deleteSelectedBtn").addEventListener("click", function () {
-        const selectedIds = [];
-        const checkboxes = document.querySelectorAll(".employee-checkbox:checked");
-        checkboxes.forEach((checkbox) => {
-            selectedIds.push(checkbox.value);
-        });
-
-        if (selectedIds.length > 0) {
-            if (confirm("Are you sure you want to delete the selected employees?")) {
-                // You can submit the deletion via AJAX or form submission
-                document.getElementById("manageEmployeesForm").action = "/Employee/DeleteSelectedEmployees";
-                document.getElementById("manageEmployeesForm").submit(); // Submit the form with the selected employees
-            }
-        } else {
-            alert("Please select at least one employee.");
-        }
-    });
-</script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/manage-employees.js"></script>
+}
 
