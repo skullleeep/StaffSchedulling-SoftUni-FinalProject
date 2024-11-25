@@ -69,8 +69,13 @@ namespace StaffScheduling.Web.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
 
+            ManageEmployeesInfoViewModel? model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(companyGuid, searchQuery, searchFilter, page);
 
-            ManageEmployeesInfoViewModel model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(companyGuid, searchQuery, searchFilter, page);
+            //Check if entity exists
+            if (model == null)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
 
             return View(model);
         }

@@ -187,7 +187,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return RoleMapping[entity.Role];
         }
 
-        public async Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page, int pageSize = 10)
+        public async Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page)
         {
             //Search by Email by default
             if (searchFilter.HasValue == false)
@@ -234,10 +234,10 @@ namespace StaffScheduling.Web.Services.DbServices
 
             //Calculate total employees and pages
             int totalEmployees = selectedEmployeesInfo.Count();
-            int totalPages = (int)Math.Ceiling(totalEmployees / (double)pageSize);
+            int totalPages = (int)Math.Ceiling(totalEmployees / (double)ManageEmployeePageSize);
 
             List<EmployeeInfoViewModel> employeesInfo = await selectedEmployeesInfo
-                .Skip((page - 1) * pageSize)
+                .Skip((page - 1) * ManageEmployeePageSize)
                 .Select(ef => new EmployeeInfoViewModel()
                 {
                     Id = ef.Id,
@@ -247,7 +247,7 @@ namespace StaffScheduling.Web.Services.DbServices
                     HasJoined = ef.HasJoined,
                     Role = ef.Role,
                 })
-                .Take(pageSize)
+                .Take(ManageEmployeePageSize)
                 .OrderByDescending(e => e.HasJoined) //Show joined first
                 .ThenBy(e => e.Name)
                 .ThenBy(e => e.Email)
