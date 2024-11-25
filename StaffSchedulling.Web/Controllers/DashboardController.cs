@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StaffScheduling.Common.Enums.Filters;
 using StaffScheduling.Web.Services.DbServices.Contracts;
-using System.Security.Claims;
 
 namespace StaffScheduling.Web.Controllers
 {
@@ -11,14 +11,11 @@ namespace StaffScheduling.Web.Controllers
 
         //Get all companies - Owned and Joined
         [HttpGet]
-        public async Task<IActionResult> Index(string? sortFilter)
+        public async Task<IActionResult> Index(CompanySortFilter? sortFilter)
         {
-            string? currentUserEmail = User.FindFirstValue(ClaimTypes.Email) ?? String.Empty;
+            string currentUserEmail = GetCurrentUserEmail();
 
-            var model = await _companyService.GetOwnedAndJoinedCompaniesFromUserEmailAsync(currentUserEmail);
-
-            //Set default sortFilter to 'Name Ascending' and change it up if sort is different
-            ViewData["SortFilter"] = String.IsNullOrEmpty(sortFilter) ? "NameAsc" : sortFilter;
+            var model = await _companyService.GetOwnedAndJoinedCompaniesFromUserEmailAsync(currentUserEmail, sortFilter);
 
             return View(model);
         }

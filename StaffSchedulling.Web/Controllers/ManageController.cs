@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StaffScheduling.Common.Enums;
+using StaffScheduling.Common.Enums.Filters;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using static StaffScheduling.Common.Enums.CustomRoles;
 

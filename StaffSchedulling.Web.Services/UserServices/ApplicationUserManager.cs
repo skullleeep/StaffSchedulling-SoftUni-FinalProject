@@ -21,7 +21,7 @@ namespace StaffScheduling.Web.Services.UserServices
 
         }
 
-        public async Task<List<Guid>?> GetOwnedCompanyIdsFromUserEmailAsync(string email)
+        public async Task<List<Guid>> GetOwnedCompanyIdsFromUserEmailAsync(string email)
         {
             var user = await Users
                 .Include(u => u.CompaniesOwned)
@@ -29,17 +29,17 @@ namespace StaffScheduling.Web.Services.UserServices
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null)
-                return null;
+                return new List<Guid>();
 
             return user.CompaniesOwned.Select(c => c.Id).ToList();
         }
 
-        public async Task<List<Guid>?> GetJoinedCompanyIdsFromUserEmailAsync(string email)
+        public async Task<List<Guid>> GetJoinedCompanyIdsFromUserEmailAsync(string email)
         {
             var user = await GetUserWithEmployeeInfoInCompaniesFromEmailAsync(email);
             if (user == null)
             {
-                return null;
+                return new List<Guid>();
             }
 
             return user.EmployeeInfoInCompanies.Select(c => c.CompanyId).ToList();

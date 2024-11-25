@@ -1,4 +1,4 @@
-﻿namespace StaffScheduling.Common.Enums
+﻿namespace StaffScheduling.Common.Enums.Filters
 {
     public enum EmployeeSearchFilter
     {

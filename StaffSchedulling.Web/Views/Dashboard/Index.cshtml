@@ -1,4 +1,6 @@
-﻿@using StaffScheduling.Web.Models.ViewModels.Company;
+﻿@using StaffScheduling.Common
+@using StaffScheduling.Common.Enums.Filters
+@using StaffScheduling.Web.Models.ViewModels.Company;
 @using StaffScheduling.Common.Enums;
 @using static StaffScheduling.Common.Constants.ApplicationConstants;
 @model DashboardCompaniesViewModel
@@ -7,7 +9,6 @@
     ViewData["Title"] = "Dashboard";
 
     string inviteLinkBase = String.Format(InviteLinkEmptyFormat, Context.Request.Scheme, Context.Request.Host);
-    string sortFilter = ViewData["SortFilter"]?.ToString() ?? "NameAsc";
 }
 
 <h1>Dashboard</h1>
@@ -18,9 +19,18 @@
 {
     <form id="sortForm" method="get" class="form-inline mb-3">
         <label for="sortFilter" class="mr-2">Sort by:</label>
-        <select id="sortFilter" name="sortFilter" class="custom-select" onchange="document.getElementById('sortForm').submit();">
-            <!option value="NameAsc" @(sortFilter == "NameAsc" ? "selected" : "")>Name Ascending</!option>
-            <!option value="NameDesc" @(sortFilter == "NameDesc" ? "selected" : "")>Name Descending</!option>
+        <select asp-for="SortFilter" id="sortFilter" name="sortFilter" class="no-border-select" onchange="document.getElementById('sortForm').submit();">
+            @foreach(var filter in Helper.EnumArray<CompanySortFilter>())
+            {
+                if(filter == Model.SortFilter)
+                {
+                    <option value="@filter.ToString()" selected="selected">@Helper.AddSpacesToString(filter.ToString())</option>
+                }
+                else
+                {
+                    <option value="@filter.ToString()">@Helper.AddSpacesToString(filter.ToString())</option>
+                }
+            }
         </select>
     </form>
 }
@@ -34,10 +44,7 @@
             {
                 <div class="row row-cols-1 row-cols-md-2 g-4">
                     @{
-                        foreach (var company in (sortFilter == "NameAsc"
-                                                    ? Model.OwnedCompanies.OrderBy(c => c.Name)
-                                                    : Model.OwnedCompanies.OrderByDescending(c => c.Name)
-                                                ))
+                    foreach (var company in Model.OwnedCompanies)
                         {
                             string inviteLink = inviteLinkBase + company.Invite.ToString();
 
@@ -88,10 +95,7 @@
             {
                 <div class="row row-cols-1 row-cols-md-2 g-4">
                 @{
-                    foreach (var company in (sortFilter == "NameAsc"
-                                                        ? Model.JoinedCompanies.OrderBy(c => c.Name)
-                                                        : Model.JoinedCompanies.OrderByDescending(c => c.Name)
-                                                    ))
+                    foreach (var company in Model.JoinedCompanies)
                     {
                             string inviteLink = inviteLinkBase + company.Invite.ToString();
 

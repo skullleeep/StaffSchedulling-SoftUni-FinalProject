@@ -61,7 +61,7 @@ body {
 }
 
 /* Dashboard - Index */
-select#sortFilter {
+.no-border-select {
     border: 0px;
     outline: 0px;
 }

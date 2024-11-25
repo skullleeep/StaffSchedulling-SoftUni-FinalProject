@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StaffScheduling.Common;
-using StaffScheduling.Common.Enums;
+using StaffScheduling.Common.Enums.Filters;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Data.UnitOfWork.Contracts;
+using StaffScheduling.Web.Models.InputModels.EmployeeInfo;
 using StaffScheduling.Web.Models.ViewModels.Department;
 using StaffScheduling.Web.Models.ViewModels.EmployeeInfo;
 using StaffScheduling.Web.Services.DbServices.Contracts;
@@ -90,6 +91,53 @@ namespace StaffScheduling.Web.Services.DbServices
             }
         }
 
+        public async Task<StatusReport> AddEmployeeManuallyAsync(AddEmployeeInfoManuallyInputModel model)
+        {
+            var entityCompany = await _unitOfWork
+                .Companies
+                .All()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == model.CompanyId);
+
+            //Check if company exists
+            if (entityCompany == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindCompany };
+            }
+
+            var entityFound = await _unitOfWork
+                .EmployeesInfo
+                .All()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(ef => ef.Email.ToLower() == model.Email.ToLower());
+
+            //Check if employee with same email already exists
+            if (entityFound != null)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(EmployeeWithEmailExistsFormat, model.Email.ToLower()) };
+            }
+
+            try
+            {
+                var newEntity = new EmployeeInfo
+                {
+                    Id = Guid.NewGuid(),
+                    Email = model.Email.ToLower(),
+                    CompanyId = model.CompanyId,
+                };
+
+                await _unitOfWork.EmployeesInfo.AddAsync(newEntity);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
+            }
+
+            return new StatusReport { Ok = true };
+
+        }
+
         public async Task<PermissionRole> GetUserPermissionInCompanyAsync(Guid companyId, string userEmail)
         {
             var entityCompany = await _unitOfWork
@@ -127,6 +175,12 @@ namespace StaffScheduling.Web.Services.DbServices
 
         public async Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page = 1, int pageSize = 10)
         {
+            //Search by Email by default
+            if (searchFilter.HasValue == false)
+            {
+                searchFilter = EmployeeSearchFilter.Email;
+            }
+
             var entityCompany = await _unitOfWork
                 .Companies
                 .All()
@@ -148,26 +202,23 @@ namespace StaffScheduling.Web.Services.DbServices
                 .Include(ef => ef.User)
                 .Where(ef => ef.CompanyId == companyId);
 
-            //If searchQuery has something then filter employees up to SearchFilter
+            //Check if searchQuery has value then filter employees up to SearchFilter
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                if (searchFilter.HasValue)
+                if (searchFilter.Value == EmployeeSearchFilter.Email)
                 {
-                    if (searchFilter == EmployeeSearchFilter.Email)
-                    {
-                        selectedEmployeesInfo = selectedEmployeesInfo
-                            .Where(ef => ef.Email.ToLower().Contains(searchQuery.ToLower()));
-                    }
-                    else if (searchFilter == EmployeeSearchFilter.Name)
-                    {
-                        selectedEmployeesInfo = selectedEmployeesInfo
-                            .Where(ef => ef.User != null)
-                            .Where(ef => ef.User!.FullName!.ToLower().Contains(searchQuery.ToLower()));
-                    }
+                    selectedEmployeesInfo = selectedEmployeesInfo
+                        .Where(ef => ef.Email.ToLower().Contains(searchQuery.ToLower()));
+                }
+                else if (searchFilter.Value == EmployeeSearchFilter.Name)
+                {
+                    selectedEmployeesInfo = selectedEmployeesInfo
+                        .Where(ef => ef.User != null)
+                        .Where(ef => ef.User!.FullName!.ToLower().Contains(searchQuery.ToLower()));
                 }
             }
 
-            //Calculate total records and pages
+            //Calculate total employees and pages
             int totalEmployees = selectedEmployeesInfo.Count();
             int totalPages = (int)Math.Ceiling(totalEmployees / (double)pageSize);
 

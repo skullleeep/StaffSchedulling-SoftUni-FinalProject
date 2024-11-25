@@ -1,4 +1,4 @@
-﻿using StaffScheduling.Common.Enums;
+﻿using StaffScheduling.Common.Enums.Filters;
 using StaffScheduling.Web.Models.ViewModels.Department;
 using System.ComponentModel.DataAnnotations;
 

@@ -12,7 +12,7 @@ namespace StaffScheduling.Web.Controllers
     public class CompanyController(ICompanyService _companyService, IEmployeeInfoService _employeeInfoService) : BaseController
     {
         //Get request when trying to join a company
-        [HttpGet("Company/Join/{inviteCode?}")]
+        [HttpGet("[controller]/[action]/{inviteCode?}")]
         public async Task<IActionResult> Join(string? inviteCode)
         {
             Guid inviteGuid = Guid.Empty;
@@ -35,7 +35,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when trying to join a company
-        [HttpPost("Company/Join/{inviteCode}")]
+        [HttpPost("[controller]/[action]/{inviteCode}")]
         public async Task<IActionResult> Join(CompanyJoinViewModel model, string inviteCode)
         {
             //Check for model errors

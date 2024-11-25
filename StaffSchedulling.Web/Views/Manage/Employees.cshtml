@@ -2,6 +2,7 @@
 @using StaffScheduling.Common.Enums
 @using StaffScheduling.Web.Models.ViewModels.EmployeeInfo
 @using StaffScheduling.Web.Models.InputModels.EmployeeInfo;
+@using StaffScheduling.Common.Enums.Filters;
 @model ManageEmployeesInfoViewModel
 
 @{
@@ -24,11 +25,18 @@
         </div>
     </div>
 
+    @if(!String.IsNullOrEmpty(TempData["EmployeeError"] as string))
+    {
+        <div class="alert alert-danger" role="alert">
+            <p>@TempData["EmployeeError"]</p>
+        </div>
+    }
+
     <!-- Search Section -->
     <div class="row mb-4">
         <form method="get" asp-action="Employees" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row">
             <input type="text" asp-for="SearchQuery" class="form-control w-50" placeholder="Search employees" value="@Model.SearchQuery" />
-            <select name="searchFilter" class="form-select form-control w-auto" asp-for="SearchFilter">
+            <select name="searchFilter" class="no-border-select w-auto" asp-for="SearchFilter">
             <!-- Populate roles dynamically -->
             @foreach (var filter in Helper.EnumArray<EmployeeSearchFilter>())
             {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StaffScheduling.Common;
+using StaffScheduling.Common.Enums.Filters;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Data.UnitOfWork.Contracts;
 using StaffScheduling.Web.Models.InputModels.Company;
@@ -157,64 +158,76 @@ namespace StaffScheduling.Web.Services.DbServices
             };
         }
 
-        public async Task<DashboardCompaniesViewModel> GetOwnedAndJoinedCompaniesFromUserEmailAsync(string email)
+        public async Task<DashboardCompaniesViewModel> GetOwnedAndJoinedCompaniesFromUserEmailAsync(string email, CompanySortFilter? sortFilter)
         {
-            var ownedCompanies = new List<CompanyDashboardViewModel>();
+            //Order by NameAscending by default
+            if (sortFilter.HasValue == false)
+            {
+                sortFilter = CompanySortFilter.NameAscending;
+            }
+
+            //Get EmployeeRole roles which have >= PermissionRole that is needed to manage
+            //Doing this because RoleMapping[EmployeeRole] can't be translated into SQL from entity
+            List<EmployeeRole> rolesWithAccess = RoleMapping
+                .Where(rm => rm.Value >= PermissionRole.Manager)
+                .Select(rm => rm.Key)
+                .ToList();
 
             var ownedCompanyIds = await _userManager.GetOwnedCompanyIdsFromUserEmailAsync(email);
-            if (ownedCompanyIds != null)
-            {
-                ownedCompanies = await _unitOfWork
+            var joinedCompanyIds = await _userManager.GetJoinedCompanyIdsFromUserEmailAsync(email);
+
+            IQueryable<CompanyDashboardViewModel> selectedOwnedCompanies = _unitOfWork
                                             .Companies
                                             .All()
-                                            .Where(c => ownedCompanyIds.Contains(c.Id))
                                             .Include(c => c.CompanyEmployeesInfo)
+                                            .AsNoTracking()
+                                            .Where(c => ownedCompanyIds.Contains(c.Id))
                                             .Select(c => new CompanyDashboardViewModel()
                                             {
                                                 Id = c.Id,
                                                 Name = c.Name,
                                                 Invite = c.Invite,
                                                 UserCanManage = true
-                                            })
-                                            .AsNoTracking()
-                                            .ToListAsync();
-            }
+                                            });
 
-            var joinedCompanies = new List<CompanyDashboardViewModel>();
 
-            var joinedCompanyIds = await _userManager.GetJoinedCompanyIdsFromUserEmailAsync(email);
-            if (joinedCompanyIds != null)
-            {
-                //Get EmployeeRole roles which can have >= PermissionRole that is needed to manage
-                //Doing this because RoleMapping[EmployeeRole] can't be translated into SQL from entity
-                List<EmployeeRole> rolesWithAccess = RoleMapping
-                    .Where(rm => rm.Value >= PermissionRole.Manager)
-                    .Select(rm => rm.Key)
-                    .ToList();
-
-                joinedCompanies = await _unitOfWork
+            IQueryable<CompanyDashboardViewModel> selectedJoinedCompanies = _unitOfWork
                                             .Companies
                                             .All()
-                                            .Where(c => joinedCompanyIds.Contains(c.Id))
                                             .Include(c => c.CompanyEmployeesInfo)
+                                            .AsNoTracking()
+                                            .Where(c => joinedCompanyIds.Contains(c.Id))
                                             .Select(c => new CompanyDashboardViewModel()
                                             {
                                                 Id = c.Id,
                                                 Name = c.Name,
                                                 Invite = c.Invite,
                                                 UserCanManage = c.CompanyEmployeesInfo
-                                                                    .Where(ef => ef.Email == email)
-                                                                    .Select(ef => ef.Role)
-                                                                    .Any(role => rolesWithAccess.Contains(role)),
-                                            })
-                                            .AsNoTracking()
-                                            .ToListAsync();
+                                                    .Where(ef => ef.Email == email)
+                                                    .Select(ef => ef.Role)
+                                                    .Any(role => rolesWithAccess.Contains(role)),
+                                            });
+
+            //Filter companies up to CompanySortFilter
+            if (sortFilter.Value == CompanySortFilter.NameAscending)
+            {
+                selectedOwnedCompanies = selectedOwnedCompanies.OrderBy(c => c.Name);
+                selectedJoinedCompanies = selectedJoinedCompanies.OrderBy(c => c.Name);
             }
+            else if (sortFilter.Value == CompanySortFilter.NameDescending)
+            {
+                selectedOwnedCompanies = selectedOwnedCompanies.OrderByDescending(c => c.Name);
+                selectedJoinedCompanies = selectedJoinedCompanies.OrderByDescending(c => c.Name);
+            }
+
+
+            List<CompanyDashboardViewModel> ownedCompanyModels = await selectedOwnedCompanies.ToListAsync();
+            List<CompanyDashboardViewModel> joinedCompanyModels = await selectedJoinedCompanies.ToListAsync();
 
             return new DashboardCompaniesViewModel
             {
-                OwnedCompanies = ownedCompanies,
-                JoinedCompanies = joinedCompanies
+                OwnedCompanies = ownedCompanyModels,
+                JoinedCompanies = joinedCompanyModels
             };
         }
 
