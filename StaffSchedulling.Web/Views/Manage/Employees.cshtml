@@ -1,6 +1,7 @@
 ﻿@using StaffScheduling.Common
 @using StaffScheduling.Common.Enums
 @using StaffScheduling.Web.Models.ViewModels.EmployeeInfo
+@using StaffScheduling.Web.Models.InputModels.EmployeeInfo;
 @model ManageEmployeesInfoViewModel
 
 @{
@@ -25,8 +26,29 @@
 
     <!-- Search Section -->
     <div class="row mb-4">
-        <form method="get" asp-action="Index" class="input-group">
-            <input type="text" asp-for="SearchQuery" class="form-control" placeholder="Search employees" value="@Model.SearchQuery" />
+        <form method="get" asp-action="Employees" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row">
+            <input type="text" asp-for="SearchQuery" class="form-control w-50" placeholder="Search employees" value="@Model.SearchQuery" />
+            <select name="searchFilter" class="form-select form-control w-auto" asp-for="SearchFilter">
+            <!-- Populate roles dynamically -->
+            @foreach (var filter in Helper.EnumArray<EmployeeSearchFilter>())
+            {
+                if (Model.SearchFilter.HasValue)
+                {
+                    if (filter == Model.SearchFilter.Value)
+                    {
+                            <option value="@(filter)" selected>Search By: @filter.ToString()</option>
+                    }
+                    else
+                    {
+                            <option value="@(filter)">Search By: @filter.ToString()</option>
+                    }
+                }
+                else
+                {
+                        <option value="@(filter)">Search By: @filter.ToString()</option>
+                }
+            }
+            </select>
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
     </div>
@@ -37,14 +59,7 @@
             <div class="row">
                 <!-- Add Employee Manually -->
                 <div class="col-md-8">
-                    <form asp-action="AddEmployee" method="post" class="row g-2">
-                        <div class="col-md-8">
-                            <input type="email" name="email" class="form-control" placeholder="Enter employee email" required />
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <button type="submit" class="btn btn-success w-100">Add Employee</button>
-                        </div>
-                    </form>
+                    <partial name="_AddEmployeeManuallyForm" model="@new AddEmployeeInfoManuallyInputModel() { CompanyId = Model.CompanyId }" />
                 </div>
 
                 <!-- Vertical Line -->
@@ -85,7 +100,16 @@
                             {
                                 <tr>
                                     <td><input type="checkbox" class="select-employee" value="@employee.Id" /></td>
-                                    <td>@employee.Name</td>
+                                    <td>
+                                        @if (!String.IsNullOrEmpty(employee.Name))
+                                        {
+                                            @employee.Name
+                                        }
+                                        else
+                                        {
+                                            <i class="font-weight-light">Empty</i>
+                                        }
+                                    </td>
                                     <td>@employee.Email</td>
                                     <td>
                                         <div class="d-flex align-items-center">
@@ -106,7 +130,16 @@
                                             <button class="btn btn-primary btn-sm ms-2">Change Role</button>
                                         </div>
                                     </td>
-                                    <td>@employee.Department</td>
+                                    <td>
+                                        @if (!String.IsNullOrEmpty(employee.Department))
+                                        {
+                                            @employee.Department
+                                        }
+                                        else
+                                        {
+                                            <i class="font-weight-light">None</i>
+                                        }
+                                    </td>
                                     <td>
                                         @if (employee.HasJoined)
                                         {
@@ -159,7 +192,7 @@
                 {
                     <div class="col-md-8">
                         <div class="d-flex align-items-center gap-2 h-100">
-                            <select name="department" class="form-select w-100 h-100">
+                            <select disabled="disabled" class="form-select w-100 h-100">
                                 <option>No Departments Found</option>
                             </select>
                             <button disabled="disabled" class="btn btn-primary w-100 w-md-auto">Change Department Of Selected</button>

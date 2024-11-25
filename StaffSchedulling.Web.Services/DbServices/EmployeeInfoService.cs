@@ -125,7 +125,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return RoleMapping[entity.Role];
         }
 
-        public async Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string searchQuery, SearchFilter searchFilter = SearchFilter.Email, int page = 1, int pageSize = 10)
+        public async Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page = 1, int pageSize = 10)
         {
             var entityCompany = await _unitOfWork
                 .Companies
@@ -151,16 +151,19 @@ namespace StaffScheduling.Web.Services.DbServices
             //If searchQuery has something then filter employees up to SearchFilter
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                if (searchFilter == SearchFilter.Email)
+                if (searchFilter.HasValue)
                 {
-                    selectedEmployeesInfo = selectedEmployeesInfo
-                        .Where(ef => ef.Email.ToLower().Contains(searchQuery.ToLower()));
-                }
-                else if (searchFilter == SearchFilter.Name)
-                {
-                    selectedEmployeesInfo = selectedEmployeesInfo
-                        .Where(ef => ef.User != null)
-                        .Where(ef => ef.User!.FullName!.ToLower().Contains(searchQuery.ToLower()));
+                    if (searchFilter == EmployeeSearchFilter.Email)
+                    {
+                        selectedEmployeesInfo = selectedEmployeesInfo
+                            .Where(ef => ef.Email.ToLower().Contains(searchQuery.ToLower()));
+                    }
+                    else if (searchFilter == EmployeeSearchFilter.Name)
+                    {
+                        selectedEmployeesInfo = selectedEmployeesInfo
+                            .Where(ef => ef.User != null)
+                            .Where(ef => ef.User!.FullName!.ToLower().Contains(searchQuery.ToLower()));
+                    }
                 }
             }
 

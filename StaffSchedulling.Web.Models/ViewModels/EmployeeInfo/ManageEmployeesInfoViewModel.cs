@@ -17,7 +17,7 @@ namespace StaffScheduling.Web.Models.ViewModels.EmployeeInfo
 
         public string? SearchQuery { get; set; }
 
-        public SearchFilter SearchFilter { get; set; } = SearchFilter.Email;
+        public EmployeeSearchFilter? SearchFilter { get; set; }
 
         [Required]
         public int CurrentPage { get; set; } = 1;
