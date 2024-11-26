@@ -164,10 +164,7 @@ namespace StaffScheduling.Web.Services.DbServices
 
             //Get EmployeeRole roles which have >= PermissionRole that is needed to manage
             //Doing this because RoleMapping[EmployeeRole] can't be translated into SQL from entity
-            List<EmployeeRole> rolesWithAccess = RoleMapping
-                .Where(rm => rm.Value >= PermissionRole.Manager)
-                .Select(rm => rm.Key)
-                .ToList();
+            List<EmployeeRole> rolesWithAccess = GetRolesWithAccess(PermissionRole.Manager);
 
             var ownedCompanyIds = await _userManager.GetOwnedCompanyIdsFromUserEmailAsync(email);
             var joinedCompanyIds = await _userManager.GetJoinedCompanyIdsFromUserEmailAsync(email);

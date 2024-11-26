@@ -37,7 +37,7 @@
         <form method="get" asp-action="Employees" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row">
             <input type="text" asp-for="SearchQuery" class="form-control w-50" placeholder="Search employees" value="@Model.SearchQuery" />
             <select class="no-border-select w-auto" asp-for="SearchFilter">
-            <!-- Populate roles dynamically -->
+            <!-- Populate filters dynamically -->
             @foreach (var filter in Helper.EnumArray<EmployeeSearchFilter>())
             {
                 if (Model.SearchFilter.HasValue)
@@ -120,8 +120,11 @@
                                     </td>
                                     <td>@employee.Email</td>
                                     <td>
-                                        <partial name="_ChangeRoleForm" 
-                                            model="@new ChangeRoleInputModel() { CompanyId = Model.CompanyId, EmployeeId = employee.Id, Role = employee.Role}" />
+                                        <partial name="_ChangeRoleForm"
+                                                 model="@new ChangeRoleInputModel() { CompanyId = Model.CompanyId, 
+                                                                                      CurrentEmployeePermission = Model.CurrentEmployeePermission, 
+                                                                                      EmployeeId = employee.Id, 
+                                                                                      Role = employee.Role}" />
                                     </td>
                                     <td>
                                         @if (!String.IsNullOrEmpty(employee.Department))

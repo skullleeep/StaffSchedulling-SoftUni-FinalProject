@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StaffScheduling.Common.Enums.Filters;
-using StaffScheduling.Web.Models.ViewModels.EmployeeInfo;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using static StaffScheduling.Common.Enums.CustomRoles;
 
@@ -24,17 +23,17 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
+            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
             //Check for access permission
-            if (role < PermissionRole.Manager)
+            if (permissionRole < PermissionRole.Manager)
             {
                 return RedirectToAction("Index", "Dashboard");
             }
 
 
-            bool canUserEdit = role >= PermissionRole.Editor ? true : false; //Check for edit permission
-            bool canUserDelete = role == PermissionRole.Owner ? true : false; //Check for delete permission
+            bool canUserEdit = permissionRole >= PermissionRole.Editor ? true : false; //Check for edit permission
+            bool canUserDelete = permissionRole == PermissionRole.Owner ? true : false; //Check for delete permission
 
             var model = await _companyService.GetCompanyFromIdAsync(companyGuid, canUserEdit, canUserDelete);
 
@@ -61,21 +60,24 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
+            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
             //Check for access permission
-            if (role < PermissionRole.Editor)
+            if (permissionRole < PermissionRole.Editor)
             {
                 return RedirectToAction("Index", "Dashboard");
             }
 
-            ManageEmployeesInfoViewModel? model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(companyGuid, searchQuery, searchFilter, currentPage);
+            var model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(companyGuid, searchQuery, searchFilter, currentPage, permissionRole);
 
             //Check if entity exists
             if (model == null)
             {
                 return RedirectToAction("Index", "Dashboard");
             }
+
+            //Add user permission to model
+            model.CurrentEmployeePermission = permissionRole;
 
             return View(model);
         }

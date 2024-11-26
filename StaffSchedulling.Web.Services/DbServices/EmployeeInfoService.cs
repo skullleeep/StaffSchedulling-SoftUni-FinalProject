@@ -152,7 +152,7 @@ namespace StaffScheduling.Web.Services.DbServices
 
         }
 
-        public async Task<StatusReport> ChangeRoleAsync(ChangeRoleInputModel model)
+        public async Task<StatusReport> ChangeRoleAsync(ChangeRoleInputModel model, PermissionRole userPermissionRole)
         {
             var entityCompany = await _unitOfWork
                 .Companies
@@ -176,10 +176,31 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = false, Message = CouldNotFindEmployee };
             }
 
+            //Check if user has the required permission level to manage this employee
+            if (userPermissionRole <= RoleMapping[entity.Role])
+            {
+                return new StatusReport { Ok = false, Message = CanNotManageEmployeeAsLowerPermission };
+            }
+
+            //Check if user has permission level needed to assign this role
+            if (userPermissionRole <= RoleMapping[model.Role])
+            {
+                return new StatusReport { Ok = false, Message = CanNotChangeEmployeeRoleToHigher };
+            }
+
             //If new role is the same as old role just skip database changes and say that we successfully changed role
             if (entity.Role == model.Role)
             {
                 return new StatusReport { Ok = true };
+            }
+
+            //Check if new role is Supervisor and if it is check if employee has department as you need an department to be a Supervisor
+            if (model.Role == EmployeeRole.Supervisor)
+            {
+                if (entity.Department == null)
+                {
+                    return new StatusReport { Ok = false, Message = CanNotAddRoleSupervisorWithoutDepartment };
+                }
             }
 
             try
@@ -231,13 +252,18 @@ namespace StaffScheduling.Web.Services.DbServices
             return RoleMapping[entity.Role];
         }
 
-        public async Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page)
+        public async Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page, PermissionRole userPermissionRole)
         {
             //Search by Email by default
             if (searchFilter.HasValue == false)
             {
                 searchFilter = EmployeeSearchFilter.Email;
             }
+
+            //Get EmployeeRole roles which have < PermissionRole that the current employees can manage
+            //For example if I am an Admin I won't be able to manage other admins
+            //Doing this because RoleMapping[EmployeeRole] can't be translated into SQL from entity
+            List<EmployeeRole> managableRoles = GetManagableRoles(userPermissionRole);
 
             var entityCompany = await _unitOfWork
                 .Companies
@@ -258,7 +284,8 @@ namespace StaffScheduling.Web.Services.DbServices
                 .All()
                 .Include(ef => ef.Department)
                 .Include(ef => ef.User)
-                .Where(ef => ef.CompanyId == companyId);
+                .Where(ef => ef.CompanyId == companyId)
+                .Where(ef => managableRoles.Contains(ef.Role));
 
             //Check if searchQuery has value then filter employees up to SearchFilter
             if (!string.IsNullOrEmpty(searchQuery))

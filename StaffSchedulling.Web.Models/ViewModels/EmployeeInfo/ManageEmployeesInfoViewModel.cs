@@ -1,6 +1,7 @@
 ﻿using StaffScheduling.Common.Enums.Filters;
 using StaffScheduling.Web.Models.ViewModels.Department;
 using System.ComponentModel.DataAnnotations;
+using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Web.Models.ViewModels.EmployeeInfo
 {
@@ -24,5 +25,8 @@ namespace StaffScheduling.Web.Models.ViewModels.EmployeeInfo
 
         [Required]
         public int TotalPages { get; set; }
+
+        [Required]
+        public PermissionRole CurrentEmployeePermission { get; set; }
     }
 }

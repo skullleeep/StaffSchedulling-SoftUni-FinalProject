@@ -8,6 +8,10 @@ namespace StaffScheduling.Web.Models.InputModels.EmployeeInfo
         [Required]
         public Guid CompanyId { get; set; }
 
+
+        [Required]
+        public PermissionRole CurrentEmployeePermission { get; set; }
+
         [Required]
         public Guid EmployeeId { get; set; }
 

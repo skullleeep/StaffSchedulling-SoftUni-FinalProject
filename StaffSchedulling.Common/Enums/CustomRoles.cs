@@ -25,5 +25,23 @@
             { EmployeeRole.Supervisor, PermissionRole.Manager },
             { EmployeeRole.Admin, PermissionRole.Editor }
         };
+
+        //Get EmployeeRoles that user with some permission level can manage ( PermissionRoles < User's PermissionRole )
+        public static List<EmployeeRole> GetManagableRoles(PermissionRole userPermissionRole)
+        {
+            return RoleMapping
+                .Where(rm => rm.Value < userPermissionRole)
+                .Select(rm => rm.Key)
+                .ToList();
+        }
+
+        //Get EmployeeRoles that can access page up to needed PermissionRole
+        public static List<EmployeeRole> GetRolesWithAccess(PermissionRole userPermissionRole)
+        {
+            return RoleMapping
+                .Where(rm => rm.Value >= userPermissionRole)
+                .Select(rm => rm.Key)
+                .ToList();
+        }
     }
 }

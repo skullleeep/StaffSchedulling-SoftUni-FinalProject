@@ -28,10 +28,10 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
-            if (role < PermissionRole.Editor)
+            if (permissionRole < PermissionRole.Editor)
             {
                 return RedirectToAction("Index", "Dashboard");
             }
@@ -67,16 +67,16 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
-            if (role < PermissionRole.Editor)
+            if (permissionRole < PermissionRole.Editor)
             {
                 return RedirectToAction("Index", "Dashboard");
             }
 
             //Change employee's role
-            StatusReport status = await _employeeInfoService.ChangeRoleAsync(model);
+            StatusReport status = await _employeeInfoService.ChangeRoleAsync(model, permissionRole);
 
             //Check for errors
             if (status.Ok == false)
