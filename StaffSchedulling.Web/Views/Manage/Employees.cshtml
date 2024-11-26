@@ -36,7 +36,7 @@
     <div class="row mb-4">
         <form method="get" asp-action="Employees" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row">
             <input type="text" asp-for="SearchQuery" class="form-control w-50" placeholder="Search employees" value="@Model.SearchQuery" />
-            <select name="searchFilter" class="no-border-select w-auto" asp-for="SearchFilter">
+            <select class="no-border-select w-auto" asp-for="SearchFilter">
             <!-- Populate roles dynamically -->
             @foreach (var filter in Helper.EnumArray<EmployeeSearchFilter>())
             {
@@ -120,23 +120,8 @@
                                     </td>
                                     <td>@employee.Email</td>
                                     <td>
-                                        <div class="d-flex align-items-center">
-                                            <select name="role" class="form-select form-select-sm w-auto">
-                                                <!-- Populate roles dynamically -->
-                                                @foreach (var role in Helper.EnumArray<CustomRoles.EmployeeRole>())
-                                                {
-                                                    if(role == employee.Role)
-                                                    {
-                                                        <option value="@((int)role)" selected>@role.ToString()</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="@((int)role)">@role.ToString()</option>
-                                                    }
-                                                }
-                                            </select>
-                                            <button class="btn btn-primary btn-sm ms-2">Change Role</button>
-                                        </div>
+                                        <partial name="_ChangeRoleForm" 
+                                            model="@new ChangeRoleInputModel() { CompanyId = Model.CompanyId, EmployeeId = employee.Id, Role = employee.Role}" />
                                     </td>
                                     <td>
                                         @if (!String.IsNullOrEmpty(employee.Department))
@@ -230,7 +215,13 @@
             @for (var i = 1; i <= Model.TotalPages; i++)
             {
                 <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                    <a class="page-link" href="?page=@i">@i</a>
+                    <a class="page-link" asp-controller="Manage" asp-action="Employees" 
+                            asp-route-id="@Model.CompanyId" 
+                            asp-route-searchQuery="@Model.SearchQuery" 
+                            asp-route-searchFilter="@Model.SearchFilter.ToString()" 
+                            asp-route-currentPage="@i">
+                        @i
+                    </a>
                 </li>
             }
         </ul>

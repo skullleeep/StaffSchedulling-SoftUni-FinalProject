@@ -152,6 +152,50 @@ namespace StaffScheduling.Web.Services.DbServices
 
         }
 
+        public async Task<StatusReport> ChangeRoleAsync(ChangeRoleInputModel model)
+        {
+            var entityCompany = await _unitOfWork
+                .Companies
+                .All()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == model.CompanyId);
+
+            //Check if company exists
+            if (entityCompany == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindCompany };
+            }
+
+            var entity = await _unitOfWork
+                .EmployeesInfo
+                .FirstOrDefaultAsync(ef => ef.Id == model.EmployeeId && ef.CompanyId == model.CompanyId);
+
+            //Check if employee exists
+            if (entity == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindEmployee };
+            }
+
+            //If new role is the same as old role just skip database changes and say that we successfully changed role
+            if (entity.Role == model.Role)
+            {
+                return new StatusReport { Ok = true };
+            }
+
+            try
+            {
+                entity.Role = model.Role;
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
+            }
+
+            return new StatusReport { Ok = true };
+        }
+
         public async Task<PermissionRole> GetUserPermissionInCompanyAsync(Guid companyId, string userEmail)
         {
             var entityCompany = await _unitOfWork
@@ -251,6 +295,7 @@ namespace StaffScheduling.Web.Services.DbServices
                 .OrderByDescending(e => e.HasJoined) //Show joined first
                 .ThenBy(e => e.Name)
                 .ThenBy(e => e.Email)
+                .AsNoTracking()
                 .ToListAsync();
 
             //Get company departments

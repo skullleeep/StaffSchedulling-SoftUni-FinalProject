@@ -89,10 +89,6 @@ namespace StaffScheduling.Web.Services.DbServices
                 entity.Name = model.Name;
                 entity.MaxVacationDaysPerYear = model.MaxVacationDaysPerYear;
 
-                _unitOfWork
-                    .Companies
-                    .Update(entity);
-
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)

@@ -48,7 +48,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         [HttpGet("[controller]/[action]/{id?}")]
-        public async Task<IActionResult> Employees(string id, string? searchQuery, EmployeeSearchFilter? searchFilter, int page = 1)
+        public async Task<IActionResult> Employees(string id, string? searchQuery, EmployeeSearchFilter? searchFilter, int currentPage = 1)
         {
             Guid companyGuid = Guid.Empty;
 
@@ -69,7 +69,7 @@ namespace StaffScheduling.Web.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
 
-            ManageEmployeesInfoViewModel? model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(companyGuid, searchQuery, searchFilter, page);
+            ManageEmployeesInfoViewModel? model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(companyGuid, searchQuery, searchFilter, currentPage);
 
             //Check if entity exists
             if (model == null)

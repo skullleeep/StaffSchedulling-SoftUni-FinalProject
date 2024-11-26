@@ -1,0 +1,24 @@
+﻿@using StaffScheduling.Common
+@using StaffScheduling.Common.Enums
+@using StaffScheduling.Web.Models.InputModels.EmployeeInfo;
+@model ChangeRoleInputModel
+
+<form asp-controller="Employee" asp-action="ChangeRole" method="post" class="d-flex align-items-center">
+    <input asp-for="CompanyId" type="hidden" value="@Model.CompanyId" />
+    <input asp-for="EmployeeId" type="hidden" value="@Model.EmployeeId" />
+    <select asp-for="Role" class="form-select form-select-sm w-auto">
+        <!-- Populate roles dynamically -->
+        @foreach (var role in Helper.EnumArray<CustomRoles.EmployeeRole>())
+        {
+            if (role == Model.Role)
+            {
+                <option value="@(role)" selected>@role.ToString()</option>
+            }
+            else
+            {
+                <option value="@(role)">@role.ToString()</option>
+            }
+        }
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm ms-2">Change Role</button>
+</form>

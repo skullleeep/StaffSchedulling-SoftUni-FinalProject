@@ -12,6 +12,8 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
 
         public Task<StatusReport> AddEmployeeManuallyAsync(AddEmployeeInfoManuallyInputModel model);
 
+        public Task<StatusReport> ChangeRoleAsync(ChangeRoleInputModel model);
+
         public Task<PermissionRole> GetUserPermissionInCompanyAsync(Guid companyId, string userEmail);
 
         public Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page);

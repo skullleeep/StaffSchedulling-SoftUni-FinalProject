@@ -10,7 +10,7 @@ namespace StaffScheduling.Web.Controllers
     public class EmployeeController(IEmployeeInfoService _employeeInfoService) : BaseController
     {
         [HttpPost]
-        public async Task<IActionResult> AddEmployeeManually(AddEmployeeInfoManuallyInputModel model)
+        public async Task<IActionResult> AddManually(AddEmployeeInfoManuallyInputModel model)
         {
             //Check for model errors
             if (!ModelState.IsValid)
@@ -38,6 +38,45 @@ namespace StaffScheduling.Web.Controllers
 
             //Add employee
             StatusReport status = await _employeeInfoService.AddEmployeeManuallyAsync(model);
+
+            //Check for errors
+            if (status.Ok == false)
+            {
+                TempData["EmployeeError"] = status.Message;
+            }
+
+            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeRole(ChangeRoleInputModel model)
+        {
+            //Check for model errors
+            if (!ModelState.IsValid)
+            {
+                //Get model errors
+                string message = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                TempData["EmployeeError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
+
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+            }
+
+            //Get user email
+            string userEmail = GetCurrentUserEmail();
+
+            PermissionRole role = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+
+            //Check for access permission
+            if (role < PermissionRole.Editor)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            //Change employee's role
+            StatusReport status = await _employeeInfoService.ChangeRoleAsync(model);
 
             //Check for errors
             if (status.Ok == false)
