@@ -152,6 +152,54 @@ namespace StaffScheduling.Web.Services.DbServices
 
         }
 
+        public async Task<StatusReport> DeleteEmployeeAsync(DeleteEmployeeInputModel model, PermissionRole userPermissionRole)
+        {
+            var entityCompany = await _unitOfWork
+                            .Companies
+                            .All()
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(c => c.Id == model.CompanyId);
+
+            //Check if company exists
+            if (entityCompany == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindCompany };
+            }
+
+            var entity = await _unitOfWork
+                .EmployeesInfo
+                .All()
+                .Include(c => c.Vacations)
+                .FirstOrDefaultAsync(ef => ef.Id == model.EmployeeId && ef.CompanyId == model.CompanyId);
+
+            //Check if employee exists
+            if (entity == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindEmployee };
+            }
+
+            //Check if user has the required permission level to manage this employee
+            if (userPermissionRole <= RoleMapping[entity.Role])
+            {
+                return new StatusReport { Ok = false, Message = CanNotManageEmployeeAsLowerPermission };
+            }
+
+            try
+            {
+                _unitOfWork.Vacations.DeleteRange(entity.Vacations.ToArray());
+
+                _unitOfWork.EmployeesInfo.Delete(entity);
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
+            }
+
+            return new StatusReport { Ok = true };
+        }
+
         public async Task<StatusReport> ChangeRoleAsync(ChangeRoleInputModel model, PermissionRole userPermissionRole)
         {
             var entityCompany = await _unitOfWork
@@ -263,7 +311,7 @@ namespace StaffScheduling.Web.Services.DbServices
             //Get EmployeeRole roles which have < PermissionRole that the current employees can manage
             //For example if I am an Admin I won't be able to manage other admins
             //Doing this because RoleMapping[EmployeeRole] can't be translated into SQL from entity
-            List<EmployeeRole> managableRoles = GetManagableRoles(userPermissionRole);
+            List<EmployeeRole> managableRoles = GetManageableRoles(userPermissionRole);
 
             var entityCompany = await _unitOfWork
                 .Companies
@@ -308,7 +356,6 @@ namespace StaffScheduling.Web.Services.DbServices
             int totalPages = (int)Math.Ceiling(totalEmployees / (double)ManageEmployeePageSize);
 
             List<EmployeeInfoViewModel> employeesInfo = await selectedEmployeesInfo
-                .Skip((page - 1) * ManageEmployeePageSize)
                 .Select(ef => new EmployeeInfoViewModel()
                 {
                     Id = ef.Id,
@@ -318,10 +365,11 @@ namespace StaffScheduling.Web.Services.DbServices
                     HasJoined = ef.HasJoined,
                     Role = ef.Role,
                 })
-                .Take(ManageEmployeePageSize)
-                .OrderByDescending(e => e.HasJoined) //Show joined first
+                .OrderByDescending(e => e.HasJoined)    //Show joined first
                 .ThenBy(e => e.Name)
                 .ThenBy(e => e.Email)
+                .Skip((page - 1) * ManageEmployeePageSize)
+                .Take(ManageEmployeePageSize)
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -341,6 +389,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return new ManageEmployeesInfoViewModel()
             {
                 CompanyId = companyId,
+                CurrentUserPermission = userPermissionRole,
                 SearchQuery = searchQuery,
                 SearchFilter = searchFilter,
                 CurrentPage = page,

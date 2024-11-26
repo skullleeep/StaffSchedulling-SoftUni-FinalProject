@@ -16,9 +16,6 @@ namespace StaffScheduling.Data.Models
         public Guid CompanyId { get; set; }
 
         [Required]
-        public Guid DepartmentId { get; set; }
-
-        [Required]
         public DateOnly StartDate { get; set; }
 
         [Required]
@@ -39,9 +36,5 @@ namespace StaffScheduling.Data.Models
         [ForeignKey(nameof(CompanyId))]
         [DeleteBehavior(DeleteBehavior.NoAction)]
         public virtual Company Company { get; set; } = null!;
-
-        [ForeignKey(nameof(DepartmentId))]
-        [DeleteBehavior(DeleteBehavior.NoAction)]
-        public virtual Department Department { get; set; } = null!;
     }
 }

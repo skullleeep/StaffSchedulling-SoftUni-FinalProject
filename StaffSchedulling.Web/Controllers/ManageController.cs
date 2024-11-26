@@ -76,9 +76,6 @@ namespace StaffScheduling.Web.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
 
-            //Add user permission to model
-            model.CurrentEmployeePermission = permissionRole;
-
             return View(model);
         }
     }

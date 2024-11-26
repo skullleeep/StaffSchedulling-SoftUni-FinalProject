@@ -14,6 +14,9 @@ namespace StaffScheduling.Web.Models.ViewModels.EmployeeInfo
         public List<EmployeeInfoViewModel> Employees { get; set; } = new List<EmployeeInfoViewModel>();
 
         [Required]
+        public PermissionRole CurrentUserPermission { get; set; } = PermissionRole.None;
+
+        [Required]
         public List<ManageEmployeesInfoDepartmentViewModel> Departments { get; set; } = new List<ManageEmployeesInfoDepartmentViewModel>();
 
         public string? SearchQuery { get; set; }
@@ -25,8 +28,5 @@ namespace StaffScheduling.Web.Models.ViewModels.EmployeeInfo
 
         [Required]
         public int TotalPages { get; set; }
-
-        [Required]
-        public PermissionRole CurrentEmployeePermission { get; set; }
     }
 }

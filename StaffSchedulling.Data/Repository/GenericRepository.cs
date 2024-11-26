@@ -43,7 +43,12 @@ namespace StaffScheduling.Data.Repository
             await _dbSet.AddRangeAsync(items);
         }
 
-        public bool Delete(TId id)
+        public void Delete(TType item)
+        {
+            _dbSet.Remove(item);
+        }
+
+        public bool DeleteById(TId id)
         {
             var entity = GetById(id);
             if (entity == null)
@@ -55,7 +60,7 @@ namespace StaffScheduling.Data.Repository
             return true;
         }
 
-        public async Task<bool> DeleteAsync(TId id)
+        public async Task<bool> DeleteByIdAsync(TId id)
         {
             var entity = await GetByIdAsync(id);
             if (entity == null)
@@ -67,17 +72,9 @@ namespace StaffScheduling.Data.Repository
             return true;
         }
 
-        public bool DeleteRange(TType[] items)
+        public void DeleteRange(TType[] items)
         {
-            try
-            {
-                _dbSet.RemoveRange(items);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            _dbSet.RemoveRange(items);
         }
 
         public TType? FirstOrDefault(Func<TType, bool> predicate)

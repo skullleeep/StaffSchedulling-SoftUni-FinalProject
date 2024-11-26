@@ -43,9 +43,11 @@ namespace StaffScheduling.Web.Controllers
             if (status.Ok == false)
             {
                 TempData["EmployeeError"] = status.Message;
+
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
             }
 
-            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
         [HttpPost]
@@ -82,9 +84,52 @@ namespace StaffScheduling.Web.Controllers
             if (status.Ok == false)
             {
                 TempData["EmployeeError"] = status.Message;
+
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
             }
 
-            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(DeleteEmployeeInputModel model)
+        {
+            //Check for model errors
+            if (!ModelState.IsValid)
+            {
+                //Get model errors
+                string message = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                TempData["EmployeeError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
+
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+            }
+
+            //Get user email
+            string userEmail = GetCurrentUserEmail();
+
+            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+
+            //Check for access permission
+            if (permissionRole < PermissionRole.Editor)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            //Delete employee
+            StatusReport status = await _employeeInfoService.DeleteEmployeeAsync(model, permissionRole);
+
+            //Check for errors
+            if (status.Ok == false)
+            {
+                TempData["EmployeeError"] = status.Message;
+
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+            }
+
+            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
         }
     }
 }

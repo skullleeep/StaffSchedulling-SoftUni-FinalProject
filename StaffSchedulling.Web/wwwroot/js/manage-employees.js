@@ -24,3 +24,18 @@ document.getElementById("deleteSelectedBtn").addEventListener("click", function 
         alert("Please select at least one employee.");
     }
 });
+
+//Handle automatic scrolling
+document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("scrollToTable").toLowerCase() === "true") {
+        const table = document.getElementById("employeesTable");
+        if (table) {
+            table.scrollIntoView({ behavior: "instant" });
+            // Remove the scrollToTable parameter
+            urlParams.delete("scrollToTable");
+            const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+            history.replaceState(null, "", newUrl);
+        }
+    }
+});

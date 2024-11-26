@@ -27,7 +27,7 @@
         };
 
         //Get EmployeeRoles that user with some permission level can manage ( PermissionRoles < User's PermissionRole )
-        public static List<EmployeeRole> GetManagableRoles(PermissionRole userPermissionRole)
+        public static List<EmployeeRole> GetManageableRoles(PermissionRole userPermissionRole)
         {
             return RoleMapping
                 .Where(rm => rm.Value < userPermissionRole)

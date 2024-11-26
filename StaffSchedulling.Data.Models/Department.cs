@@ -22,7 +22,5 @@ namespace StaffScheduling.Data.Models
         public virtual Company Company { get; set; }
 
         public virtual ICollection<EmployeeInfo> DepartmentEmployeesInfo { get; set; } = new HashSet<EmployeeInfo>();
-
-        public virtual ICollection<Vacation> Vacations { get; set; } = new HashSet<Vacation>();
     }
 }

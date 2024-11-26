@@ -122,7 +122,7 @@ namespace StaffScheduling.Web.Services.DbServices
 
                 _unitOfWork.EmployeesInfo.DeleteRange(entityCompany.CompanyEmployeesInfo.ToArray());
 
-                await _unitOfWork.Companies.DeleteAsync(id);
+                _unitOfWork.Companies.Delete(entityCompany);
 
                 await _unitOfWork.SaveChangesAsync();
             }

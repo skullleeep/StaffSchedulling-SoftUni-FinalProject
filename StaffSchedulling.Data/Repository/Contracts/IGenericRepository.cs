@@ -28,10 +28,12 @@ namespace StaffScheduling.Data.Repository.Contracts
 
         void Update(TType item);
 
-        bool Delete(TId id);
+        void Delete(TType item);
 
-        Task<bool> DeleteAsync(TId id);
+        bool DeleteById(TId id);
 
-        bool DeleteRange(TType[] items);
+        Task<bool> DeleteByIdAsync(TId id);
+
+        void DeleteRange(TType[] items);
     }
 }

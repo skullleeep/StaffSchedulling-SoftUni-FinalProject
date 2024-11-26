@@ -4,15 +4,15 @@
 @model ChangeRoleInputModel
 
 <form asp-controller="Employee" asp-action="ChangeRole" method="post" class="d-flex align-items-center">
-    <input asp-for="CompanyId" type="hidden" value="@Model.CompanyId" />
-    <input asp-for="CurrentEmployeePermission" type="hidden" value="@Model.CurrentEmployeePermission" />
-    <input asp-for="EmployeeId" type="hidden" value="@Model.EmployeeId" />
+    <input asp-for="CompanyId" type="hidden" readonly/>
+    <input asp-for="CurrentUserPermission" type="hidden" readonly />
+    <input asp-for="EmployeeId" type="hidden" readonly />
     <select asp-for="Role" class="form-select form-select-sm w-auto">
         <!-- Populate roles dynamically -->
         @foreach (var role in Helper.EnumArray<CustomRoles.EmployeeRole>())
         {
             //Skip roles which user has no permission to change employee to
-            if (CustomRoles.GetManagableRoles(Model.CurrentEmployeePermission).Contains(role) == false)
+            if (!CustomRoles.GetManageableRoles(Model.CurrentUserPermission).Contains(role))
             {
                 continue;
             }

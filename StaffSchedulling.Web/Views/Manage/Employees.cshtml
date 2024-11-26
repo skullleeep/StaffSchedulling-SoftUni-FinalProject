@@ -9,6 +9,8 @@
     ViewData["Title"] = $"Manage Employees";
 }
 
+<partial name="_ConfirmationModal">
+
 <div class="container mt-4">
     <div class="row mb-3">
         <!-- Header Section -->
@@ -34,7 +36,10 @@
 
     <!-- Search Section -->
     <div class="row mb-4">
-        <form method="get" asp-action="Employees" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row">
+        <form method="get" asp-action="Employees" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row"> @*scrollToTable is detected by javascript*@
+            <!-- Hidden Input for scrollToTable -->
+            <input type="hidden" name="scrollToTable" value="True" />
+
             <input type="text" asp-for="SearchQuery" class="form-control w-50" placeholder="Search employees" value="@Model.SearchQuery" />
             <select class="no-border-select w-auto" asp-for="SearchFilter">
             <!-- Populate filters dynamically -->
@@ -86,7 +91,7 @@
     </div>
 
     <!-- Employee Table -->
-    <div class="card">
+        <div id="employeesTable" class="card">
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -118,11 +123,11 @@
                                             <i class="font-weight-light">Empty</i>
                                         }
                                     </td>
-                                    <td>@employee.Email</td>
+                                        <td id="employeeEmail-@employee.Id.ToString()">@employee.Email</td>
                                     <td>
                                         <partial name="_ChangeRoleForm"
                                                  model="@new ChangeRoleInputModel() { CompanyId = Model.CompanyId, 
-                                                                                      CurrentEmployeePermission = Model.CurrentEmployeePermission, 
+                                                                                      CurrentUserPermission = Model.CurrentUserPermission,
                                                                                       EmployeeId = employee.Id, 
                                                                                       Role = employee.Role}" />
                                     </td>
@@ -147,7 +152,7 @@
                                         }
                                     </td>
                                     <td>
-                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                        <partial name="_DeleteEmployeeForm" model="@new DeleteEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = employee.Id }" />
                                     </td>
                                 </tr>
                             }
@@ -234,5 +239,19 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/manage-employees.js"></script>
+    <script src="~/js/confirmation-modal.js"></script>
+    <script>
+        function confirmDelete(employeeId) {
+            let employeeEmail = document.getElementById(`employeeEmail-${employeeId}`).innerHTML;
+
+            // Show the confirmation modal
+            showConfirmationModal(
+                    `Are you sure you want to delete employee with email ${employeeEmail}?`,
+                    () => document.getElementById(`deleteForm-${employeeId}`).submit(), // Resubmit the form upon confirmation
+                "btn-danger",
+                "Delete"
+            );
+        }
+    </script>
 }
 
