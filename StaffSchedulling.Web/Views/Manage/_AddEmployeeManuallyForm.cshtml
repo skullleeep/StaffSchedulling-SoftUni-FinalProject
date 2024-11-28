@@ -1,12 +1,8 @@
 ﻿@using StaffScheduling.Web.Models.InputModels.EmployeeInfo;
 @model AddEmployeeInfoManuallyInputModel
 
-<form asp-controller="Employee" asp-action="AddManually" method="post" class="row g-2">
+<form asp-controller="Employee" asp-action="AddManually" method="post" class="col-md-8  d-flex gap-2">
     <input asp-for="CompanyId" type="hidden" readonly/>
-    <div class="col-md-8">
-        <input asp-for="Email" class="form-control" placeholder="Enter employee email" required />
-    </div>
-    <div class="col-md-4 text-end">
-        <button type="submit" class="btn btn-success w-100">Add Employee</button>
-    </div>
+    <input asp-for="Email" class="form-control w-75 flex-grow-1" placeholder="Enter employee email" required />
+    <button type="submit" class="btn btn-success w-auto">Add Employee</button>
 </form>

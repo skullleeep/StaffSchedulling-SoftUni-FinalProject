@@ -9,6 +9,7 @@
             public const string CouldNotFindCompany = "Couldn't find company!";
             public const string CouldNotFindUser = "Couldn't find user!";
             public const string CouldNotFindEmployee = "Couldn't find employee!";
+            public const string CouldNotFindAnyEmployeesToDelete = "Couldn't find any employees to delete!";
             //public const string CouldNotFindUserEmail = "Couldn't find user's email!";
             public const string CouldNotJoinAlreadyJoinedCompany = "Couldn't join company because you have already joined!";
             public const string OwnerCouldNotHisJoinCompany = "You can't join the company because you are it's owner!";

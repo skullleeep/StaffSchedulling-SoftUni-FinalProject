@@ -71,9 +71,7 @@
         <div class="card-body">
             <div class="row">
                 <!-- Add Employee Manually -->
-                <div class="col-md-8">
-                    <partial name="_AddEmployeeManuallyForm" model="@new AddEmployeeInfoManuallyInputModel() { CompanyId = Model.CompanyId }" />
-                </div>
+                <partial name="_AddEmployeeManuallyForm" model="@new AddEmployeeInfoManuallyInputModel() { CompanyId = Model.CompanyId }" />
 
                 <!-- OR -->
                 <div class="col-md-1 d-flex justify-content-center">
@@ -84,7 +82,7 @@
 
                 <!-- Upload Employees -->
                 <div class="col-md-3">
-                    <button type="submit" class="btn btn-info w-100">Upload Excel With Employees</button>
+                    <button type="submit" class="btn btn-outline-success w-100">Upload Excel With Employees</button>
                 </div>
             </div>
         </div>
@@ -107,7 +105,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model.Employees != null && Model.Employees.Any())
+                        @if (Model.Employees.Any())
                         {
                             foreach (var employee in Model.Employees)
                             {
@@ -132,18 +130,18 @@
                                                                                       Role = employee.Role}" />
                                     </td>
                                     <td>
-@*                                         @if (!String.IsNullOrEmpty(employee.Department))
+                                        @if (Model.Departments.Any())
                                         {
-                                            @employee.Department
+                                                <partial name="_ChangeDepartmentForm"
+                                                         model="@new ChangeDepartmentInputModel() { CompanyId = Model.CompanyId,
+                                                                                                    Departments = Model.Departments,
+                                                                                                    EmployeeId = employee.Id,
+                                                                                                    CurrentDepartmentName = employee.Department ?? String.Empty}" />
                                         }
                                         else
                                         {
-                                            <i class="font-weight-light">None</i>
-                                        } *@
-                                        <partial name="_ChangeDepartmentForm"
-                                                    model="@new ChangeDepartmentInputModel() { CompanyId = Model.CompanyId,
-                                                                                               EmployeeId = employee.Id,
-                                                                                               DepartmentName = employee.Department}" />
+                                            <i class="font-weight-light">No Departments Found</i>
+                                        }
                                     </td>
                                     <td>
                                         @if (employee.HasJoined)
@@ -156,7 +154,7 @@
                                         }
                                     </td>
                                     <td>
-                                        <partial name="_DeleteEmployeeForm" model="@new DeleteEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = employee.Id }" />
+                                            <partial name="_DeleteEmployeeForm" model="@new DeleteEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = employee.Id }" />
                                     </td>
                                 </tr>
                             }
@@ -173,52 +171,18 @@
         </div>
     </div>
 
-    <!-- Bulk Actions Section -->
-    <div class="card mb-4 mt-4">
-        <div class="card-body">
-            <div class="row">
-                <!-- Change Department Of Selected -->
-                @if (Model.Departments.Any())
-                {
-                    <div class="col-md-8">
-                        <div class="d-flex align-items-center gap-2 h-100">
-                            <select name="department" class="form-select w-100 h-100">
-                                <!-- Populate departments dynamically -->
-                                @foreach (var department in Model.Departments)
-                                {
-                                    <option value="@department.Id">@department.Name</option>
-                                }
-                            </select>
-                            <button class="btn btn-primary w-100 w-md-auto">Change Department Of Selected</button>
-                        </div>
+        @if (Model.Employees.Any())
+        {
+            <!-- Bulk Actions Section -->
+            <div class="card mb-4 mt-1 border-0">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <!-- Delete All -->
+                        <partial name="_DeleteAllEmployeesForm" model="@new DeleteAllEmployeesInputModel() { CompanyId = Model.CompanyId }" />
                     </div>
-                }
-                else
-                {
-                    <div class="col-md-8">
-                        <div class="d-flex align-items-center gap-2 h-100">
-                            <select disabled="disabled" class="form-select w-100 h-100">
-                                <option>No Departments Found</option>
-                            </select>
-                            <button disabled="disabled" class="btn btn-primary w-100 w-md-auto">Change Department Of Selected</button>
-                        </div>
-                    </div>
-                }
-
-                <!-- OR -->
-                <div class="col-md-1 d-flex justify-content-center">
-                    <div style="height: 100%; padding-left: 10px; padding-right: 10px; padding-top:10px;">
-                        <h3>OR</h3>
-                    </div>
-                </div>
-
-                <!-- Delete Selected -->
-                <div class="col-md-3">
-                        <button id="deleteSelectedBtn" class="btn btn-danger w-100" onclick="confirmDeleteSelected()">Delete Selected</button>
                 </div>
             </div>
-        </div>
-    </div>
+        }
 
 
     <!-- Pagination Section -->
@@ -238,11 +202,13 @@
             }
         </ul>
     </nav>
+
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/confirmation-modal.js"></script>
     <script src="~/js/manage-employees.js"></script>
+        <script src="~/js/auto-sizing-select.js"></script>
 }
 

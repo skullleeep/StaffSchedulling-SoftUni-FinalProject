@@ -14,7 +14,11 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
 
         public Task<StatusReport> DeleteEmployeeAsync(DeleteEmployeeInputModel model, PermissionRole userPermissionRole);
 
+        public Task<StatusReport> DeleteAllEmployeesAsync(DeleteAllEmployeesInputModel model, PermissionRole userPermissionRole);
+
         public Task<StatusReport> ChangeRoleAsync(ChangeRoleInputModel model, PermissionRole userPermissionRole);
+
+        public Task<StatusReport> ChangeDepartmentAsync(ChangeDepartmentInputModel model, PermissionRole userPermissionRole);
 
         public Task<PermissionRole> GetUserPermissionInCompanyAsync(Guid companyId, string userEmail);
 

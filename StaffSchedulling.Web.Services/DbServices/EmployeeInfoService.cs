@@ -123,7 +123,7 @@ namespace StaffScheduling.Web.Services.DbServices
                 .All()
                 .AsNoTracking()
                 .Where(ef => ef.CompanyId == model.CompanyId)
-                .FirstOrDefaultAsync(ef => ef.Email.ToLower() == model.Email.ToLower());
+                .FirstOrDefaultAsync(ef => ef.NormalizedEmail == model.Email.ToUpper());
 
             //Check if employee with same email already exists
             if (entityFound != null)
@@ -200,6 +200,53 @@ namespace StaffScheduling.Web.Services.DbServices
             return new StatusReport { Ok = true };
         }
 
+        public async Task<StatusReport> DeleteAllEmployeesAsync(DeleteAllEmployeesInputModel model, PermissionRole userPermissionRole)
+        {
+            //Get EmployeeRole roles which have < PermissionRole that the current employees can manage
+            //For example if I am an Admin I won't be able to delete other admins
+            //Doing this because RoleMapping[EmployeeRole] can't be translated into SQL from entity
+            List<EmployeeRole> managableRoles = GetManageableRoles(userPermissionRole);
+
+            var entityCompany = await _unitOfWork
+                            .Companies
+                            .All()
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(c => c.Id == model.CompanyId);
+
+            //Check if company exists
+            if (entityCompany == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindCompany };
+            }
+
+            IQueryable<EmployeeInfo> entities = _unitOfWork
+                .EmployeesInfo
+                .All()
+                .Include(c => c.Vacations)
+                .Where(ef => ef.CompanyId == model.CompanyId && managableRoles.Contains(ef.Role)); //Get only employees that user can manage
+
+            //Check if there are any employees to delete
+            if (await entities.AnyAsync() == false)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindAnyEmployeesToDelete };
+            }
+
+            try
+            {
+                _unitOfWork.Vacations.DeleteRange(await entities.SelectMany(ef => ef.Vacations).ToArrayAsync());
+
+                _unitOfWork.EmployeesInfo.DeleteRange(await entities.ToArrayAsync());
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
+            }
+
+            return new StatusReport { Ok = true };
+        }
+
         public async Task<StatusReport> ChangeRoleAsync(ChangeRoleInputModel model, PermissionRole userPermissionRole)
         {
             var entityCompany = await _unitOfWork
@@ -254,6 +301,77 @@ namespace StaffScheduling.Web.Services.DbServices
             try
             {
                 entity.Role = model.Role;
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
+            }
+
+            return new StatusReport { Ok = true };
+        }
+
+        public async Task<StatusReport> ChangeDepartmentAsync(ChangeDepartmentInputModel model, PermissionRole userPermissionRole)
+        {
+            var entityCompany = await _unitOfWork
+                .Companies
+                .All()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == model.CompanyId);
+
+            //Check if company exists
+            if (entityCompany == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindCompany };
+            }
+
+            var entity = await _unitOfWork
+                .EmployeesInfo
+                .All()
+                .Include(ef => ef.Department)
+                .Where(ef => ef.CompanyId == model.CompanyId)
+                .FirstOrDefaultAsync(ef => ef.Id == model.EmployeeId);
+
+
+            //Check if employee exists
+            if (entity == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindEmployee };
+            }
+
+            //Check if department is 'None' and if it is just nullify employee's DepartmentId and say that we sucessfully changed department
+            if (model.SelectedDepartmentId == Guid.Empty)
+            {
+                try
+                {
+                    entity.DepartmentId = null;
+
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
+                }
+
+                return new StatusReport { Ok = true };
+            }
+
+            //Check if user has the required permission level to manage this employee
+            if (userPermissionRole <= RoleMapping[entity.Role])
+            {
+                return new StatusReport { Ok = false, Message = CanNotManageEmployeeAsLowerPermission };
+            }
+
+            //If new department is the same as old department just skip database changes and say that we successfully changed department
+            if (entity.DepartmentId == model.SelectedDepartmentId)
+            {
+                return new StatusReport { Ok = true };
+            }
+
+            try
+            {
+                entity.DepartmentId = model.SelectedDepartmentId;
 
                 await _unitOfWork.SaveChangesAsync();
             }
@@ -348,6 +466,15 @@ namespace StaffScheduling.Web.Services.DbServices
                     selectedEmployeesInfo = selectedEmployeesInfo
                         .Where(ef => ef.User != null)
                         .Where(ef => ef.User!.FullName!.ToLower().Contains(searchQuery.ToLower()));
+                }
+            }
+            else //We have no search query but we can still sort for some filters
+            {
+                //Here I get only joined users, because we are searching by name
+                if (searchFilter.Value == EmployeeSearchFilter.Name)
+                {
+                    selectedEmployeesInfo = selectedEmployeesInfo
+                        .Where(ef => ef.User != null);
                 }
             }
 
