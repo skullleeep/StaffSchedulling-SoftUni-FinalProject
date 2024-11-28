@@ -132,14 +132,18 @@
                                                                                       Role = employee.Role}" />
                                     </td>
                                     <td>
-                                        @if (!String.IsNullOrEmpty(employee.Department))
+@*                                         @if (!String.IsNullOrEmpty(employee.Department))
                                         {
                                             @employee.Department
                                         }
                                         else
                                         {
                                             <i class="font-weight-light">None</i>
-                                        }
+                                        } *@
+                                        <partial name="_ChangeDepartmentForm"
+                                                    model="@new ChangeDepartmentInputModel() { CompanyId = Model.CompanyId,
+                                                                                               EmployeeId = employee.Id,
+                                                                                               DepartmentName = employee.Department}" />
                                     </td>
                                     <td>
                                         @if (employee.HasJoined)
@@ -210,7 +214,7 @@
 
                 <!-- Delete Selected -->
                 <div class="col-md-3">
-                    <button id="deleteSelectedBtn" class="btn btn-danger w-100">Delete Selected</button>
+                        <button id="deleteSelectedBtn" class="btn btn-danger w-100" onclick="confirmDeleteSelected()">Delete Selected</button>
                 </div>
             </div>
         </div>
@@ -238,20 +242,7 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="~/js/manage-employees.js"></script>
     <script src="~/js/confirmation-modal.js"></script>
-    <script>
-        function confirmDelete(employeeId) {
-            let employeeEmail = document.getElementById(`employeeEmail-${employeeId}`).innerHTML;
-
-            // Show the confirmation modal
-            showConfirmationModal(
-                    `Are you sure you want to delete employee with email ${employeeEmail}?`,
-                    () => document.getElementById(`deleteForm-${employeeId}`).submit(), // Resubmit the form upon confirmation
-                "btn-danger",
-                "Delete"
-            );
-        }
-    </script>
+    <script src="~/js/manage-employees.js"></script>
 }
 

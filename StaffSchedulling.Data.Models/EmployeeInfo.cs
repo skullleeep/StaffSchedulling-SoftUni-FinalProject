@@ -6,7 +6,7 @@ using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Data.Models
 {
-    [Index(nameof(CompanyId), nameof(Email), IsUnique = true)]
+    [Index(nameof(CompanyId), nameof(NormalizedEmail), IsUnique = true)]
     public class EmployeeInfo
     {
         [Key]
@@ -15,6 +15,11 @@ namespace StaffScheduling.Data.Models
         [Required]
         [MaxLength(EmailMaxLength)]
         public string Email { get; set; } = null!;
+
+        //Auto-generation in EmployeeInfoConfiguration
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [MaxLength(EmailMaxLength)]
+        public string NormalizedEmail { get; set; } = null!;
 
         [Required]
         public EmployeeRole Role { get; set; } = EmployeeRole.Employee;

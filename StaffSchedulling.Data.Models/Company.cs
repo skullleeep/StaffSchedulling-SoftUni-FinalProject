@@ -26,7 +26,7 @@ namespace StaffScheduling.Data.Models
 
         //Navigation
         [ForeignKey(nameof(OwnerId))]
-        public ApplicationUser Owner { get; set; }
+        public ApplicationUser Owner { get; set; } = null!;
 
         public virtual ICollection<EmployeeInfo> CompanyEmployeesInfo { get; set; } = new HashSet<EmployeeInfo>();
         public virtual ICollection<Department> Departments { get; set; } = new HashSet<Department>();

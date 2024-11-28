@@ -25,6 +25,7 @@ namespace StaffScheduling.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new EmployeeInfoConfiguration());
+            builder.ApplyConfiguration(new DepartmentConfiguration());
 
             base.OnModelCreating(builder);
         }

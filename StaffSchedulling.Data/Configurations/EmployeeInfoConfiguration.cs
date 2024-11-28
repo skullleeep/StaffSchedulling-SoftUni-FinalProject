@@ -21,6 +21,11 @@ namespace StaffScheduling.Data.Configurations
                 .WithMany(d => d.DepartmentEmployeesInfo)
                 .HasForeignKey(b => b.DepartmentId)
                 .IsRequired(false);
+
+            //Make NormalizedEmail value auto-generate
+            builder
+                .Property(u => u.NormalizedEmail)
+                .HasComputedColumnSql("UPPER(Email)", stored: true);
         }
     }
 }

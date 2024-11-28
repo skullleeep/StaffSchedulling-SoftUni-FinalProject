@@ -1,31 +1,4 @@
-﻿//Handle the "select all" functionality
-document.getElementById("selectAll").addEventListener("change", function () {
-    const checkboxes = document.querySelectorAll(".employee-checkbox");
-    checkboxes.forEach((checkbox) => {
-        checkbox.checked = this.checked;
-    });
-});
-
-//Handle delete selected employees
-document.getElementById("deleteSelectedBtn").addEventListener("click", function () {
-    const selectedIds = [];
-    const checkboxes = document.querySelectorAll(".employee-checkbox:checked");
-    checkboxes.forEach((checkbox) => {
-        selectedIds.push(checkbox.value);
-    });
-
-    if (selectedIds.length > 0) {
-        if (confirm("Are you sure you want to delete the selected employees?")) {
-            // You can submit the deletion via AJAX or form submission
-            document.getElementById("manageEmployeesForm").action = "/Employee/DeleteSelectedEmployees";
-            document.getElementById("manageEmployeesForm").submit(); // Submit the form with the selected employees
-        }
-    } else {
-        alert("Please select at least one employee.");
-    }
-});
-
-//Handle automatic scrolling
+﻿//Handle automatic scrolling
 document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("scrollToTable").toLowerCase() === "true") {
@@ -39,3 +12,33 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+
+function confirmDelete(employeeId) {
+    let employeeEmail = document.getElementById(`employeeEmail-${employeeId}`).innerHTML;
+
+    // Show the confirmation modal
+    showConfirmationModal(
+        `Are you sure you want to delete employee with email ${employeeEmail}?`,
+        () => document.getElementById(`deleteForm-${employeeId}`).submit(), // Resubmit the form upon confirmation
+        "btn-danger",
+        "Delete"
+    );
+}
+
+function confirmDeleteSelected() {
+    // Show the confirmation modal
+    showConfirmationModal(
+        `Are you sure you want to delete selected employees?`,
+        () => {
+            const checkboxes = document.querySelectorAll(".employee-checkbox:checked");
+            checkboxes.forEach((checkbox) => {
+                let employeeRow = checkbox.parentElement.parentElement;
+                let employeeDeleteForm = employeeRow.querySelector("[id^='deleteForm']");
+
+                employeeDeleteForm.submit();
+            });
+        }, // Resubmit the form upon confirmation
+        "btn-danger",
+        "Delete"
+    );
+}
