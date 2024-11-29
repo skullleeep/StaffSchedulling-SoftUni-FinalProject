@@ -7,7 +7,7 @@ using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Web.Controllers
 {
-    public class EmployeeController(IEmployeeInfoService _employeeInfoService) : BaseController
+    public class EmployeeController(IPermissionService _permissionService, IEmployeeInfoService _employeeInfoService) : BaseController
     {
         [HttpPost]
         public async Task<IActionResult> AddManually(AddEmployeeInfoManuallyInputModel model)
@@ -28,7 +28,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
@@ -69,7 +69,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
@@ -110,7 +110,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
@@ -151,7 +151,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
@@ -192,7 +192,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using StaffScheduling.Common.Enums;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Web.Extensions;
+using StaffScheduling.Web.Services.UserServices;
 using System.ComponentModel.DataAnnotations;
 using static StaffScheduling.Common.Constants.ApplicationConstants;
 using static StaffScheduling.Common.Constants.DataConstants.ApplicationUser;
@@ -18,9 +19,9 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
     public class AdminChangeModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationUserManager _userManager;
 
-        public AdminChangeModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public AdminChangeModel(SignInManager<ApplicationUser> signInManager, ApplicationUserManager userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;

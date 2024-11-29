@@ -20,8 +20,6 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
 
         public Task<StatusReport> ChangeDepartmentAsync(ChangeDepartmentInputModel model, PermissionRole userPermissionRole);
 
-        public Task<PermissionRole> GetUserPermissionInCompanyAsync(Guid companyId, string userEmail);
-
         public Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page, PermissionRole userPermissionRole);
     }
 }

@@ -9,7 +9,7 @@ using static StaffScheduling.Common.Enums.CustomRoles;
 namespace StaffScheduling.Web.Controllers
 {
     [Authorize]
-    public class CompanyController(ICompanyService _companyService, IEmployeeInfoService _employeeInfoService) : BaseController
+    public class CompanyController(IPermissionService _permissionService, ICompanyService _companyService, IEmployeeInfoService _employeeInfoService) : BaseController
     {
         //Get request when trying to join a company
         [HttpGet("[controller]/[action]/{inviteCode?}")]
@@ -112,7 +112,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
@@ -138,7 +138,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(model.Id, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.Id, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
@@ -176,7 +176,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Owner)

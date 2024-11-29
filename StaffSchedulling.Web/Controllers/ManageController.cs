@@ -7,7 +7,7 @@ using static StaffScheduling.Common.Enums.CustomRoles;
 namespace StaffScheduling.Web.Controllers
 {
     [Authorize]
-    public class ManageController(ICompanyService _companyService, IEmployeeInfoService _employeeInfoService) : BaseController
+    public class ManageController(IPermissionService _permissionService, ICompanyService _companyService, IEmployeeInfoService _employeeInfoService) : BaseController
     {
         [HttpGet("[controller]/[action]/{id?}")]
         public async Task<IActionResult> Company(string id)
@@ -23,7 +23,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Manager)
@@ -60,7 +60,7 @@ namespace StaffScheduling.Web.Controllers
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _employeeInfoService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)

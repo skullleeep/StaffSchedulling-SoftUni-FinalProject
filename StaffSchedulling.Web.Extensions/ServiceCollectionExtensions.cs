@@ -38,6 +38,8 @@ namespace StaffScheduling.Web.Extensions
         public static void RegisterServices(this IServiceCollection services)
         {
             services
+                //Permission Service
+                .AddScoped<IPermissionService, PermissionService>()
                 //Company Service
                 .AddScoped<ICompanyService, CompanyService>()
                 //EmployeeInfo Service

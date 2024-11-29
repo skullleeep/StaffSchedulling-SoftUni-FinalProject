@@ -1,0 +1,10 @@
+﻿using static StaffScheduling.Common.Enums.CustomRoles;
+
+namespace StaffScheduling.Web.Services.DbServices.Contracts
+{
+    public interface IPermissionService
+    {
+        Task<PermissionRole> GetUserPermissionInCompanyAsync(Guid companyId, string userEmail);
+    }
+
+}
