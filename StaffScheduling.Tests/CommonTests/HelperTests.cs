@@ -1,6 +1,6 @@
 using StaffScheduling.Common;
 
-namespace StaffScheduling.Tests
+namespace StaffScheduling.Tests.CommonTests
 {
     public class HelperTests
     {
@@ -23,7 +23,7 @@ namespace StaffScheduling.Tests
         }
 
         [Test]
-        public void EnumArray_ShouldReturnAllValuesForTestEnum()
+        public void EnumArray_ShouldReturnAllValuesForTestEnum_WhenEnumValid()
         {
             //Act
             var result = Helper.EnumArray<TestEnum>();
@@ -33,7 +33,7 @@ namespace StaffScheduling.Tests
         }
 
         [Test]
-        public void EnumArray_ShouldReturnAllValuesForAnotherTestEnum()
+        public void EnumArray_ShouldReturnAllValuesForAnotherTestEnum_WhenEnumValid()
         {
             //Act
             var result = Helper.EnumArray<AnotherTestEnum>();
@@ -43,7 +43,7 @@ namespace StaffScheduling.Tests
         }
 
         [Test]
-        public void EnumArray_ShouldHandleEmptyEnum()
+        public void EnumArray_ShouldReturnEmptyArray_WhenEnumEmpty()
         {
 
             //Act
@@ -54,7 +54,7 @@ namespace StaffScheduling.Tests
         }
 
         [Test]
-        public void AddSpacesToString_ShouldReturnStringWithSpaces()
+        public void AddSpacesToString_ShouldReturnStringWithSpaces_WhenStringValid()
         {
             //Arrange
             string stringWithoutSpaces = "StringWithoutSpaces";
@@ -68,7 +68,7 @@ namespace StaffScheduling.Tests
         }
 
         [Test]
-        public void AddSpacesToString_ShouldReturnSameStringIfNoNeedForSpaces()
+        public void AddSpacesToString_ShouldReturnSameString_WhenStringDoesNotNeedSpaces()
         {
             //Arrange
             string str = "Test";
@@ -81,16 +81,16 @@ namespace StaffScheduling.Tests
         }
 
         [Test]
-        public void AddSpacesToString_ShouldReturnEmptyIfStartingStringIsEmpty()
+        public void AddSpacesToString_ShouldReturnEmpty_WhenStringIsEmpty()
         {
             //Arrange
-            string str = String.Empty;
+            string str = string.Empty;
 
             //Act
             string result = Helper.AddSpacesToString(str);
 
             //Assert
-            Assert.That(result, Is.EqualTo(String.Empty));
+            Assert.That(result, Is.EqualTo(string.Empty));
         }
     }
 }

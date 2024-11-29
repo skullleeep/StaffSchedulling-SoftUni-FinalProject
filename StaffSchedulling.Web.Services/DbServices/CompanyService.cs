@@ -39,7 +39,7 @@ namespace StaffScheduling.Web.Services.DbServices
             //Check if user has hit the created companies limit
             if (createdCompaniesCount >= UserCreatedCompaniesLimit)
             {
-                return new StatusReport { Ok = false, Message = String.Format(CreatedCompaniesLimitHitFormat, createdCompaniesCount) };
+                return new StatusReport { Ok = false, Message = String.Format(CreatedCompaniesLimitHitFormat, UserCreatedCompaniesLimit) };
             }
 
             var newEntity = new Company()
@@ -66,7 +66,7 @@ namespace StaffScheduling.Web.Services.DbServices
         {
             var entityFound = await _unitOfWork
                 .Companies
-                .FirstOrDefaultAsync(c => c.OwnerId == userId && c.Name == model.Name);
+                .FirstOrDefaultAsync(c => c.Id != model.Id && c.OwnerId == userId && c.Name == model.Name);
 
             //Check if user already has a company with same name
             if (entityFound != null)

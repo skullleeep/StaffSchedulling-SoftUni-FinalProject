@@ -32,7 +32,7 @@
             //public const string CouldNotDeleteEmployeesInfo = "Couldn't delete company's employees!";
             public const string CouldNotDeleteCompany = "Couldn't delete company!";
 
-            public const string CanNotEditCompanyWithSameNameFormat = "You can't save change to company because you already have a company with the same name!";
+            public const string CanNotEditCompanyWithSameNameFormat = "You can't save changes to company because you already have a company with the name '{0}'!";
             public const string CanNotCreateCompanyWithSameNameFormat = "You can't create company '{0}' because you already have a company with the same name!";
             public const string CreatedCompaniesLimitHitFormat = "You can't create company because you have already created {0} companies! Delete some if you want to create new ones!";
         }
