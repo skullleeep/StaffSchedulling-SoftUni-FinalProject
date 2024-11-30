@@ -119,11 +119,11 @@ namespace StaffScheduling.Web.Services.DbServices
             }
 
             var entityFound = await _unitOfWork
-                .EmployeesInfo
-                .All()
-                .AsNoTracking()
-                .Where(ef => ef.CompanyId == model.CompanyId)
-                .FirstOrDefaultAsync(ef => ef.NormalizedEmail == model.Email.ToUpper());
+            .EmployeesInfo
+            .All()
+            .AsNoTracking()
+            .Where(ef => ef.CompanyId == model.CompanyId)
+            .FirstOrDefaultAsync(ef => ef.NormalizedEmail == model.Email.ToUpper());
 
             //Check if employee with same email already exists
             if (entityFound != null)
@@ -137,6 +137,7 @@ namespace StaffScheduling.Web.Services.DbServices
                 {
                     Id = Guid.NewGuid(),
                     Email = model.Email.ToLower(),
+                    NormalizedEmail = model.Email.ToUpper(),
                     CompanyId = model.CompanyId,
                 };
 

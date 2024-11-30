@@ -4,7 +4,7 @@ using StaffScheduling.Data.Models;
 
 namespace StaffScheduling.Data.Configurations
 {
-    internal class EmployeeInfoConfiguration : IEntityTypeConfiguration<EmployeeInfo>
+    public class EmployeeInfoConfiguration : IEntityTypeConfiguration<EmployeeInfo>
     {
         public void Configure(EntityTypeBuilder<EmployeeInfo> builder)
         {

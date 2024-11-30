@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="NUnit" Version="3.14.0" />
@@ -24,6 +25,7 @@
     <ProjectReference Include="..\StaffSchedulling.Data.Models\StaffScheduling.Data.Models.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Data\StaffScheduling.Data.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Web.Services\StaffScheduling.Web.Services.csproj" />
+    <ProjectReference Include="..\StaffSchedulling.Web\StaffScheduling.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

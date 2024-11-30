@@ -16,6 +16,7 @@
             public const string CanNotManageEmployeeAsLowerPermission = "You can't manage an employee with a same or higher permission level than you!";
             public const string CanNotChangeEmployeeRoleToHigher = "You can't change an employee's role to one that has same or higher permission than your role!";
             public const string CanNotAddRoleSupervisorWithoutDepartment = "You can't change an employee's role to 'Supervisor' if he has no 'Department'! Add employee to 'Department' first!";
+            public const string CanNotAddOwnerToTheEmployees = "You can't add the company's owner to the employee list!";
 
             public const string JoinedCompaniesLimitHitFormat = "You can't join the company because you have already joined {0} companies! Leave some if you want to join new ones!";
             public const string CouldNotFindEmployeeInfoFormat = "Couldn't find employee with email ({0}) in company database. Tell the company's admin to add you into the company's employee database!";
