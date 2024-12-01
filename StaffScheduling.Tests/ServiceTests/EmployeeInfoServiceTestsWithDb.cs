@@ -50,11 +50,13 @@ namespace StaffScheduling.Tests.ServiceTests
 
             string userToJoinId = Guid.NewGuid().ToString();
             string userToJoinEmail = "joining@user.com";
+            string companyName = "Test Company";
 
             var newCompanyEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10,
                 CompanyEmployeesInfo = new List<EmployeeInfo>()
@@ -97,11 +99,13 @@ namespace StaffScheduling.Tests.ServiceTests
 
             string userToJoinId = Guid.NewGuid().ToString();
             string userToJoinEmail = "joining@user.com";
+            string companyName = "Test Company";
 
             var newCompanyEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10,
                 CompanyEmployeesInfo = new List<EmployeeInfo>()
@@ -145,11 +149,13 @@ namespace StaffScheduling.Tests.ServiceTests
 
             string userToJoinId = Guid.NewGuid().ToString();
             string userToJoinEmail = ownerEmail;
+            string companyName = "Test Company";
 
             var newCompanyEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10,
                 CompanyEmployeesInfo = new List<EmployeeInfo>()
@@ -192,6 +198,7 @@ namespace StaffScheduling.Tests.ServiceTests
 
             string userToJoinId = Guid.NewGuid().ToString();
             string userToJoinEmail = "joining@user.com";
+            string companyName = "Test Company";
 
             var newCompanyEntities = new List<Company>();
             for (int i = 0; i < UserJoinedCompaniesLimit; i++)
@@ -199,7 +206,8 @@ namespace StaffScheduling.Tests.ServiceTests
                 var newCompanyEntity = new Company()
                 {
                     Id = Guid.NewGuid(),
-                    Name = $"Test Company {i}",
+                    Name = $"{companyName} {i}",
+                    NormalizedName = $"{companyName} {i}".ToUpper(),
                     OwnerId = Guid.NewGuid().ToString(),
                     MaxVacationDaysPerYear = 10,
                     CompanyEmployeesInfo = new List<EmployeeInfo>()
@@ -220,7 +228,8 @@ namespace StaffScheduling.Tests.ServiceTests
             var newCompanyToBeJoinedEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = $"Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10,
                 CompanyEmployeesInfo = new List<EmployeeInfo>()
@@ -263,13 +272,15 @@ namespace StaffScheduling.Tests.ServiceTests
 
             string userToJoinId = Guid.NewGuid().ToString();
             string userToJoinEmail = "joining@user.com";
+            string companyName = "Test Company";
 
             string randomEmail = "randomEmail@gmail.com";
 
             var newCompanyEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10,
                 CompanyEmployeesInfo = new List<EmployeeInfo>()
@@ -312,11 +323,13 @@ namespace StaffScheduling.Tests.ServiceTests
 
             string userToJoinId = Guid.NewGuid().ToString();
             string userToJoinEmail = "joining@user.com";
+            string companyName = "Test Company";
 
             var newCompanyEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10,
                 CompanyEmployeesInfo = new List<EmployeeInfo>()
@@ -355,10 +368,13 @@ namespace StaffScheduling.Tests.ServiceTests
         public async Task AddEmployeeManuallyAsync_ShouldAddEmployee_WhenInputValid()
         {
             //Arrange
+            string companyName = "Test Company";
+
             var newCompanyEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10
             };
@@ -386,10 +402,13 @@ namespace StaffScheduling.Tests.ServiceTests
         public async Task AddEmployeeManuallyAsync_ShouldNotAddEmployee_WhenCompanyNotFound()
         {
             //Arrange
+            string companyName = "Test Company";
+
             var newCompanyEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10
             };
@@ -433,10 +452,13 @@ namespace StaffScheduling.Tests.ServiceTests
                 });
             }
 
+            string companyName = "Test Company";
+
             var newCompanyEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10,
                 CompanyEmployeesInfo = newEntities
@@ -466,11 +488,13 @@ namespace StaffScheduling.Tests.ServiceTests
         {
             //Arrange
             string newEmployeeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
 
             var newCompanyEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10,
                 CompanyEmployeesInfo = new List<EmployeeInfo>()
@@ -500,6 +524,50 @@ namespace StaffScheduling.Tests.ServiceTests
 
             var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
             Assert.That(foundCompanyEntity.CompanyEmployeesInfo.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public async Task DeleteEmployeeAsync_ShouldDeleteEmployee_WhenInputValid()
+        {
+            //Arrange
+            Guid employeeToDeleteId = Guid.NewGuid();
+
+            string employeeToDeleteEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToDeleteId,
+                        Email = employeeToDeleteEmail,
+                        NormalizedEmail = employeeToDeleteEmail.ToUpper(),
+                    }
+                }
+            };
+
+            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            var model = new DeleteEmployeeInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = employeeToDeleteId };
+
+
+            //Act
+            var result = await _employeeInfoService.DeleteEmployeeAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsTrue(result.Ok);
+            Assert.IsNull(result.Message);
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.IsNull(foundCompanyEntity.CompanyEmployeesInfo.FirstOrDefault());
         }
     }
 }

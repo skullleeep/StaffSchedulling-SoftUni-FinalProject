@@ -246,15 +246,23 @@ namespace StaffScheduling.Data.Migrations
                         .HasMaxLength(160)
                         .HasColumnType("nvarchar(160)");
 
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)")
+                        .HasComputedColumnSql("UPPER(Name)", true);
+
                     b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("OwnerId", "NormalizedName")
+                        .IsUnique();
 
-                    b.ToTable("Companies", (string)null);
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("StaffScheduling.Data.Models.Department", b =>
@@ -283,7 +291,7 @@ namespace StaffScheduling.Data.Migrations
                     b.HasIndex("CompanyId", "NormalizedName")
                         .IsUnique();
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("StaffScheduling.Data.Models.EmployeeInfo", b =>
@@ -328,7 +336,7 @@ namespace StaffScheduling.Data.Migrations
                     b.HasIndex("CompanyId", "NormalizedEmail")
                         .IsUnique();
 
-                    b.ToTable("EmployeesInfo", (string)null);
+                    b.ToTable("EmployeesInfo");
                 });
 
             modelBuilder.Entity("StaffScheduling.Data.Models.Vacation", b =>
@@ -362,7 +370,7 @@ namespace StaffScheduling.Data.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Vacations", (string)null);
+                    b.ToTable("Vacations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

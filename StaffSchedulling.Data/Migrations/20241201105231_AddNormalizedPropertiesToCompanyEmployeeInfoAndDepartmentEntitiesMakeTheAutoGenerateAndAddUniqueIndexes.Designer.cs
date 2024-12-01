@@ -12,8 +12,8 @@ using StaffScheduling.Data;
 namespace StaffScheduling.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241128144125_AddUniqueNormalizedNamePropToEntityDepartmentAndAddSameButEmailPropToEntityEmployeeInfo")]
-    partial class AddUniqueNormalizedNamePropToEntityDepartmentAndAddSameButEmailPropToEntityEmployeeInfo
+    [Migration("20241201105231_AddNormalizedPropertiesToCompanyEmployeeInfoAndDepartmentEntitiesMakeTheAutoGenerateAndAddUniqueIndexes")]
+    partial class AddNormalizedPropertiesToCompanyEmployeeInfoAndDepartmentEntitiesMakeTheAutoGenerateAndAddUniqueIndexes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -249,13 +249,21 @@ namespace StaffScheduling.Data.Migrations
                         .HasMaxLength(160)
                         .HasColumnType("nvarchar(160)");
 
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)")
+                        .HasComputedColumnSql("UPPER(Name)", true);
+
                     b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("OwnerId", "NormalizedName")
+                        .IsUnique();
 
                     b.ToTable("Companies");
                 });

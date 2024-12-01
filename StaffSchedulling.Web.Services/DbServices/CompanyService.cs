@@ -21,7 +21,7 @@ namespace StaffScheduling.Web.Services.DbServices
         {
             var entityFound = await _unitOfWork
                 .Companies
-                .FirstOrDefaultAsync(c => c.OwnerId == userId && c.Name == model.Name);
+                .FirstOrDefaultAsync(c => c.OwnerId == userId && c.NormalizedName == model.Name.ToUpper());
 
             //Check if user already has a company with same name
             if (entityFound != null)
@@ -45,6 +45,7 @@ namespace StaffScheduling.Web.Services.DbServices
             var newEntity = new Company()
             {
                 Name = model.Name,
+                NormalizedName = model.Name.ToUpper(),
                 MaxVacationDaysPerYear = model.MaxVacationDaysPerYear,
                 OwnerId = userId
             };
@@ -66,7 +67,7 @@ namespace StaffScheduling.Web.Services.DbServices
         {
             var entityFound = await _unitOfWork
                 .Companies
-                .FirstOrDefaultAsync(c => c.Id != model.Id && c.OwnerId == userId && c.Name == model.Name);
+                .FirstOrDefaultAsync(c => c.Id != model.Id && c.OwnerId == userId && c.NormalizedName == model.Name.ToUpper());
 
             //Check if user already has a company with same name
             if (entityFound != null)
@@ -87,6 +88,7 @@ namespace StaffScheduling.Web.Services.DbServices
             try
             {
                 entity.Name = model.Name;
+                entity.NormalizedName = model.Name.ToUpper();
                 entity.MaxVacationDaysPerYear = model.MaxVacationDaysPerYear;
 
                 await _unitOfWork.SaveChangesAsync();

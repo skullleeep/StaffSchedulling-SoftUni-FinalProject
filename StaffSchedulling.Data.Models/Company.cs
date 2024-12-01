@@ -5,14 +5,20 @@ using static StaffScheduling.Common.Constants.DataConstants.Company;
 
 namespace StaffScheduling.Data.Models
 {
+    [Index(nameof(OwnerId), nameof(NormalizedName), IsUnique = true)]
     public class Company
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [MaxLength(NameMaxLength)]
         [Required]
+        [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
+
+        //Auto-generation in CompanyConfiguration
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [MaxLength(NameMaxLength)]
+        public string NormalizedName { get; set; } = null!;
 
         [Required]
         public string OwnerId { get; set; } = null!;

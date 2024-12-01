@@ -66,11 +66,13 @@ namespace StaffScheduling.Tests.ServiceTests
         {
             //Arrange
             string userId = Guid.NewGuid().ToString();
+            string companyName = "Test Company";
 
             var newEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = userId,
                 MaxVacationDaysPerYear = 10
             };
@@ -93,6 +95,7 @@ namespace StaffScheduling.Tests.ServiceTests
         {
             //Arrange
             string userId = Guid.NewGuid().ToString();
+            string companyName = "Test Company";
 
             var newEntities = new List<Company>();
 
@@ -101,7 +104,8 @@ namespace StaffScheduling.Tests.ServiceTests
                 var newEntity = new Company()
                 {
                     Id = Guid.NewGuid(),
-                    Name = $"Test Company {i}",
+                    Name = companyName + i.ToString(),
+                    NormalizedName = (companyName + i.ToString()).ToUpper(),
                     OwnerId = userId,
                     MaxVacationDaysPerYear = 10
                 };
@@ -126,10 +130,13 @@ namespace StaffScheduling.Tests.ServiceTests
         public async Task DeleteCompanyAsync_ShouldDeleteCompany_WhenCompanyExists()
         {
             //Arrange
+            string companyName = "Test Company";
+
             var newEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10
             };
@@ -152,11 +159,13 @@ namespace StaffScheduling.Tests.ServiceTests
         public async Task DeleteCompanyAsync_ShouldNotDeleteCompany_WhenCompanyDoesNotExist()
         {
             //Arrange
+            string companyName = "Test Company";
+
             var newEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
-                Invite = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10
             };
@@ -179,11 +188,13 @@ namespace StaffScheduling.Tests.ServiceTests
         {
             //Arrange
             string userId = Guid.NewGuid().ToString();
+            string companyName = "Test Company";
 
             var newEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = userId,
                 MaxVacationDaysPerYear = 10
             };
@@ -203,6 +214,7 @@ namespace StaffScheduling.Tests.ServiceTests
             var editedEntity = _dbContext.Companies.FirstOrDefault();
             Assert.IsNotNull(editedEntity);
             Assert.That(editedEntity.Name, Is.EqualTo(model.Name));
+            Assert.That(editedEntity.NormalizedName, Is.EqualTo(model.Name.ToUpper()));
             Assert.That(editedEntity.MaxVacationDaysPerYear, Is.EqualTo(model.MaxVacationDaysPerYear));
         }
 
@@ -211,20 +223,24 @@ namespace StaffScheduling.Tests.ServiceTests
         {
             //Arrange
             string userId = Guid.NewGuid().ToString();
+            string companyName = "Test Company";
 
             var newEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 OwnerId = userId,
                 MaxVacationDaysPerYear = 10
             };
 
 
+            string companyToBeEditedName = "Company To Be Edited";
             var newEntityToBeEdited = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Company To Be Edited",
+                Name = companyToBeEditedName,
+                NormalizedName = companyToBeEditedName.ToUpper(),
                 OwnerId = userId,
                 MaxVacationDaysPerYear = 10
             };
@@ -243,6 +259,7 @@ namespace StaffScheduling.Tests.ServiceTests
 
             var companyEntityAfterEdit = await _dbContext.Companies.FindAsync(newEntityToBeEdited.Id);
             Assert.That(companyEntityAfterEdit!.Name, Is.EqualTo(newEntityToBeEdited.Name));
+            Assert.That(companyEntityAfterEdit!.NormalizedName, Is.EqualTo(newEntityToBeEdited.Name.ToUpper()));
             Assert.That(companyEntityAfterEdit.MaxVacationDaysPerYear, Is.EqualTo(newEntityToBeEdited.MaxVacationDaysPerYear));
         }
 
@@ -251,11 +268,13 @@ namespace StaffScheduling.Tests.ServiceTests
         {
             //Arrange
             Guid invite = Guid.NewGuid();
+            string companyName = "Test Company";
 
             var newEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 Invite = invite,
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10
@@ -276,10 +295,13 @@ namespace StaffScheduling.Tests.ServiceTests
         public async Task GetCompanyFromInviteLinkAsync_ShouldReturnNull_WhenCompanyNotFound()
         {
             //Arrange
+            string companyName = "Test Company";
+
             var newEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 Invite = Guid.NewGuid(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10
@@ -314,18 +336,24 @@ namespace StaffScheduling.Tests.ServiceTests
                 .Setup(um => um.GetJoinedCompanyIdsFromUserEmailAsync(email))
                 .ReturnsAsync(new List<Guid> { joinedCompanyId });
 
+            string ownedCompanyName = "Owned Company";
+
             var entityOwned = new Company
             {
                 Id = ownedCompanyId,
-                Name = "Owned Company",
+                Name = ownedCompanyName,
+                NormalizedName = ownedCompanyName.ToUpper(),
                 Invite = Guid.NewGuid(),
                 OwnerId = Guid.NewGuid().ToString()
             };
 
+            string joinedCompanyName = "Joined Company";
+
             var entityJoined = new Company
             {
                 Id = joinedCompanyId,
-                Name = "Joined Company",
+                Name = joinedCompanyName,
+                NormalizedName = joinedCompanyName.ToUpper(),
                 Invite = Guid.NewGuid(),
                 OwnerId = Guid.NewGuid().ToString(),
                 CompanyEmployeesInfo = new List<EmployeeInfo>
@@ -339,10 +367,13 @@ namespace StaffScheduling.Tests.ServiceTests
                 }
             };
 
+            string randomCompanyName = "Test Company";
+
             var randomEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = randomCompanyName,
+                NormalizedName = randomCompanyName.ToUpper(),
                 Invite = Guid.NewGuid(),
                 OwnerId = Guid.NewGuid().ToString(),
             };
@@ -376,10 +407,13 @@ namespace StaffScheduling.Tests.ServiceTests
                 .Setup(um => um.GetJoinedCompanyIdsFromUserEmailAsync(email))
                 .ReturnsAsync(new List<Guid>());
 
+            string randomCompanyName1 = "Test Company 1";
+
             var randomEntity1 = new Company
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company 1",
+                Name = randomCompanyName1,
+                NormalizedName = randomCompanyName1.ToUpper(),
                 Invite = Guid.NewGuid(),
                 OwnerId = Guid.NewGuid().ToString(),
                 CompanyEmployeesInfo = new List<EmployeeInfo>
@@ -393,10 +427,13 @@ namespace StaffScheduling.Tests.ServiceTests
                 }
             };
 
+            string randomCompanyName2 = "Test Company 2";
+
             var randomEntity2 = new Company
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company 2",
+                Name = randomCompanyName2,
+                NormalizedName = randomCompanyName2.ToUpper(),
                 Invite = Guid.NewGuid(),
                 OwnerId = Guid.NewGuid().ToString(),
                 CompanyEmployeesInfo = new List<EmployeeInfo>
@@ -427,10 +464,13 @@ namespace StaffScheduling.Tests.ServiceTests
             //Arrange
             Guid companyId = Guid.NewGuid();
 
+            string companyName = "Test Company";
+
             var newEntity = new Company()
             {
                 Id = companyId,
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 Invite = Guid.NewGuid(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10
@@ -451,10 +491,13 @@ namespace StaffScheduling.Tests.ServiceTests
         public async Task GetCompanyFromIdAsync_ShouldReturnNull_WhenCompanyNotFound()
         {
             //Arrange
+            string companyName = "Test Company";
+
             var newEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 Invite = Guid.NewGuid(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10
@@ -478,10 +521,13 @@ namespace StaffScheduling.Tests.ServiceTests
             //Arrange
             Guid companyId = Guid.NewGuid();
 
+            string companyName = "Test Company";
+
             var newEntity = new Company()
             {
                 Id = companyId,
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 Invite = Guid.NewGuid(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10
@@ -502,10 +548,13 @@ namespace StaffScheduling.Tests.ServiceTests
         public async Task GetCompanyEditInputModelAsync_ShouldReturnNull_WhenCompanyNotFound()
         {
             //Arrange
+            string companyName = "Test Company";
+
             var newEntity = new Company()
             {
                 Id = Guid.NewGuid(),
-                Name = "Test Company",
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
                 Invite = Guid.NewGuid(),
                 OwnerId = Guid.NewGuid().ToString(),
                 MaxVacationDaysPerYear = 10

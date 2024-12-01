@@ -5,7 +5,7 @@
 namespace StaffScheduling.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddUniqueNormalizedNamePropToEntityDepartmentAndAddSameButEmailPropToEntityEmployeeInfo : Migration
+    public partial class AddNormalizedPropertiesToCompanyEmployeeInfoAndDepartmentEntitiesMakeTheAutoGenerateAndAddUniqueIndexes : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,6 +17,10 @@ namespace StaffScheduling.Data.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_Departments_CompanyId",
                 table: "Departments");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Companies_OwnerId",
+                table: "Companies");
 
             migrationBuilder.AddColumn<string>(
                 name: "NormalizedEmail",
@@ -36,6 +40,15 @@ namespace StaffScheduling.Data.Migrations
                 computedColumnSql: "UPPER(Name)",
                 stored: true);
 
+            migrationBuilder.AddColumn<string>(
+                name: "NormalizedName",
+                table: "Companies",
+                type: "nvarchar(160)",
+                maxLength: 160,
+                nullable: false,
+                computedColumnSql: "UPPER(Name)",
+                stored: true);
+
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeesInfo_CompanyId_NormalizedEmail",
                 table: "EmployeesInfo",
@@ -46,6 +59,12 @@ namespace StaffScheduling.Data.Migrations
                 name: "IX_Departments_CompanyId_NormalizedName",
                 table: "Departments",
                 columns: new[] { "CompanyId", "NormalizedName" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Companies_OwnerId_NormalizedName",
+                table: "Companies",
+                columns: new[] { "OwnerId", "NormalizedName" },
                 unique: true);
         }
 
@@ -60,6 +79,10 @@ namespace StaffScheduling.Data.Migrations
                 name: "IX_Departments_CompanyId_NormalizedName",
                 table: "Departments");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Companies_OwnerId_NormalizedName",
+                table: "Companies");
+
             migrationBuilder.DropColumn(
                 name: "NormalizedEmail",
                 table: "EmployeesInfo");
@@ -67,6 +90,10 @@ namespace StaffScheduling.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "NormalizedName",
                 table: "Departments");
+
+            migrationBuilder.DropColumn(
+                name: "NormalizedName",
+                table: "Companies");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeesInfo_CompanyId_Email",
@@ -78,6 +105,11 @@ namespace StaffScheduling.Data.Migrations
                 name: "IX_Departments_CompanyId",
                 table: "Departments",
                 column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Companies_OwnerId",
+                table: "Companies",
+                column: "OwnerId");
         }
     }
 }
