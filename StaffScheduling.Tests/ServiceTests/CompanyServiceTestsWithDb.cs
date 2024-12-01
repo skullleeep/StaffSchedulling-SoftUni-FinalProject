@@ -77,7 +77,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newEntity);
+            await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
             var model = new CompanyCreateInputModel { Name = "Test Company", MaxVacationDaysPerYear = 20 };
@@ -113,7 +113,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 newEntities.Add(newEntity);
             }
 
-            await _dbContext.AddRangeAsync(newEntities);
+            await _dbContext.Companies.AddRangeAsync(newEntities);
             await _dbContext.SaveChangesAsync();
 
             var model = new CompanyCreateInputModel { Name = "Test Company", MaxVacationDaysPerYear = 20 };
@@ -141,7 +141,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newEntity);
+            await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
             //Act
@@ -170,7 +170,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newEntity);
+            await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
             Guid notExistingCompanyId = Guid.NewGuid();
@@ -199,7 +199,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newEntity);
+            await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
             var model = new CompanyEditInputModel { Id = newEntity.Id, Name = "Test Company Edited", MaxVacationDaysPerYear = 25 };
@@ -245,7 +245,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddRangeAsync(newEntity, newEntityToBeEdited);
+            await _dbContext.Companies.AddRangeAsync(newEntity, newEntityToBeEdited);
             await _dbContext.SaveChangesAsync();
 
             var model = new CompanyEditInputModel { Id = newEntityToBeEdited.Id, Name = newEntity.Name, MaxVacationDaysPerYear = 25 };
@@ -280,7 +280,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newEntity);
+            await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
             //Act
@@ -307,7 +307,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newEntity);
+            await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
             Guid randomInvite = Guid.NewGuid();
@@ -476,7 +476,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newEntity);
+            await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
             //Act
@@ -503,7 +503,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newEntity);
+            await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
             Guid randomId = Guid.NewGuid();
@@ -533,7 +533,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newEntity);
+            await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
             //Act
@@ -560,7 +560,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newEntity);
+            await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
             Guid randomId = Guid.NewGuid();

@@ -250,6 +250,10 @@ namespace StaffScheduling.Web.Services.DbServices
 
         public async Task<StatusReport> ChangeRoleAsync(ChangeRoleInputModel model, PermissionRole userPermissionRole)
         {
+            //Get roles which need to have a department
+            //Used to check if employee's role can be changed to one of them
+            var rolesWhichNeedDepartment = GetRolesWhichNeedDepartment();
+
             var entityCompany = await _unitOfWork
                 .Companies
                 .All()
@@ -290,12 +294,12 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = true };
             }
 
-            //Check if new role is Supervisor and if it is check if employee has department as you need an department to be a Supervisor
-            if (model.Role == EmployeeRole.Supervisor)
+            //Check if new role needs a department and if it is does if employee has department
+            if (rolesWhichNeedDepartment.Contains(model.Role))
             {
                 if (entity.Department == null)
                 {
-                    return new StatusReport { Ok = false, Message = CanNotAddRoleSupervisorWithoutDepartment };
+                    return new StatusReport { Ok = false, Message = String.Format(CanNotChangeEmployeeRoleWithoutDepartmentFormat, model.Role.ToString()) };
                 }
             }
 
@@ -315,6 +319,10 @@ namespace StaffScheduling.Web.Services.DbServices
 
         public async Task<StatusReport> ChangeDepartmentAsync(ChangeDepartmentInputModel model, PermissionRole userPermissionRole)
         {
+            //Get roles which need to have a department
+            //Used to check if employee's deparment can be changed to 'None'
+            var rolesWhichNeedDepartment = GetRolesWhichNeedDepartment();
+
             var entityCompany = await _unitOfWork
                 .Companies
                 .All()
@@ -341,9 +349,33 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = false, Message = CouldNotFindEmployee };
             }
 
-            //Check if department is 'None' and if it is just nullify employee's DepartmentId and say that we sucessfully changed department
-            if (model.SelectedDepartmentId == Guid.Empty)
+            //Check if department is different than 'None'
+            if (model.SelectedDepartmentId != Guid.Empty)
             {
+                var entityDepartment = await _unitOfWork
+                .Departments
+                .All()
+                .AsNoTracking()
+                .Where(ef => ef.CompanyId == model.CompanyId)
+                .FirstOrDefaultAsync(d => d.Id == model.SelectedDepartmentId);
+
+                //Check if department exists
+                if (entityDepartment == null)
+                {
+                    return new StatusReport { Ok = false, Message = CouldNotFindDepartment };
+                }
+            }
+            //if department is 'None' then just nullify employee's DepartmentId
+            //and say that we sucessfully changed department
+            else
+            {
+                //Check if employee role is one which need department
+                //and if it is don't allow department change to 'None'
+                if (rolesWhichNeedDepartment.Contains(entity.Role))
+                {
+                    return new StatusReport { Ok = false, Message = String.Format(CanNotChangeEmployeeDepartmentToNoneBecauseOfRoleFormat, entity.Role) };
+                }
+
                 try
                 {
                     entity.DepartmentId = null;

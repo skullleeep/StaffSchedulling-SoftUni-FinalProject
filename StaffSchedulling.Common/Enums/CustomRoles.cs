@@ -43,5 +43,14 @@
                 .Select(rm => rm.Key)
                 .ToList();
         }
+
+        //Get EmployeeRoles which need to have a department
+        public static List<EmployeeRole> GetRolesWhichNeedDepartment()
+        {
+            return new List<EmployeeRole>()
+            {
+                EmployeeRole.Supervisor
+            };
+        }
     }
 }

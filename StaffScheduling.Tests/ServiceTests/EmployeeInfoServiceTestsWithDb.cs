@@ -1,4 +1,5 @@
 ﻿using Moq;
+using StaffScheduling.Common.Enums.Filters;
 using StaffScheduling.Data;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Data.UnitOfWork.Contracts;
@@ -71,7 +72,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 }
             };
 
-            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
             await _dbContext.SaveChangesAsync();
 
             //Make it so that the mock userManager gets our fake email
@@ -120,7 +121,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 }
             };
 
-            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
             await _dbContext.SaveChangesAsync();
 
             //Make it so that the mock userManager gets our fake email
@@ -170,7 +171,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 }
             };
 
-            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
             await _dbContext.SaveChangesAsync();
 
             //Make it so that the mock userManager gets our fake email
@@ -244,8 +245,8 @@ namespace StaffScheduling.Tests.ServiceTests
                     }
             };
 
-            await _dbContext.AddRangeAsync(newCompanyEntities);
-            await _dbContext.AddAsync(newCompanyToBeJoinedEntity);
+            await _dbContext.Companies.AddRangeAsync(newCompanyEntities);
+            await _dbContext.Companies.AddAsync(newCompanyToBeJoinedEntity);
             await _dbContext.SaveChangesAsync();
 
             //Make it so that the mock userManager gets our fake email
@@ -295,7 +296,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 }
             };
 
-            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
             await _dbContext.SaveChangesAsync();
 
             //Make it so that the mock userManager gets our fake email
@@ -344,7 +345,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 }
             };
 
-            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
             await _dbContext.SaveChangesAsync();
 
             //Make it so that the mock userManager gets our fake email
@@ -379,7 +380,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
             await _dbContext.SaveChangesAsync();
 
             string newEmployeeEmail = "newemployee@test.com";
@@ -413,7 +414,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 MaxVacationDaysPerYear = 10
             };
 
-            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
             await _dbContext.SaveChangesAsync();
 
             string newEmployeeEmail = "newemployee@test.com";
@@ -464,7 +465,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 CompanyEmployeesInfo = newEntities
             };
 
-            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
             await _dbContext.SaveChangesAsync();
 
             string newEmployeeEmail = "newemployee@test.com";
@@ -509,7 +510,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 }
             };
 
-            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
             await _dbContext.SaveChangesAsync();
 
             var model = new AddEmployeeInfoManuallyInputModel() { CompanyId = newCompanyEntity.Id, Email = newEmployeeEmail };
@@ -553,7 +554,7 @@ namespace StaffScheduling.Tests.ServiceTests
                 }
             };
 
-            await _dbContext.AddAsync(newCompanyEntity);
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
             await _dbContext.SaveChangesAsync();
 
             var model = new DeleteEmployeeInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = employeeToDeleteId };
@@ -568,6 +569,1305 @@ namespace StaffScheduling.Tests.ServiceTests
 
             var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
             Assert.IsNull(foundCompanyEntity.CompanyEmployeesInfo.FirstOrDefault());
+        }
+
+        [Test]
+        public async Task DeleteEmployeeAsync_ShouldNotDeleteEmployee_WhenCompanyNotFound()
+        {
+            //Arrange
+            Guid employeeToDeleteId = Guid.NewGuid();
+
+            string employeeToDeleteEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToDeleteId,
+                        Email = employeeToDeleteEmail,
+                        NormalizedEmail = employeeToDeleteEmail.ToUpper(),
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            Guid randomCompanyId = Guid.NewGuid();
+
+            var model = new DeleteEmployeeInputModel() { CompanyId = randomCompanyId, EmployeeId = employeeToDeleteId };
+
+
+            //Act
+            var result = await _employeeInfoService.DeleteEmployeeAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CouldNotFindCompany));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.IsNotNull(foundCompanyEntity.CompanyEmployeesInfo.FirstOrDefault());
+        }
+
+        [Test]
+        public async Task DeleteEmployeeAsync_ShouldNotDeleteEmployee_WhenEmployeeNotFound()
+        {
+            //Arrange
+            Guid employeeToDeleteId = Guid.NewGuid();
+
+            string employeeToDeleteEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToDeleteId,
+                        Email = employeeToDeleteEmail,
+                        NormalizedEmail = employeeToDeleteEmail.ToUpper(),
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            Guid randomEmployeeId = Guid.NewGuid();
+
+            var model = new DeleteEmployeeInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = randomEmployeeId };
+
+
+            //Act
+            var result = await _employeeInfoService.DeleteEmployeeAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CouldNotFindEmployee));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.IsNotNull(foundCompanyEntity.CompanyEmployeesInfo.FirstOrDefault());
+        }
+
+        [Test]
+        public async Task DeleteEmployeeAsync_ShouldNotDeleteEmployee_WhenUserDoesntHaveNeededPermission()
+        {
+            //Arrange
+            Guid employeeToDeleteId = Guid.NewGuid();
+
+            EmployeeRole adminRole = EmployeeRole.Admin;
+
+            string employeeToDeleteEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToDeleteId,
+                        Email = employeeToDeleteEmail,
+                        NormalizedEmail = employeeToDeleteEmail.ToUpper(),
+                        Role = adminRole
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            var model = new DeleteEmployeeInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = employeeToDeleteId };
+
+
+            //Act
+            var result = await _employeeInfoService.DeleteEmployeeAsync(model, RoleMapping[adminRole]);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CanNotManageEmployeeAsLowerPermission));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.IsNotNull(foundCompanyEntity.CompanyEmployeesInfo.FirstOrDefault());
+        }
+
+        [Test]
+        public async Task DeleteAllEmployeesAsync_ShouldDeleteEmployees_WhenInputValid()
+        {
+            //Arrange
+            string companyName = "Test Company";
+
+            string employeeEmail1 = "employee@email.com";
+            string employeeEmail2 = "employee@email.com";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail1,
+                        NormalizedEmail = employeeEmail1.ToUpper(),
+                    },
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail2,
+                        NormalizedEmail = employeeEmail2.ToUpper(),
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            var model = new DeleteAllEmployeesInputModel() { CompanyId = newCompanyEntity.Id };
+
+
+            //Act
+            var result = await _employeeInfoService.DeleteAllEmployeesAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsTrue(result.Ok);
+            Assert.IsNull(result.Message);
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.IsNull(foundCompanyEntity.CompanyEmployeesInfo.FirstOrDefault());
+        }
+
+        [Test]
+        public async Task DeleteAllEmployeesAsync_ShouldOnlyDeleteAllowedByPermissionEmployees_WhenUserPermissionIsNotOwner()
+        {
+            //Arrange
+            string companyName = "Test Company";
+
+            string employeeEmail1 = "employee@email.com";
+            string employeeEmail2 = "employee@email.com";
+
+            EmployeeRole adminRole = EmployeeRole.Admin;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail1,
+                        NormalizedEmail = employeeEmail1.ToUpper(),
+                        Role = EmployeeRole.Employee
+                    },
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail2,
+                        NormalizedEmail = employeeEmail2.ToUpper(),
+                        Role = adminRole
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            var model = new DeleteAllEmployeesInputModel() { CompanyId = newCompanyEntity.Id };
+
+
+            //Act
+            var result = await _employeeInfoService.DeleteAllEmployeesAsync(model, RoleMapping[adminRole]);
+
+            //Assert
+            Assert.IsTrue(result.Ok);
+            Assert.IsNull(result.Message);
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.Count, Is.EqualTo(1));
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().Email, Is.EqualTo(employeeEmail2));
+        }
+
+        [Test]
+        public async Task DeleteAllEmployeesAsync_ShouldNotDeleteEmployees_WhenCompanyNotFound()
+        {
+            //Arrange
+            string companyName = "Test Company";
+
+            string employeeEmail1 = "employee@email.com";
+            string employeeEmail2 = "employee@email.com";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail1,
+                        NormalizedEmail = employeeEmail1.ToUpper(),
+                    },
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail2,
+                        NormalizedEmail = employeeEmail2.ToUpper(),
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            Guid randomCompanyId = Guid.NewGuid();
+
+            var model = new DeleteAllEmployeesInputModel() { CompanyId = randomCompanyId };
+
+
+            //Act
+            var result = await _employeeInfoService.DeleteAllEmployeesAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CouldNotFindCompany));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public async Task DeleteAllEmployeesAsync_ShouldNotDeleteEmployees_WhenUserDoesntHaveNeededPermission()
+        {
+            //Arrange
+            string companyName = "Test Company";
+
+            string employeeEmail1 = "employee@email.com";
+            string employeeEmail2 = "employee@email.com";
+
+            EmployeeRole adminRole = EmployeeRole.Admin;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail1,
+                        NormalizedEmail = employeeEmail1.ToUpper(),
+                        Role = adminRole
+                    },
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail2,
+                        NormalizedEmail = employeeEmail2.ToUpper(),
+                        Role = adminRole
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            var model = new DeleteAllEmployeesInputModel() { CompanyId = newCompanyEntity.Id };
+
+
+            //Act
+            var result = await _employeeInfoService.DeleteAllEmployeesAsync(model, RoleMapping[adminRole]);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CouldNotFindAnyEmployeesToDelete));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public async Task ChangeRoleAsync_ShouldChangeRole_WhenInputValid()
+        {
+            //Arrange
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Employee;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            EmployeeRole newRole = EmployeeRole.Admin;
+
+            var model = new ChangeRoleInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = employeeToChangeId, Role = newRole };
+
+
+            //Act
+            var result = await _employeeInfoService.ChangeRoleAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsTrue(result.Ok);
+            Assert.IsNull(result.Message);
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().Role, Is.EqualTo(newRole));
+        }
+
+        [Test]
+        public async Task ChangeRoleAsync_ShouldNotChangeRole_WhenCompanyNotFound()
+        {
+            //Arrange
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Employee;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            Guid randomCompanyId = Guid.NewGuid();
+
+            EmployeeRole newRole = EmployeeRole.Admin;
+
+            var model = new ChangeRoleInputModel() { CompanyId = randomCompanyId, EmployeeId = employeeToChangeId, Role = newRole };
+
+
+            //Act
+            var result = await _employeeInfoService.ChangeRoleAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CouldNotFindCompany));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().Role, Is.EqualTo(startingRole));
+        }
+
+        [Test]
+        public async Task ChangeRoleAsync_ShouldNotChangeRole_WhenEmployeeNotFound()
+        {
+            //Arrange
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Employee;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            Guid randomEmployeeId = Guid.NewGuid();
+
+            EmployeeRole newRole = EmployeeRole.Admin;
+
+            var model = new ChangeRoleInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = randomEmployeeId, Role = newRole };
+
+
+            //Act
+            var result = await _employeeInfoService.ChangeRoleAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CouldNotFindEmployee));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().Role, Is.EqualTo(startingRole));
+        }
+
+        [Test]
+        public async Task ChangeRoleAsync_ShouldNotChangeRole_WhenUserDoesntHaveRequiredPermissionToManageEmployee()
+        {
+            //Arrange
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Admin;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            EmployeeRole newRole = EmployeeRole.Admin;
+
+            var model = new ChangeRoleInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = employeeToChangeId, Role = newRole };
+
+            PermissionRole userPermissionRole = RoleMapping[startingRole];
+
+            //Act
+            var result = await _employeeInfoService.ChangeRoleAsync(model, userPermissionRole);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CanNotManageEmployeeAsLowerPermission));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().Role, Is.EqualTo(startingRole));
+        }
+
+        [Test]
+        public async Task ChangeRoleAsync_ShouldNotChangeRole_WhenUserDoesntHaveRequiredPermissionToAssignThatRole()
+        {
+            //Arrange
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Employee;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            EmployeeRole newRole = EmployeeRole.Admin;
+
+            var model = new ChangeRoleInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = employeeToChangeId, Role = newRole };
+
+            PermissionRole userPermissionRole = RoleMapping[newRole];
+
+            //Act
+            var result = await _employeeInfoService.ChangeRoleAsync(model, userPermissionRole);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CanNotChangeEmployeeRoleToHigher));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().Role, Is.EqualTo(startingRole));
+        }
+
+        [Test]
+        public async Task ChangeRoleAsync_ShouldNotChangeRole_WhenNewRoleIsOneWhichNeedsDepartmentAndEmployeeHasNoAssignedDepartment()
+        {
+            //Arrange
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Employee;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            EmployeeRole newRole = GetRolesWhichNeedDepartment().First();
+
+            var model = new ChangeRoleInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = employeeToChangeId, Role = newRole };
+
+
+            //Act
+            var result = await _employeeInfoService.ChangeRoleAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(String.Format(CanNotChangeEmployeeRoleWithoutDepartmentFormat, newRole.ToString())));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().Role, Is.EqualTo(startingRole));
+        }
+
+        [Test]
+        public async Task ChangeDepartmentAsync_ShouldChangeDepartment_WhenInputValid()
+        {
+            //Arrange
+            Guid newCompanyId = Guid.NewGuid();
+
+            string departmentName = "Test Department";
+
+            var newDepartmentEntity = new Department()
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = newCompanyId,
+                Name = departmentName,
+                NormalizedName = departmentName.ToUpper()
+            };
+
+            string departmentToChangeToName = "Changed Department";
+
+            var newDepartmentToChangeTo = new Department()
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = newCompanyId,
+                Name = departmentToChangeToName,
+                NormalizedName = departmentToChangeToName.ToUpper()
+            };
+
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Employee;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole,
+                        DepartmentId = newDepartmentEntity.Id
+                    }
+                },
+                Departments = new List<Department>()
+                {
+                    newDepartmentEntity,
+                    newDepartmentToChangeTo
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            var model = new ChangeDepartmentInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = employeeToChangeId, SelectedDepartmentId = newDepartmentToChangeTo.Id };
+
+
+            //Act
+            var result = await _employeeInfoService.ChangeDepartmentAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsTrue(result.Ok);
+            Assert.IsNull(result.Message);
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().DepartmentId, Is.EqualTo(newDepartmentToChangeTo.Id));
+        }
+
+        [Test]
+        public async Task ChangeDepartmentAsync_ShouldNotChangeDepartment_WhenCompanyNotFound()
+        {
+            //Arrange
+            Guid newCompanyId = Guid.NewGuid();
+
+            string departmentName = "Test Department";
+
+            var newDepartmentEntity = new Department()
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = newCompanyId,
+                Name = departmentName,
+                NormalizedName = departmentName.ToUpper()
+            };
+
+            string departmentToChangeToName = "Changed Department";
+
+            var newDepartmentToChangeTo = new Department()
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = newCompanyId,
+                Name = departmentToChangeToName,
+                NormalizedName = departmentToChangeToName.ToUpper()
+            };
+
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Employee;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole,
+                        DepartmentId = newDepartmentEntity.Id
+                    }
+                },
+                Departments = new List<Department>()
+                {
+                    newDepartmentEntity,
+                    newDepartmentToChangeTo
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            Guid randomCompanyId = Guid.NewGuid();
+
+            var model = new ChangeDepartmentInputModel() { CompanyId = randomCompanyId, EmployeeId = employeeToChangeId, SelectedDepartmentId = newDepartmentToChangeTo.Id };
+
+
+            //Act
+            var result = await _employeeInfoService.ChangeDepartmentAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CouldNotFindCompany));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().DepartmentId, Is.EqualTo(newDepartmentEntity.Id));
+        }
+
+        [Test]
+        public async Task ChangeDepartmentAsync_ShouldNotChangeDepartment_WhenEmployeeNotFound()
+        {
+            //Arrange
+            Guid newCompanyId = Guid.NewGuid();
+
+            string departmentName = "Test Department";
+
+            var newDepartmentEntity = new Department()
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = newCompanyId,
+                Name = departmentName,
+                NormalizedName = departmentName.ToUpper()
+            };
+
+            string departmentToChangeToName = "Changed Department";
+
+            var newDepartmentToChangeTo = new Department()
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = newCompanyId,
+                Name = departmentToChangeToName,
+                NormalizedName = departmentToChangeToName.ToUpper()
+            };
+
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Employee;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole,
+                        DepartmentId = newDepartmentEntity.Id
+                    }
+                },
+                Departments = new List<Department>()
+                {
+                    newDepartmentEntity,
+                    newDepartmentToChangeTo
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            Guid randomEmployeeId = Guid.NewGuid();
+
+            var model = new ChangeDepartmentInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = randomEmployeeId, SelectedDepartmentId = newDepartmentToChangeTo.Id };
+
+
+            //Act
+            var result = await _employeeInfoService.ChangeDepartmentAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CouldNotFindEmployee));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().DepartmentId, Is.EqualTo(newDepartmentEntity.Id));
+        }
+
+        [Test]
+        public async Task ChangeDepartmentAsync_ShouldNotChangeDepartment_WhenDepartmentNotFound()
+        {
+            //Arrange
+            Guid newCompanyId = Guid.NewGuid();
+
+            string departmentName = "Test Department";
+
+            var newDepartmentEntity = new Department()
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = newCompanyId,
+                Name = departmentName,
+                NormalizedName = departmentName.ToUpper()
+            };
+
+            string departmentToChangeToName = "Changed Department";
+
+            var newDepartmentToChangeTo = new Department()
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = newCompanyId,
+                Name = departmentToChangeToName,
+                NormalizedName = departmentToChangeToName.ToUpper()
+            };
+
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Employee;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole,
+                        DepartmentId = newDepartmentEntity.Id
+                    }
+                },
+                Departments = new List<Department>()
+                {
+                    newDepartmentEntity,
+                    newDepartmentToChangeTo
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            Guid randomDepartmentId = Guid.NewGuid();
+
+            var model = new ChangeDepartmentInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = employeeToChangeId, SelectedDepartmentId = randomDepartmentId };
+
+
+            //Act
+            var result = await _employeeInfoService.ChangeDepartmentAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(CouldNotFindDepartment));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().DepartmentId, Is.EqualTo(newDepartmentEntity.Id));
+        }
+
+        [Test]
+        public async Task ChangeDepartmentAsync_ShouldNotChangeDepartment_WhenNewDepartmentIsNoneAndEmployeeHasRoleWhichNeedsDepartment()
+        {
+            //Arrange
+            Guid newCompanyId = Guid.NewGuid();
+
+            string departmentName = "Test Department";
+
+            var newDepartmentEntity = new Department()
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = newCompanyId,
+                Name = departmentName,
+                NormalizedName = departmentName.ToUpper()
+            };
+
+            Guid employeeToChangeId = Guid.NewGuid();
+
+            string employeeToChangeEmail = "newemployee@test.com";
+            string companyName = "Test Company";
+
+            EmployeeRole startingRole = EmployeeRole.Supervisor;
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = employeeToChangeId,
+                        Email = employeeToChangeEmail,
+                        NormalizedEmail = employeeToChangeEmail.ToUpper(),
+                        Role = startingRole,
+                        DepartmentId = newDepartmentEntity.Id
+                    }
+                },
+                Departments = new List<Department>()
+                {
+                    newDepartmentEntity
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            Guid noneDepartment = Guid.Empty;
+
+            var model = new ChangeDepartmentInputModel() { CompanyId = newCompanyEntity.Id, EmployeeId = employeeToChangeId, SelectedDepartmentId = noneDepartment };
+
+
+            //Act
+            var result = await _employeeInfoService.ChangeDepartmentAsync(model, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsFalse(result.Ok);
+            Assert.That(result.Message, Is.EqualTo(String.Format(CanNotChangeEmployeeDepartmentToNoneBecauseOfRoleFormat, newCompanyEntity.CompanyEmployeesInfo.First().Role)));
+
+            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
+            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.First().DepartmentId, Is.EqualTo(newDepartmentEntity.Id));
+        }
+
+        [Test]
+        public async Task GetCompanyManageEmployeeInfoModel_ShouldReturnModel_WhenInputValid()
+        {
+            //Arrange
+            string employeeEmail1 = "employee1@test.com";
+            string employeeEmail2 = "employee2@test.com";
+            string departmentName = "Test Department";
+            string companyName = "Test Company";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail1,
+                        NormalizedEmail = employeeEmail1.ToUpper(),
+                        Role = EmployeeRole.Employee
+                    },
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail2,
+                        NormalizedEmail = employeeEmail2.ToUpper(),
+                        Role = EmployeeRole.Admin
+                    }
+                },
+                Departments = new List<Department>()
+                {
+                    new Department
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = departmentName,
+                        NormalizedName = departmentName.ToUpper()
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            //Act
+            var model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(newCompanyEntity.Id, null, null, 1, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsNotNull(model);
+
+            Assert.That(model.Employees.Count, Is.EqualTo(2));
+            Assert.That(model.Employees.First().Email == employeeEmail1);
+            Assert.That(model.Employees.Last().Email == employeeEmail2);
+
+            Assert.That(model.Departments.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public async Task GetCompanyManageEmployeeInfoModel_ShouldReturnModelWithEmployeesAllowedToManage_WhenInputValidAndUserPermissionNotOwner()
+        {
+            //Arrange
+            string employeeEmail1 = "employee1@test.com";
+            string employeeEmail2 = "employee2@test.com";
+            string departmentName = "Test Department";
+            string companyName = "Test Company";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail1,
+                        NormalizedEmail = employeeEmail1.ToUpper(),
+                        Role = EmployeeRole.Employee
+                    },
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail2,
+                        NormalizedEmail = employeeEmail2.ToUpper(),
+                        Role = EmployeeRole.Admin
+                    }
+                },
+                Departments = new List<Department>()
+                {
+                    new Department
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = departmentName,
+                        NormalizedName = departmentName.ToUpper()
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            //Act
+            var model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(newCompanyEntity.Id, null, null, 1, RoleMapping[EmployeeRole.Admin]);
+
+            //Assert
+            Assert.IsNotNull(model);
+
+            Assert.That(model.Employees.Count, Is.EqualTo(1));
+            Assert.That(model.Employees.First().Email == employeeEmail1);
+
+            Assert.That(model.Departments.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public async Task GetCompanyManageEmployeeInfoModel_ShouldReturnModelWithCorrectEmployees_WhenUserSearchesByEmail()
+        {
+            //Arrange
+            string employeeEmail1 = "employee1@test.com";
+            string employeeEmail2 = "employee2@test.com";
+            string companyName = "Test Company";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail1,
+                        NormalizedEmail = employeeEmail1.ToUpper(),
+                        Role = EmployeeRole.Employee
+                    },
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail2,
+                        NormalizedEmail = employeeEmail2.ToUpper(),
+                        Role = EmployeeRole.Admin
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            string searchQuery = "employee2";
+            EmployeeSearchFilter searchFilter = EmployeeSearchFilter.Email;
+
+            //Act
+            var model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(newCompanyEntity.Id, searchQuery, searchFilter, 1, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsNotNull(model);
+
+            Assert.That(model.Employees.Count, Is.EqualTo(1));
+            Assert.That(model.Employees.First().Email == employeeEmail2);
+        }
+
+        [Test]
+        public async Task GetCompanyManageEmployeeInfoModel_ShouldReturnModelWithCorrectEmployees_WhenUserSearchesByName()
+        {
+            //Arrange
+            string employeeEmail1 = "employee1@test.com";
+            string employeeEmail2 = "employee2@test.com";
+            string userName1 = "John Doe";
+            string userName2 = "Vanka Cvetanev";
+            string companyName = "Test Company";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail1,
+                        NormalizedEmail = employeeEmail1.ToUpper(),
+                        Role = EmployeeRole.Employee,
+                        HasJoined = true,
+                        User = new ApplicationUser { FullName = userName1 }
+                    },
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail2,
+                        NormalizedEmail = employeeEmail2.ToUpper(),
+                        Role = EmployeeRole.Admin,
+                        HasJoined = true,
+                        User = new ApplicationUser { FullName = userName2 }
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            string searchQuery = "cvetanev";
+            EmployeeSearchFilter searchFilter = EmployeeSearchFilter.Name;
+
+            //Act
+            var model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(newCompanyEntity.Id, searchQuery, searchFilter, 1, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsNotNull(model);
+
+            Assert.That(model.Employees.Count, Is.EqualTo(1));
+            Assert.That(model.Employees.First().Name == userName2);
+        }
+
+        [Test]
+        public async Task GetCompanyManageEmployeeInfoModel_ShouldNotReturnModel_WhenCompanyNotFound()
+        {
+            //Arrange
+            string employeeEmail1 = "employee1@test.com";
+            string employeeEmail2 = "employee2@test.com";
+            string userName1 = "John Doe";
+            string userName2 = "Vanka Cvetanev";
+            string companyName = "Test Company";
+
+            var newCompanyEntity = new Company()
+            {
+                Id = Guid.NewGuid(),
+                Name = companyName,
+                NormalizedName = companyName.ToUpper(),
+                OwnerId = Guid.NewGuid().ToString(),
+                MaxVacationDaysPerYear = 10,
+                CompanyEmployeesInfo = new List<EmployeeInfo>()
+                {
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail1,
+                        NormalizedEmail = employeeEmail1.ToUpper(),
+                        Role = EmployeeRole.Employee,
+                        HasJoined = true,
+                        User = new ApplicationUser { FullName = userName1 }
+                    },
+                    new EmployeeInfo
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = employeeEmail2,
+                        NormalizedEmail = employeeEmail2.ToUpper(),
+                        Role = EmployeeRole.Admin,
+                        HasJoined = true,
+                        User = new ApplicationUser { FullName = userName2 }
+                    }
+                }
+            };
+
+            await _dbContext.Companies.AddAsync(newCompanyEntity);
+            await _dbContext.SaveChangesAsync();
+
+            Guid randomCompanyId = Guid.NewGuid();
+
+            //Act
+            var model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(randomCompanyId, null, null, 1, PermissionRole.Owner);
+
+            //Assert
+            Assert.IsNull(model);
         }
     }
 }
