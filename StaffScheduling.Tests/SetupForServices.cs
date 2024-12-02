@@ -64,12 +64,6 @@ namespace StaffScheduling.Tests
                 loggerMock.Object
                 );
 
-            //Add mock methods as needed
-            //userManager.Setup(um => um.GetOwnedCompanyIdsFromUserEmailAsync(It.IsAny<string>()))
-            //           .ReturnsAsync(new List<Guid>());
-            //userManager.Setup(um => um.GetJoinedCompanyIdsFromUserEmailAsync(It.IsAny<string>()))
-            //           .ReturnsAsync(new List<Guid>());
-
             return userManager.Object;
         }
     }

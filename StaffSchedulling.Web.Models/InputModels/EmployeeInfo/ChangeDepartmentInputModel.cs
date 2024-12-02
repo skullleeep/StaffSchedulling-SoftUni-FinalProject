@@ -8,7 +8,7 @@ namespace StaffScheduling.Web.Models.InputModels.EmployeeInfo
         [Required]
         public Guid CompanyId { get; set; }
 
-        public List<ManageEmployeesInfoDepartmentViewModel> Departments { get; set; } = new List<ManageEmployeesInfoDepartmentViewModel>();
+        public List<DepartmentViewModel> Departments { get; set; } = new List<DepartmentViewModel>();
 
         [Required]
         public Guid EmployeeId { get; set; }

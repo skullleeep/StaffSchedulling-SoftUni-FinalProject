@@ -1,0 +1,7 @@
+﻿@using StaffScheduling.Web.Models.InputModels.Department;
+@model DeleteAllDepartmentsInputModel
+
+<form id="deleteAllForm" asp-controller="Department" asp-action="DeleteAll" method="post" class="col-md-3">
+    <input asp-for="CompanyId" hidden/>
+    <button type="button" class="btn btn-sm btn-outline-danger w-auto" onclick="confirmDeleteAll()">Delete All Departments</button>
+</form>

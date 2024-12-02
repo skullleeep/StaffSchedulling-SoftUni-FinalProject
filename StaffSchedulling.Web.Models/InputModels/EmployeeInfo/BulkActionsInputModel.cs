@@ -17,7 +17,7 @@ namespace StaffScheduling.Web.Models.InputModels.EmployeeInfo
         public PermissionRole CurrentUserPermission { get; set; } = PermissionRole.None;
 
         [Required]
-        public List<ManageEmployeesInfoDepartmentViewModel> Departments { get; set; } = new List<ManageEmployeesInfoDepartmentViewModel>();
+        public List<DepartmentViewModel> Departments { get; set; } = new List<DepartmentViewModel>();
 
         // For Bulk Actions
         public List<Guid> SelectedEmployeeIds { get; set; } = new List<Guid>();

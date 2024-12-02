@@ -499,11 +499,11 @@ namespace StaffScheduling.Web.Services.DbServices
                 .ToListAsync();
 
             //Get company departments
-            List<ManageEmployeesInfoDepartmentViewModel> departments = await _unitOfWork
+            List<DepartmentViewModel> departments = await _unitOfWork
                 .Departments
                 .All()
                 .Where(d => d.CompanyId == companyId)
-                .Select(d => new ManageEmployeesInfoDepartmentViewModel()
+                .Select(d => new DepartmentViewModel()
                 {
                     Id = d.Id,
                     Name = d.Name

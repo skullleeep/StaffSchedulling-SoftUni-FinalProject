@@ -71,7 +71,7 @@
         <div class="card-body">
             <div class="row">
                 <!-- Add Employee Manually -->
-                <partial name="_AddEmployeeManuallyForm" model="@new AddEmployeeInfoManuallyInputModel() { CompanyId = Model.CompanyId }" />
+                <partial name="_EmployeeForms/_AddEmployeeManuallyForm" model="@new AddEmployeeInfoManuallyInputModel() { CompanyId = Model.CompanyId }" />
 
                 <!-- OR -->
                 <div class="col-md-1 d-flex justify-content-center">
@@ -95,7 +95,6 @@
                 <table class="table table-hover">
                     <thead class="table-dark">
                         <tr>
-                            <th><input type="checkbox" id="selectAll" /></th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Role</th>
@@ -110,7 +109,6 @@
                             foreach (var employee in Model.Employees)
                             {
                                 <tr>
-                                    <td><input type="checkbox" class="employee-checkbox" value="@employee.Id" /></td>
                                     <td>
                                         @if (!String.IsNullOrEmpty(employee.Name))
                                         {
@@ -123,7 +121,7 @@
                                     </td>
                                         <td id="employeeEmail-@employee.Id.ToString()">@employee.Email</td>
                                     <td>
-                                        <partial name="_ChangeRoleForm"
+                                            <partial name="_EmployeeForms/_ChangeRoleForm"
                                                  model="@new ChangeRoleInputModel() { CompanyId = Model.CompanyId, 
                                                                                       CurrentUserPermission = Model.CurrentUserPermission,
                                                                                       EmployeeId = employee.Id, 
@@ -132,7 +130,7 @@
                                     <td>
                                         @if (Model.Departments.Any())
                                         {
-                                                <partial name="_ChangeDepartmentForm"
+                                                <partial name="_EmployeeForms/_ChangeDepartmentForm"
                                                          model="@new ChangeDepartmentInputModel() { CompanyId = Model.CompanyId,
                                                                                                     Departments = Model.Departments,
                                                                                                     EmployeeId = employee.Id,
@@ -154,7 +152,7 @@
                                         }
                                     </td>
                                     <td>
-                                            <partial name="_DeleteEmployeeForm" model="@new DeleteEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = employee.Id }" />
+                                            <partial name="_EmployeeForms/_DeleteEmployeeForm" model="@new DeleteEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = employee.Id }" />
                                     </td>
                                 </tr>
                             }
@@ -178,7 +176,7 @@
                 <div class="card-body">
                     <div class="d-flex">
                         <!-- Delete All -->
-                        <partial name="_DeleteAllEmployeesForm" model="@new DeleteAllEmployeesInputModel() { CompanyId = Model.CompanyId }" />
+                        <partial name="_EmployeeForms/_DeleteAllEmployeesForm" model="@new DeleteAllEmployeesInputModel() { CompanyId = Model.CompanyId }" />
                     </div>
                 </div>
             </div>

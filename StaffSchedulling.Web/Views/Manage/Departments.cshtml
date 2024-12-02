@@ -1,0 +1,128 @@
+﻿@using StaffScheduling.Common
+@using StaffScheduling.Web.Models.ViewModels.Department
+@using StaffScheduling.Web.Models.InputModels.Department
+@model ManageDepartmentsViewModel
+
+@{
+    ViewData["Title"] = "Manage Departments";
+}
+
+<partial name="_ConfirmationModal">
+
+    <div class="container mt-4">
+        <div class="row mb-3">
+            <!-- Header Section -->
+            <div class="col-md-8">
+                <h1 class="h3">Manage Departments</h1>
+            </div>
+            <!-- Back to Company Button -->
+            <div class="col-md-4 text-end">
+                <a asp-controller="Manage" asp-action="Company" asp-route-id="@Model.CompanyId" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Company
+                </a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(TempData["DepartmentError"] as string))
+        {
+            <div class="alert alert-danger" role="alert">
+                <p>@TempData["DepartmentError"]</p>
+            </div>
+        }
+
+        <!-- Department Adding Section -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Add Department Manually -->
+                    <partial name="_DepartmentForms/_AddDepartmentManuallyForm" model="@new AddDepartmentInputModel() { CompanyId = Model.CompanyId }" />
+
+                    <!-- OR -->
+                    <div class="col-md-1 d-flex justify-content-center">
+                        <div style="height: 100%; padding-left: 10px; padding-right: 10px; padding-top:10px;">
+                            <h3>OR</h3>
+                        </div>
+                    </div>
+
+                    <!-- Upload Departments -->
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-outline-success w-100">Upload Excel With Departments</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Departments Table -->
+        <div id="departmentsTable" class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Department Name</th>
+                                <th>Employees Count</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Departments.Any())
+                            {
+                                foreach (var department in Model.Departments)
+                                {
+                                    <tr>
+                                        <td>@department.Name</td>
+                                        <td>@department.EmployeeCount</td>
+                                        <td>
+                                            <partial name="_DepartmentForms/_DeleteDepartmentForm" model="@new DeleteDepartmentInputModel() { CompanyId = Model.CompanyId, DepartmentId = department.Id }" />
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center">No departments found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Departments.Any())
+        {
+            <!-- Bulk Actions Section -->
+            <div class="card mb-4 mt-1 border-0">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <!-- Delete All -->
+                        <partial name="_DepartmentForms/_DeleteAllDepartmentsForm" model="@new DeleteAllDepartmentsInputModel() { CompanyId = Model.CompanyId }" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Pagination Section -->
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-controller="Manage" asp-action="Departments"
+                           asp-route-id="@Model.CompanyId"
+                           asp-route-currentPage="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+        <script src="~/js/confirmation-modal.js"></script>
+        <script src="~/js/manage-departments.js"></script>
+        <script src="~/js/auto-sizing-select.js"></script>
+    }

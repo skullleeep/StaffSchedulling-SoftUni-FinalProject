@@ -3,7 +3,7 @@ using static StaffScheduling.Common.Constants.DataConstants.Department;
 
 namespace StaffScheduling.Web.Models.ViewModels.Department
 {
-    public class ManageEmployeesInfoDepartmentViewModel
+    public class DepartmentManageViewModel
     {
         public Guid Id { get; set; }
 
@@ -11,5 +11,8 @@ namespace StaffScheduling.Web.Models.ViewModels.Department
         [MinLength(NameMinLength)]
         [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
+
+        [Required]
+        public int EmployeeCount { get; set; }
     }
 }
