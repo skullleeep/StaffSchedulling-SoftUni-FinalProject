@@ -43,7 +43,9 @@ namespace StaffScheduling.Web.Extensions
                 //Company Service
                 .AddScoped<ICompanyService, CompanyService>()
                 //EmployeeInfo Service
-                .AddScoped<IEmployeeInfoService, EmployeeInfoService>();
+                .AddScoped<IEmployeeInfoService, EmployeeInfoService>()
+                //Department Service
+                .AddScoped<IDepartmentService, DepartmentService>();
         }
     }
 }

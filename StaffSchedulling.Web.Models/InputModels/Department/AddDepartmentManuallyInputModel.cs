@@ -3,7 +3,7 @@ using static StaffScheduling.Common.Constants.DataConstants.Department;
 
 namespace StaffScheduling.Web.Models.InputModels.Department
 {
-    public class AddDepartmentInputModel
+    public class AddDepartmentManuallyInputModel
     {
         [Required]
         public Guid CompanyId { get; set; }

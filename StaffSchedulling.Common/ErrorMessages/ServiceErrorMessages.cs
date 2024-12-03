@@ -4,6 +4,16 @@
     {
         public const string DatabaseErrorFormat = "Database Error: {0}";
 
+        public static class CompanyService
+        {
+            public const string CouldNotFindCompany = "Couldn't find company!";
+            public const string CouldNotDeleteCompany = "Couldn't delete company!";
+
+            public const string CanNotEditCompanyWithSameNameFormat = "You can't save changes to company because you already have a company with the name '{0}'!";
+            public const string CanNotCreateCompanyWithSameNameFormat = "You can't create company '{0}' because you already have a company with the same name!";
+            public const string CreatedCompaniesLimitHitFormat = "You can't create company because you have already created {0} companies! Delete some if you want to create new ones!";
+        }
+
         public static class EmployeeInfoService
         {
             public const string CouldNotFindCompany = "Couldn't find company!";
@@ -20,24 +30,22 @@
 
             public const string JoinedCompaniesLimitHitFormat = "You can't join the company because you have already joined {0} companies! Leave some if you want to join new ones!";
             public const string CouldNotFindEmployeeInfoFormat = "Couldn't find employee with email ({0}) in company database. Tell the company's admin to add you into the company's employee database!";
-            public const string EmployeeWithEmailExistsFormat = "You can't add employee because one with such email ({0}) already already exists!";
+            public const string EmployeeWithEmailExistsFormat = "You can't add employee because one with such email ({0}) already exists!";
             public const string EmployeeLimitHitFormat = "You can't add more employees because you have hit the employee limit (Limit: {0})!";
             public const string CanNotChangeEmployeeRoleWithoutDepartmentFormat = "You can't change an employee's role to '{0}' if he has no 'Department'! Add employee to 'Department' first!";
             public const string CanNotChangeEmployeeDepartmentToNoneBecauseOfRoleFormat = "You can't change an employee's department to 'None' when he has a role '{0}' that needs a department! Change employee role first!";
         }
 
-        public static class CompanyService
+        public static class DepartmentService
         {
             public const string CouldNotFindCompany = "Couldn't find company!";
+            public const string CouldNotFindDepartment = "Couldn't find department!";
+            public const string CouldNotFindAnyDepartmentsToDelete = "Couldn't find any departments to delete!";
 
-            //public const string CouldNotDeleteDepartments = "Couldn't delete company's departments!";
-            //public const string CouldNotDeleteVacations = "Couldn't delete company's vacations!";
-            //public const string CouldNotDeleteEmployeesInfo = "Couldn't delete company's employees!";
-            public const string CouldNotDeleteCompany = "Couldn't delete company!";
-
-            public const string CanNotEditCompanyWithSameNameFormat = "You can't save changes to company because you already have a company with the name '{0}'!";
-            public const string CanNotCreateCompanyWithSameNameFormat = "You can't create company '{0}' because you already have a company with the same name!";
-            public const string CreatedCompaniesLimitHitFormat = "You can't create company because you have already created {0} companies! Delete some if you want to create new ones!";
+            public const string DepartmentLimitHitFormat = "You can't add more departments because you have hit the department limit (Limit: {0})!";
+            public const string DepartmentWithNameExistsFormat = "You can't add department because one with such name ({0}) already exists!";
+            public const string DepartmentCanNotBeDeletedBecauseOfEmployeesWhichNeedDepartment = "You can't delete department because there are employees with roles that need to have a department! Delete those first! Roles that need departments are: {0}";
+            public const string DepartmentsCanNotBeDeletedBecauseOfEmployeesWhichNeedDepartment = "You can't delete departments because in some departments there are employees with roles that need to have a department! Delete those employees first! Departments that have them are: {0}";
         }
     }
 }

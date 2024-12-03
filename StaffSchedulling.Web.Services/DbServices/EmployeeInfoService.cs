@@ -128,7 +128,7 @@ namespace StaffScheduling.Web.Services.DbServices
             //Check if employee with same email already exists
             if (entityFound != null)
             {
-                return new StatusReport { Ok = false, Message = String.Format(EmployeeWithEmailExistsFormat, model.Email.ToLower()) };
+                return new StatusReport { Ok = false, Message = String.Format(EmployeeWithEmailExistsFormat, entityFound.Email) };
             }
 
             try
@@ -268,6 +268,8 @@ namespace StaffScheduling.Web.Services.DbServices
 
             var entity = await _unitOfWork
                 .EmployeesInfo
+                .All()
+                .Include(ef => ef.Department)
                 .FirstOrDefaultAsync(ef => ef.Id == model.EmployeeId && ef.CompanyId == model.CompanyId);
 
             //Check if employee exists
@@ -477,10 +479,10 @@ namespace StaffScheduling.Web.Services.DbServices
             }
 
             //Calculate total employees and pages
-            int totalEmployees = selectedEmployeesInfo.Count();
-            int totalPages = (int)Math.Ceiling(totalEmployees / (double)ManageEmployeePageSize);
+            int totalEmployees = await selectedEmployeesInfo.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalEmployees / (double)ManageEmployeesPageSize);
 
-            List<EmployeeInfoViewModel> employeesInfo = await selectedEmployeesInfo
+            List<EmployeeInfoViewModel> employeeInfoModels = await selectedEmployeesInfo
                 .Select(ef => new EmployeeInfoViewModel()
                 {
                     Id = ef.Id,
@@ -493,13 +495,13 @@ namespace StaffScheduling.Web.Services.DbServices
                 .OrderByDescending(e => e.HasJoined)    //Show joined first
                 .ThenBy(e => e.Name)
                 .ThenBy(e => e.Email)
-                .Skip((page - 1) * ManageEmployeePageSize)
-                .Take(ManageEmployeePageSize)
+                .Skip((page - 1) * ManageEmployeesPageSize)
+                .Take(ManageEmployeesPageSize)
                 .AsNoTracking()
                 .ToListAsync();
 
             //Get company departments
-            List<DepartmentViewModel> departments = await _unitOfWork
+            List<DepartmentViewModel> departmentModels = await _unitOfWork
                 .Departments
                 .All()
                 .Where(d => d.CompanyId == companyId)
@@ -519,8 +521,8 @@ namespace StaffScheduling.Web.Services.DbServices
                 SearchFilter = searchFilter,
                 CurrentPage = page,
                 TotalPages = totalPages,
-                Employees = employeesInfo,
-                Departments = departments
+                Employees = employeeInfoModels,
+                Departments = departmentModels
             };
         }
     }

@@ -3,7 +3,7 @@
 @using StaffScheduling.Web.Models.InputModels.EmployeeInfo;
 @model ChangeDepartmentInputModel
 
-<form asp-controller="Employee" asp-action="ChangeRole" method="post" class="d-flex align-items-center">
+<form asp-controller="Employee" asp-action="ChangeDepartment" method="post" class="d-flex align-items-center">
     <input asp-for="CompanyId" type="hidden" readonly/>
     <input asp-for="EmployeeId" type="hidden" readonly />
     <select asp-for="SelectedDepartmentId" class="form-select form-select-sm w-auto">

@@ -8,11 +8,13 @@
         public const string SiteName = "Staff Scheduling";
         public const string InviteLinkEmptyFormat = "{0}://{1}/Company/Join/";
 
-        public const int ManageEmployeePageSize = 10;
+        public const int ManageEmployeesPageSize = 10;
+        public const int ManageDepartmentsPageSize = 10;
 
         public const int UserJoinedCompaniesLimit = 20;
         public const int UserCreatedCompaniesLimit = 20;
 
         public const int CompanyEmployeesLimit = 500;
+        public const int CompanyDepatmentsLimit = 100;
     }
 }
