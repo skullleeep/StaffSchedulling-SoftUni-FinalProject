@@ -162,9 +162,10 @@ namespace StaffScheduling.Web.Services.DbServices
                 .Where(d => d.CompanyId == model.CompanyId);
 
             //Check if there are any departments to delete
+            //and if there aren't just make it seem like they were succesfully deleted
             if (await entitiesBase.AnyAsync() == false)
             {
-                return new StatusReport { Ok = false, Message = CouldNotFindAnyDepartmentsToDelete };
+                return new StatusReport { Ok = true };
             }
 
             List<string> departmentsThatHaveEmployeesWhichNeedDepartment = await entitiesBase
@@ -241,6 +242,7 @@ namespace StaffScheduling.Web.Services.DbServices
                     EmployeeCount = d.DepartmentEmployeesInfo.Count,
                 })
                 .OrderBy(d => d.Name) //Order by name
+                .ThenByDescending(d => d.EmployeeCount) // Then order by employee count
                 .Skip((page - 1) * ManageDepartmentsPageSize)
                 .Take(ManageDepartmentsPageSize)
                 .AsNoTracking()

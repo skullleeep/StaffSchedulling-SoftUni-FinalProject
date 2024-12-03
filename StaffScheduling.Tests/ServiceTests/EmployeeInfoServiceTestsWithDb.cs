@@ -717,7 +717,7 @@ namespace StaffScheduling.Tests.ServiceTests
             string companyName = "Test Company";
 
             string employeeEmail1 = "employee@email.com";
-            string employeeEmail2 = "employee@email.com";
+            string employeeEmail2 = "employee2@email.com";
 
             var newCompanyEntity = new Company()
             {
@@ -767,7 +767,7 @@ namespace StaffScheduling.Tests.ServiceTests
             string companyName = "Test Company";
 
             string employeeEmail1 = "employee@email.com";
-            string employeeEmail2 = "employee@email.com";
+            string employeeEmail2 = "employee2@email.com";
 
             EmployeeRole adminRole = EmployeeRole.Admin;
 
@@ -822,7 +822,7 @@ namespace StaffScheduling.Tests.ServiceTests
             string companyName = "Test Company";
 
             string employeeEmail1 = "employee@email.com";
-            string employeeEmail2 = "employee@email.com";
+            string employeeEmail2 = "employee2@email.com";
 
             var newCompanyEntity = new Company()
             {
@@ -862,60 +862,6 @@ namespace StaffScheduling.Tests.ServiceTests
             //Assert
             Assert.IsFalse(result.Ok);
             Assert.That(result.Message, Is.EqualTo(CouldNotFindCompany));
-
-            var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
-            Assert.That(foundCompanyEntity.CompanyEmployeesInfo.Count, Is.EqualTo(2));
-        }
-
-        [Test]
-        public async Task DeleteAllEmployeesAsync_ShouldNotDeleteEmployees_WhenUserDoesntHaveNeededPermission()
-        {
-            //Arrange
-            string companyName = "Test Company";
-
-            string employeeEmail1 = "employee@email.com";
-            string employeeEmail2 = "employee@email.com";
-
-            EmployeeRole adminRole = EmployeeRole.Admin;
-
-            var newCompanyEntity = new Company()
-            {
-                Id = Guid.NewGuid(),
-                Name = companyName,
-                NormalizedName = companyName.ToUpper(),
-                OwnerId = Guid.NewGuid().ToString(),
-                MaxVacationDaysPerYear = 10,
-                CompanyEmployeesInfo = new List<EmployeeInfo>()
-                {
-                    new EmployeeInfo
-                    {
-                        Id = Guid.NewGuid(),
-                        Email = employeeEmail1,
-                        NormalizedEmail = employeeEmail1.ToUpper(),
-                        Role = adminRole
-                    },
-                    new EmployeeInfo
-                    {
-                        Id = Guid.NewGuid(),
-                        Email = employeeEmail2,
-                        NormalizedEmail = employeeEmail2.ToUpper(),
-                        Role = adminRole
-                    }
-                }
-            };
-
-            await _dbContext.Companies.AddAsync(newCompanyEntity);
-            await _dbContext.SaveChangesAsync();
-
-            var model = new DeleteAllEmployeesInputModel() { CompanyId = newCompanyEntity.Id };
-
-
-            //Act
-            var result = await _employeeInfoService.DeleteAllEmployeesAsync(model, RoleMapping[adminRole]);
-
-            //Assert
-            Assert.IsFalse(result.Ok);
-            Assert.That(result.Message, Is.EqualTo(CouldNotFindAnyEmployeesToDelete));
 
             var foundCompanyEntity = _dbContext.Companies.First(c => c.Id == newCompanyEntity.Id);
             Assert.That(foundCompanyEntity.CompanyEmployeesInfo.Count, Is.EqualTo(2));

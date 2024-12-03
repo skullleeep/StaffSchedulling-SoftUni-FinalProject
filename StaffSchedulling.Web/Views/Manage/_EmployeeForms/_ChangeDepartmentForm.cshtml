@@ -6,7 +6,7 @@
 <form asp-controller="Employee" asp-action="ChangeDepartment" method="post" class="d-flex align-items-center">
     <input asp-for="CompanyId" type="hidden" readonly/>
     <input asp-for="EmployeeId" type="hidden" readonly />
-    <select asp-for="SelectedDepartmentId" class="form-select form-select-sm w-auto">
+    <select asp-for="SelectedDepartmentId" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
         @if (String.IsNullOrEmpty(Model.CurrentDepartmentName))
         {
             <option value="@Guid.Empty.ToString()" selected>None</option>
@@ -29,5 +29,5 @@
             }
         }
     </select>
-    <button type="submit" class="btn btn-primary btn-sm ms-2">Change</button>
+@*     <button type="submit" class="btn btn-primary btn-sm ms-2">Change</button> *@
 </form>

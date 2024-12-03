@@ -20,7 +20,7 @@
             public const string CouldNotFindDepartment = "Couldn't find department!";
             public const string CouldNotFindUser = "Couldn't find user!";
             public const string CouldNotFindEmployee = "Couldn't find employee!";
-            public const string CouldNotFindAnyEmployeesToDelete = "Couldn't find any employees to delete!";
+            //public const string CouldNotFindAnyEmployeesToDelete = "Couldn't find any employees to delete!";
             //public const string CouldNotFindUserEmail = "Couldn't find user's email!";
             public const string CouldNotJoinAlreadyJoinedCompany = "Couldn't join company because you have already joined!";
             public const string OwnerCouldNotHisJoinCompany = "You can't join the company because you are it's owner!";
@@ -40,7 +40,7 @@
         {
             public const string CouldNotFindCompany = "Couldn't find company!";
             public const string CouldNotFindDepartment = "Couldn't find department!";
-            public const string CouldNotFindAnyDepartmentsToDelete = "Couldn't find any departments to delete!";
+            //public const string CouldNotFindAnyDepartmentsToDelete = "Couldn't find any departments to delete!";
 
             public const string DepartmentLimitHitFormat = "You can't add more departments because you have hit the department limit (Limit: {0})!";
             public const string DepartmentWithNameExistsFormat = "You can't add department because one with such name ({0}) already exists!";

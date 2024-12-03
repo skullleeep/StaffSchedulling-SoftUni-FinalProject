@@ -158,7 +158,7 @@ namespace StaffScheduling.Web.Controllers
                 return View(model);
             }
 
-            return RedirectToAction("Index", "Dashboard");
+            return RedirectToAction("Company", "Manage", new { id = model.Id.ToString() });
         }
 
         //Post request when trying to delete a company

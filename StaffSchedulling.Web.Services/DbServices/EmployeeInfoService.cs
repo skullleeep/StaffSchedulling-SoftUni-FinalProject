@@ -220,23 +220,24 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = false, Message = CouldNotFindCompany };
             }
 
-            IQueryable<EmployeeInfo> entities = _unitOfWork
+            IQueryable<EmployeeInfo> entitiesBase = _unitOfWork
                 .EmployeesInfo
                 .All()
                 .Include(c => c.Vacations)
                 .Where(ef => ef.CompanyId == model.CompanyId && managableRoles.Contains(ef.Role)); //Get only employees that user can manage
 
             //Check if there are any employees to delete
-            if (await entities.AnyAsync() == false)
+            //and if there aren't just make it seem like they were succesfully deleted
+            if (await entitiesBase.AnyAsync() == false)
             {
-                return new StatusReport { Ok = false, Message = CouldNotFindAnyEmployeesToDelete };
+                return new StatusReport { Ok = true };
             }
 
             try
             {
-                _unitOfWork.Vacations.DeleteRange(await entities.SelectMany(ef => ef.Vacations).ToArrayAsync());
+                _unitOfWork.Vacations.DeleteRange(await entitiesBase.SelectMany(ef => ef.Vacations).ToArrayAsync());
 
-                _unitOfWork.EmployeesInfo.DeleteRange(await entities.ToArrayAsync());
+                _unitOfWork.EmployeesInfo.DeleteRange(await entitiesBase.ToArrayAsync());
 
                 await _unitOfWork.SaveChangesAsync();
             }

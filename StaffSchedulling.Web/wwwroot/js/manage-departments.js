@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let scrollToTableText = urlParams.get("scrollToTable");
     if (scrollToTableText !== null) {
         if (urlParams.get("scrollToTable").toLowerCase() === "true") {
-            const table = document.getElementById("employeesTable");
+            const table = document.getElementById("departmentsTable");
             if (table) {
                 table.scrollIntoView({ behavior: "instant" });
                 // Remove the scrollToTable parameter
