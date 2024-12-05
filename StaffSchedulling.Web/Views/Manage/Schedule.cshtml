@@ -1,0 +1,163 @@
+﻿@using StaffScheduling.Common
+@using StaffScheduling.Common.Enums
+@using StaffScheduling.Common.Enums.Filters
+@using StaffScheduling.Web.Models.ViewModels.Vacation
+@using StaffScheduling.Web.Models.InputModels.Vacation
+@using static StaffScheduling.Common.Constants.ApplicationConstants
+@model ManageScheduleViewModel
+
+@{
+    ViewData["Title"] = "Manage Schedule";
+}
+
+<partial name="_ConfirmationModal">
+
+    <div class="container mt-4">
+        <div class="row mb-3">
+            <!-- Vacation Days Left Counter -->
+            <div class="col-md-12 text-end">
+                <div class="alert alert-info" role="alert">
+                    <span class="text-muted">Vacation Days Left:</span> <strong>@Model.VacationDaysLeft</strong>
+                </div>
+            </div>
+            <!-- Header Section -->
+            <div class="col-md-8">
+                <h1 class="h3">Manage Schedule</h1>
+            </div>
+            <!-- Back to Company Button -->
+            <div class="col-md-4 text-end">
+                <a asp-controller="Manage" asp-action="Company" asp-route-id="@Model.CompanyId" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Company
+                </a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(TempData["VacationError"] as string))
+        {
+            <div class="alert alert-danger" role="alert">
+                <p>@TempData["VacationError"]</p>
+            </div>
+        }
+
+    <!-- Filter Section -->
+    <div class="row mb-4">
+            <form method="get" asp-action="Vacations" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row"> @*scrollToTable is detected by javascript*@
+            <!-- Hidden Input for scrollToTable -->
+            <input type="hidden" name="scrollToTable" value="True" />
+
+            <select class="form-select w-auto no-border-select" name="Filter">
+                <!-- Populate filters dynamically -->
+                @foreach (var filter in Helper.EnumArray<VacationSortFilter>())
+                {
+                    if (filter == Model.SortFilter)
+                    {
+                        <option value="@(filter)" selected>Show: @Helper.AddSpacesToString(filter.ToString())</option>
+                    }
+                    else
+                    {
+                        <option value="@(filter)">Show: @Helper.AddSpacesToString(filter.ToString())</option>
+                    }
+                }
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+
+        <!-- Vacation Adding Section -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Add Vacation</h5>
+                <!-- Add Employee Manually -->
+                <partial name="_ScheduleForms/_AddVacationForm" model="@new AddVacationOfEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = Model.EmployeeId  }" />
+            </div>
+        </div>
+
+        <!-- Vacation Table -->
+        <div id="vacationsTable" class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Total Days</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Vacations.Any())
+                            {
+                                foreach (var vacation in Model.Vacations)
+                                {
+                                    <tr>
+                                        <td>@vacation.StartDate.ToString(VisibleDateFormat)</td>
+                                        <td>@vacation.EndDate.ToString(VisibleDateFormat)</td>
+                                        <td>@vacation.Days</td>
+                                        <td>
+                                            @if(vacation.Status == VacationStatus.Pending)
+                                            {
+                                                <span class="badge bg-warning">@vacation.Status.ToString()</span>
+                                            }
+                                            else if(vacation.Status == VacationStatus.Denied)
+                                            {
+                                                <span class="badge bg-danger">@vacation.Status.ToString()</span>
+                                            }
+                                            else if(vacation.Status == VacationStatus.Approved)
+                                            {
+                                                <span class="badge bg-success">@vacation.Status.ToString()</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <partial name="_VacationForms/_DeleteVacationOfEmployeeForm" model="@new DeleteVacationInputModel() { CompanyId = Model.CompanyId, VacationId = vacation.Id, EmployeeId = Model.EmployeeId }" />
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">No vacations found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Vacations.Any())
+        {
+            <!-- Bulk Actions Section -->
+            <div class="card mb-4 mt-1 border-0">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <!-- Delete All -->
+                        <partial name="_ScheduleForms/_DeleteAllVacationsOfEmployeeForm" model="@new DeleteAllVacationsOfEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = Model.EmployeeId }" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Pagination Section -->
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-controller="Manage" asp-action="Schedule"
+                           asp-route-id="@Model.CompanyId"
+                           asp-route-currentPage="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+        <script src="~/js/confirmation-modal.js"></script>
+    }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StaffScheduling.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,8 +26,8 @@ namespace StaffScheduling.Data.Models
         public int Days { get; set; }
 
         [Required]
-        [Comment("Used for checking if vacation request is approved by higher-up")]
-        public bool IsApproved { get; set; } = false;
+        [Comment("Used for checking if vacation request is still pending or has been approved or denied by a higher-up")]
+        public VacationStatus Status { get; set; } = 0;
 
         //Navigation
         [ForeignKey(nameof(EmployeeId))]

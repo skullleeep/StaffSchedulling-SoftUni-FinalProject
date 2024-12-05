@@ -45,20 +45,13 @@
             <!-- Populate filters dynamically -->
             @foreach (var filter in Helper.EnumArray<EmployeeSearchFilter>())
             {
-                if (Model.SearchFilter.HasValue)
+                if (filter == Model.SearchFilter)
                 {
-                    if (filter == Model.SearchFilter.Value)
-                    {
-                            <option value="@(filter)" selected>Search By: @filter.ToString()</option>
-                    }
-                    else
-                    {
-                            <option value="@(filter)">Search By: @filter.ToString()</option>
-                    }
+                    <option value="@(filter)" selected>Search By: @filter.ToString()</option>
                 }
                 else
                 {
-                        <option value="@(filter)">Search By: @filter.ToString()</option>
+                    <option value="@(filter)">Search By: @filter.ToString()</option>
                 }
             }
             </select>
@@ -207,6 +200,6 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/confirmation-modal.js"></script>
     <script src="~/js/manage-employees.js"></script>
-        <script src="~/js/auto-sizing-select.js"></script>
+    <script src="~/js/auto-sizing-select.js"></script>
 }
 

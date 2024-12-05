@@ -29,18 +29,18 @@ namespace StaffScheduling.Web.Services.DbServices
                 return PermissionRole.Owner;
             }
 
-            var entity = await _unitOfWork
+            var entityEmployeeInfo = await _unitOfWork
                 .EmployeesInfo
                 .All()
                 .Where(e => e.HasJoined == true && e.Email == userEmail && e.CompanyId == companyId)
                 .FirstOrDefaultAsync();
 
-            if (entity == null)
+            if (entityEmployeeInfo == null)
             {
                 return PermissionRole.None;
             }
 
-            return RoleMapping[entity.Role];
+            return RoleMapping[entityEmployeeInfo.Role];
         }
     }
 
