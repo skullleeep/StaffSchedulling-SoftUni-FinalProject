@@ -14,12 +14,6 @@
 
     <div class="container mt-4">
         <div class="row mb-3">
-            <!-- Vacation Days Left Counter -->
-            <div class="col-md-12 text-end">
-                <div class="alert alert-info" role="alert">
-                    <span class="text-muted">Vacation Days Left:</span> <strong>@Model.VacationDaysLeft</strong>
-                </div>
-            </div>
             <!-- Header Section -->
             <div class="col-md-8">
                 <h1 class="h3">Manage Schedule</h1>
@@ -41,34 +35,43 @@
 
     <!-- Filter Section -->
     <div class="row mb-4">
-            <form method="get" asp-action="Vacations" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row"> @*scrollToTable is detected by javascript*@
+        <form method="get" asp-action="Schedule" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row flex-nowrap align-items-center justify-content-between"> @*scrollToTable is detected by javascript*@
             <!-- Hidden Input for scrollToTable -->
             <input type="hidden" name="scrollToTable" value="True" />
 
-            <select class="form-select w-auto no-border-select" name="Filter">
-                <!-- Populate filters dynamically -->
-                @foreach (var filter in Helper.EnumArray<VacationSortFilter>())
-                {
-                    if (filter == Model.SortFilter)
+            <!-- Vacation Days Left Counter -->
+            <div class="flex-column">
+                    <span class="text-muted">Vacation Days Left (@DateTime.Now.Year):</span> <strong>@Model.VacationDaysLeftCurrentYear</strong>
+                    <br />
+                    <span class="text-muted">Vacation Days Left (@DateTime.Now.AddYears(1).Year):</span> <strong>@Model.VacationDaysLeftNextYear</strong>
+            </div>
+
+            <!-- Sort Filter And Sort Button -->
+            <div class="flex-row align-content-center h-100">
+                <select asp-for="SortFilter" class="w-auto h-100 no-border-select">
+                    <!-- Populate filters dynamically -->
+                    @foreach (var filter in Helper.EnumArray<VacationSortFilter>())
                     {
-                        <option value="@(filter)" selected>Show: @Helper.AddSpacesToString(filter.ToString())</option>
+                        if (filter == Model.SortFilter)
+                        {
+                            <option value="@(filter)" selected>Show @Helper.AddSpacesToString(filter.ToString())</option>
+                        }
+                        else
+                        {
+                            <option value="@(filter)">Show @Helper.AddSpacesToString(filter.ToString())</option>
+                        }
                     }
-                    else
-                    {
-                        <option value="@(filter)">Show: @Helper.AddSpacesToString(filter.ToString())</option>
-                    }
-                }
-            </select>
-            <button type="submit" class="btn btn-primary">Filter</button>
+                </select>
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
         </form>
     </div>
 
         <!-- Vacation Adding Section -->
         <div class="card mb-4">
             <div class="card-body">
-                <h5>Add Vacation</h5>
                 <!-- Add Employee Manually -->
-                <partial name="_ScheduleForms/_AddVacationForm" model="@new AddVacationOfEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = Model.EmployeeId  }" />
+                <partial name="_ScheduleForms/_AddVacationOfEmployeeForm" model="@new AddVacationOfEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = Model.EmployeeId  }" />
             </div>
         </div>
 
@@ -92,8 +95,8 @@
                                 foreach (var vacation in Model.Vacations)
                                 {
                                     <tr>
-                                        <td>@vacation.StartDate.ToString(VisibleDateFormat)</td>
-                                        <td>@vacation.EndDate.ToString(VisibleDateFormat)</td>
+                                        <td>@vacation.StartDate.ToShortDateString()</td>
+                                        <td>@vacation.EndDate.ToShortDateString()</td>
                                         <td>@vacation.Days</td>
                                         <td>
                                             @if(vacation.Status == VacationStatus.Pending)
@@ -110,7 +113,7 @@
                                             }
                                         </td>
                                         <td>
-                                            <partial name="_VacationForms/_DeleteVacationOfEmployeeForm" model="@new DeleteVacationInputModel() { CompanyId = Model.CompanyId, VacationId = vacation.Id, EmployeeId = Model.EmployeeId }" />
+                                            <partial name="_ScheduleForms/_DeleteVacationOfEmployeeForm" model="@new DeleteVacationOfEmployeeInputModel() { CompanyId = Model.CompanyId, VacationId = vacation.Id, EmployeeId = Model.EmployeeId }" />
                                         </td>
                                     </tr>
                                 }
@@ -148,6 +151,7 @@
                     <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
                         <a class="page-link" asp-controller="Manage" asp-action="Schedule"
                            asp-route-id="@Model.CompanyId"
+                           asp-route-sortFilter = "@Model.SortFilter"
                            asp-route-currentPage="@i">
                             @i
                         </a>

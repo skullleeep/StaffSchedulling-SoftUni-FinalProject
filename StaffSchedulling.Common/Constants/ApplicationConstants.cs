@@ -16,7 +16,5 @@
 
         public const int CompanyEmployeesLimit = 500;
         public const int CompanyDepatmentsLimit = 100;
-
-        public const string VisibleDateFormat = "dd/mm/yyyy";
     }
 }

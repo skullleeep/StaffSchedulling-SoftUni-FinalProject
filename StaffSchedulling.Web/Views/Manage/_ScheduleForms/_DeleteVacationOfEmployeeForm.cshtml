@@ -1,9 +1,10 @@
-﻿@using StaffScheduling.Web.Models.InputModels.EmployeeInfo;
-@model DeleteEmployeeInputModel
+﻿@using StaffScheduling.Web.Models.InputModels.Vacation;
+@model DeleteVacationOfEmployeeInputModel
 
 
-<form id="deleteForm-@Model.EmployeeId.ToString()" asp-controller="Employee" asp-action="Delete" method="post">
+<form id="deleteForm-@Model.EmployeeId.ToString()" asp-controller="Vacation" asp-action="DeleteVacationOfEmployee" method="post">
     <input asp-for="CompanyId" type="hidden" readonly />
     <input asp-for="EmployeeId" type="hidden" readonly />
+
     <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('@Model.EmployeeId.ToString()')">Delete</button>
 </form>

@@ -104,7 +104,7 @@
                                 <div class="card-header" style="font-weight: 400;"><b>@company.Name</b></div>
                                     <div class="card-body">
                                     <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
-                                    <a href="#" class="btn btn-outline-dark">
+                                    <a asp-controller="Manage" asp-action="Schedule" asp-route-id="@company.Id" class="btn btn-outline-dark">
                                         <i class="bi bi-calendar4-week"></i> Manage Schedule
                                     </a>
                                     <br />
