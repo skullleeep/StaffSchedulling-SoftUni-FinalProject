@@ -15,10 +15,13 @@ namespace StaffScheduling.Web.Models.ViewModels.Vacation
         public Guid EmployeeId { get; set; }
 
         [Required]
-        public DateOnly StartDate { get; set; }
+        public DateTime StartDate { get; set; }
 
         [Required]
-        public DateOnly EndDate { get; set; }
+        public DateTime EndDate { get; set; }
+
+        [Required]
+        public DateTime CreatedOn { get; set; }
 
         [Required]
         public int Days { get; set; }

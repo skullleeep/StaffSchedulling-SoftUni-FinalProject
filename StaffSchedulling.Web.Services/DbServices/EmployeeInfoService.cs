@@ -19,12 +19,6 @@ namespace StaffScheduling.Web.Services.DbServices
     {
         public async Task<StatusReport> JoinCompanyWithIdAsync(Guid companyId, string userId, string userEmail)
         {
-            //Check if userId is valid
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                return new StatusReport { Ok = false, Message = CouldNotFindUser };
-            }
-
             var entityCompany = await _unitOfWork
                             .Companies
                             .All()
@@ -427,7 +421,7 @@ namespace StaffScheduling.Web.Services.DbServices
                 searchFilter = EmployeeSearchFilter.Email;
             }
 
-            //Get EmployeeRole roles which have < PermissionRole that the current employees can manage
+            //Get EmployeeRole roles which have < PermissionRole that the current employee can manage
             //For example if I am an Admin I won't be able to manage other admins
             //Doing this because RoleMapping[EmployeeRole] can't be translated into SQL from entity
             List<EmployeeRole> managableRoles = GetManageableRoles(userPermissionRole);

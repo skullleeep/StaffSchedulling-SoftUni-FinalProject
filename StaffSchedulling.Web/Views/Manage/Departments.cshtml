@@ -111,7 +111,8 @@
                 <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
                     <a class="page-link" asp-controller="Manage" asp-action="Departments"
                         asp-route-id="@Model.CompanyId"
-                        asp-route-currentPage="@i">
+                        asp-route-currentPage="@i"
+                        asp-route-scrollToTable="True">
                         @i
                     </a>
                 </li>
@@ -121,7 +122,6 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
     <script src="~/js/confirmation-modal.js"></script>
     <script src="~/js/manage-departments.js"></script>
     <script src="~/js/auto-sizing-select.js"></script>

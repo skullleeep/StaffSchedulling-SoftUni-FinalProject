@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StaffScheduling.Common.Enums.Filters;
-using StaffScheduling.Web.Models.ViewModels.Vacation;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Web.Controllers
 {
     [Authorize]
-    public class ManageController(IPermissionService _permissionService, ICompanyService _companyService, IEmployeeInfoService _employeeInfoService, IDepartmentService _departmentService) : BaseController
+    public class ManageController(IPermissionService _permissionService, ICompanyService _companyService, IEmployeeInfoService _employeeInfoService,
+        IDepartmentService _departmentService, IVacationService _vacationService) : BaseController
     {
         [HttpGet("[controller]/[action]/{id?}")]
         public async Task<IActionResult> Company(string id)
@@ -130,36 +130,14 @@ namespace StaffScheduling.Web.Controllers
             PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
             //Check for access permission
-            if (permissionRole < PermissionRole.Visitor)
+            if (permissionRole < PermissionRole.Visitor || permissionRole == PermissionRole.Owner) //Don't allow owner as the owner doesn't have a schedule
             {
                 return RedirectToAction("Index", "Dashboard");
             }
 
-            //TODO: CREATE MANAGE SCHEDULE GET MODEL FUNCTION
-            //var model = await _vacationService.GetManageScheduleModel(companyGuid, sortFilter, currentPage);
+            string userId = GetCurrentUserId();
 
-            var model = new ManageScheduleViewModel()
-            {
-                CompanyId = companyGuid,
-                EmployeeId = Guid.NewGuid(),
-                CurrentPage = 1,
-                TotalPages = 2,
-                SortFilter = VacationSortFilter.All,
-                VacationDaysLeft = 15,
-                Vacations = new List<VacationViewModel>
-                {
-                    new VacationViewModel
-                    {
-                        CompanyId = Guid.NewGuid(),
-                        EmployeeId = Guid.NewGuid(),
-                        Days = 5,
-                        StartDate = DateOnly.FromDateTime(DateTime.Now),
-                        EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(4)),
-                        Id = Guid.NewGuid(),
-                        Status = Common.Enums.VacationStatus.Pending
-                    }
-                }
-            };
+            var model = await _vacationService.GetCompanyManageScheduleModel(companyGuid, sortFilter, currentPage, userId);
 
             //Check if entity exists
             if (model == null)

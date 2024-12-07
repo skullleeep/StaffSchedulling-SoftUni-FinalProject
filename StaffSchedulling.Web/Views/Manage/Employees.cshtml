@@ -186,7 +186,8 @@
                             asp-route-id="@Model.CompanyId" 
                             asp-route-searchQuery="@Model.SearchQuery" 
                             asp-route-searchFilter="@Model.SearchFilter.ToString()" 
-                            asp-route-currentPage="@i">
+                            asp-route-currentPage="@i"
+                            asp-route-scrollToTable="True">
                         @i
                     </a>
                 </li>
@@ -197,7 +198,6 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
     <script src="~/js/confirmation-modal.js"></script>
     <script src="~/js/manage-employees.js"></script>
     <script src="~/js/auto-sizing-select.js"></script>

@@ -11,9 +11,9 @@ namespace StaffScheduling.Web.Models.InputModels.Vacation
         public Guid EmployeeId { get; set; }
 
         [Required]
-        public DateOnly StartDate { get; set; }
+        public DateTime StartDate { get; set; }
 
         [Required]
-        public DateOnly EndDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }

@@ -18,7 +18,7 @@
         {
             public const string CouldNotFindCompany = "Couldn't find company!";
             public const string CouldNotFindDepartment = "Couldn't find department!";
-            public const string CouldNotFindUser = "Couldn't find user!";
+            /*            public const string CouldNotFindUser = "Couldn't find user!";*/
             public const string CouldNotFindEmployee = "Couldn't find employee!";
             //public const string CouldNotFindAnyEmployeesToDelete = "Couldn't find any employees to delete!";
             //public const string CouldNotFindUserEmail = "Couldn't find user's email!";
@@ -31,7 +31,7 @@
             public const string JoinedCompaniesLimitHitFormat = "You can't join the company because you have already joined {0} companies! Leave some if you want to join new ones!";
             public const string CouldNotFindEmployeeInfoFormat = "Couldn't find employee with email ({0}) in company database. Tell the company's admin to add you into the company's employee database!";
             public const string EmployeeWithEmailExistsFormat = "You can't add employee because one with such email ({0}) already exists!";
-            public const string EmployeeLimitHitFormat = "You can't add more employees because you have hit the employee limit (Limit: {0})!";
+            public const string EmployeeLimitHitFormat = "You can't add more employees because you have hit the employee limit (Limit: {0})! Delete some if you want to create new ones!";
             public const string CanNotChangeEmployeeRoleWithoutDepartmentFormat = "You can't change an employee's role to '{0}' if he has no 'Department'! Add employee to 'Department' first!";
             public const string CanNotChangeEmployeeDepartmentToNoneBecauseOfRoleFormat = "You can't change an employee's department to 'None' when he has a role '{0}' that needs a department! Change employee role first!";
         }
@@ -46,6 +46,20 @@
             public const string DepartmentWithNameExistsFormat = "You can't add department because one with such name ({0}) already exists!";
             public const string DepartmentCanNotBeDeletedBecauseOfEmployeesWhichNeedDepartment = "You can't delete department because there are employees with roles that need to have a department! Delete those first! Roles that need departments are: {0}";
             public const string DepartmentsCanNotBeDeletedBecauseOfEmployeesWhichNeedDepartment = "You can't delete departments because in some departments there are employees with roles that need to have a department! Delete those employees first! Departments that have them are: {0}";
+        }
+
+        public static class VacationService
+        {
+            public const string EndDateCanNotBeAfterStartDate = "End date must be after Start Date!";
+            public const string StartDateCanNotBeTodayOrInThePast = "Start Date can't be today or in the past!";
+            public const string DatesCanNotBeMoreThanXMonthsFromTomorrowFormat = "Start Date or End Date can't be more than 6 months away from tomorrow";
+
+            public const string CouldNotFindCompany = "Couldn't find company!";
+            public const string CouldNotFindEmployee = "Couldn't find employee!";
+
+            public const string VacationPendingLimitHitFormat = "You can't add more vacation requests because you have hit the pending vacation request limit (Limit: {0})! Delete some if you want to create new ones or wait for a company admin to change the status of one!";
+            public const string NotEnoughVacationDaysLeftFormat = "You can't add vacation request because you don't have enough vacation days left! Total vacation days needed: {0}";
+            public const string VacationWithSameDatesExistsFormat = "You can't add vacation request because you have already made one with same Start Date ({0}) and same End Date ({1}) which has status '{2}'!";
         }
     }
 }

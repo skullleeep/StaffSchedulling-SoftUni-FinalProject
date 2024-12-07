@@ -17,10 +17,14 @@ namespace StaffScheduling.Data.Models
         public Guid CompanyId { get; set; }
 
         [Required]
-        public DateOnly StartDate { get; set; }
+        public DateTime StartDate { get; set; }
 
         [Required]
-        public DateOnly EndDate { get; set; }
+        public DateTime EndDate { get; set; }
+
+        [Required]
+        [Comment("Used for ordering the vacations")]
+        public DateTime CreatedOn { get; set; }
 
         [Required]
         public int Days { get; set; }

@@ -10,11 +10,15 @@
 
         public const int ManageEmployeesPageSize = 10;
         public const int ManageDepartmentsPageSize = 10;
+        public const int ManageSchedulePageSize = 10;
 
         public const int UserJoinedCompaniesLimit = 20;
         public const int UserCreatedCompaniesLimit = 20;
 
         public const int CompanyEmployeesLimit = 500;
         public const int CompanyDepatmentsLimit = 100;
+
+        public const int VacationMaxMonthsFromDates = 6;
+        public const string VacationDateFormat = "dd MMMM yyyy";
     }
 }

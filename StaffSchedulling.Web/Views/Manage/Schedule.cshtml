@@ -8,6 +8,9 @@
 
 @{
     ViewData["Title"] = "Manage Schedule";
+
+    string minDate = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
+    string maxDate = DateTime.Now.AddDays(1).AddMonths(VacationMaxMonthsFromDates).ToString("yyyy-MM-dd");
 }
 
 <partial name="_ConfirmationModal">
@@ -95,9 +98,9 @@
                                 foreach (var vacation in Model.Vacations)
                                 {
                                     <tr>
-                                        <td>@vacation.StartDate.ToShortDateString()</td>
-                                        <td>@vacation.EndDate.ToShortDateString()</td>
-                                        <td>@vacation.Days</td>
+                                        <td>@vacation.StartDate.ToString(VacationDateFormat)</td>
+                                        <td>@vacation.EndDate.ToString(VacationDateFormat)</td>
+                                        <td id="vacationTotalDays-@vacation.Id.ToString()">@vacation.Days</td>
                                         <td>
                                             @if(vacation.Status == VacationStatus.Pending)
                                             {
@@ -121,7 +124,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="4" class="text-center">No vacations found.</td>
+                                    <td colspan="4" class="text-center">No vacation requests found.</td>
                                 </tr>
                             }
                         </tbody>
@@ -152,7 +155,8 @@
                         <a class="page-link" asp-controller="Manage" asp-action="Schedule"
                            asp-route-id="@Model.CompanyId"
                            asp-route-sortFilter = "@Model.SortFilter"
-                           asp-route-currentPage="@i">
+                           asp-route-currentPage="@i"
+                           asp-route-scrollToTable="True">
                             @i
                         </a>
                     </li>
@@ -162,6 +166,17 @@
     </div>
 
     @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
         <script src="~/js/confirmation-modal.js"></script>
+        <script src="~/js/manage-schedule.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                flatpickr(".custom-date-picker", {
+                    altInput: true, //Keeps the real value ISO 8601 (useful for model binding)
+                    altFormat: "d F Y", //What the user sees in the input box
+                    minDate: "@minDate",
+                    maxDate: "@maxDate",
+                    defaultDate: "@minDate"
+                });
+            });
+        </script>
     }
