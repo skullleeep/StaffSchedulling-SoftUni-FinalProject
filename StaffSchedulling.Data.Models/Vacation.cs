@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StaffScheduling.Data.Models
 {
+    [Index(nameof(EmployeeId), nameof(StartDate), nameof(EndDate), IsUnique = true)]
     public class Vacation
     {
         [Key]
