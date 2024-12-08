@@ -79,6 +79,7 @@ namespace StaffScheduling.Web.Services.DbServices
             int vacationDaysLeftForNextYear = await CalculateVacationDaysLeftForYear(entityCompany.MaxVacationDaysPerYear, nextYear, selectedVacations);
 
             Dictionary<int, int> vacationDaysNeededPerYear = CalculateVacationDaysYearSplit(model.StartDate, model.EndDate);
+
             int totalVacationDays = vacationDaysNeededPerYear[currentYear] + vacationDaysNeededPerYear[nextYear];
 
             //Check if there are not enough vacation days left for the employee's vacation
@@ -122,15 +123,70 @@ namespace StaffScheduling.Web.Services.DbServices
             return new StatusReport { Ok = true };
         }
 
+        public async Task<StatusReport> DeleteVacationOfEmployeeAsync(DeleteVacationOfEmployeeInputModel model, string userId)
+        {
+            var entityCompany = await _unitOfWork
+                            .Companies
+                            .All()
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(c => c.Id == model.CompanyId);
+
+            //Check if company exists
+            if (entityCompany == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindCompany };
+            }
+
+            var entityEmployeeInfo = await _unitOfWork
+                            .EmployeesInfo
+                            .All()
+                            .AsNoTracking()
+                            .Where(ef => ef.Id == model.EmployeeId && ef.CompanyId == model.CompanyId && String.IsNullOrEmpty(ef.UserId) == false)
+                            .FirstOrDefaultAsync(ef => ef.UserId! == userId);
+
+            //Check if employee exists
+            if (entityEmployeeInfo == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindEmployee };
+            }
+
+            var entity = await _unitOfWork
+                .Vacations
+                .FirstOrDefaultAsync(v => v.Id == model.VacationId && v.EmployeeId == entityEmployeeInfo.Id);
+
+            //Check if vacation exists
+            if (entity == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindVacation };
+            }
+
+            //Check if vacation status is 'Denied'
+            //If it is 'Denied' than the employee can not delete it
+            //Because he will be able to make a vacation with same Start Date and End Date and could end up spamming the higher ups
+            if (entity.Status == VacationStatus.Denied)
+            {
+                return new StatusReport { Ok = false, Message = CanNotDeleteDeniedVacation };
+            }
+
+            try
+            {
+                _unitOfWork.Vacations.Delete(entity);
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
+            }
+
+            return new StatusReport { Ok = true };
+        }
+
         public Task<StatusReport> DeleteAllVacationsOfEmployeeAsync(DeleteAllVacationsOfEmployeeInputModel model, string userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<StatusReport> DeleteEmployeeOfEmployeeAsync(DeleteVacationOfEmployeeInputModel model, string userId)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<ManageScheduleViewModel?> GetCompanyManageScheduleModel(Guid companyId, VacationSortFilter? sortFilter, int page, string userId)
         {

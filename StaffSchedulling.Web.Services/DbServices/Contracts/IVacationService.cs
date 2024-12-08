@@ -9,7 +9,7 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
     {
         public Task<StatusReport> AddVacationOfEmployeeAsync(AddVacationOfEmployeeInputModel model, string userId);
 
-        public Task<StatusReport> DeleteEmployeeOfEmployeeAsync(DeleteVacationOfEmployeeInputModel model, string userId);
+        public Task<StatusReport> DeleteVacationOfEmployeeAsync(DeleteVacationOfEmployeeInputModel model, string userId);
 
         public Task<StatusReport> DeleteAllVacationsOfEmployeeAsync(DeleteAllVacationsOfEmployeeInputModel model, string userId);
 
