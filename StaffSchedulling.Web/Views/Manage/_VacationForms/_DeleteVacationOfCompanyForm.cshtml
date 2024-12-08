@@ -1,0 +1,10 @@
+﻿@using StaffScheduling.Web.Models.InputModels.Vacation;
+@model DeleteVacationOfCompanyInputModel
+
+
+<form id="deleteForm-@Model.VacationId.ToString()" asp-controller="Vacation" asp-action="DeleteVacationOfCompany" method="post">
+    <input asp-for="CompanyId" type="hidden" readonly />
+    <input asp-for="VacationId" type="hidden" readonly />
+
+    <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('@Model.VacationId.ToString()')">Delete</button>
+</form>

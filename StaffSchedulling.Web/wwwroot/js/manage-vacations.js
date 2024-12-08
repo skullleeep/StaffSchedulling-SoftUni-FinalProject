@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let scrollToTableText = urlParams.get("scrollToTable");
     if (scrollToTableText !== null) {
         if (urlParams.get("scrollToTable").toLowerCase() === "true") {
-            const table = document.getElementById("departmentsTable");
+            const table = document.getElementById("vacationsTable");
             if (table) {
                 table.scrollIntoView({ behavior: "instant" });
                 //Remove the scrollToTable parameter
@@ -17,23 +17,24 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 //Modal dialog functions
-function confirmDelete(departmentId) {
-    let departmentName = document.getElementById(`departmentName-${departmentId}`).innerHTML;
+function confirmDelete(vacationId) {
+    let totalDays = document.getElementById(`vacationTotalDays-${vacationId}`).innerHTML;
+    let employeeName = document.getElementById(`vacationEmployeeName-${vacationId}`).innerHTML;
 
     // Show the confirmation modal
     showConfirmationModal(
-        `Are you sure you want to delete department '${departmentName}'?`,
-        () => document.getElementById(`deleteForm-${departmentId}`).submit(), //Resubmit the form upon confirmation
+        `Are you sure you want to delete the vacation request of Employee: '${employeeName}' with Total Days: ${totalDays}?`,
+        () => document.getElementById(`deleteForm-${vacationId}`).submit(), //Resubmit the form upon confirmation
         "btn-danger",
         "Delete"
     );
 }
 
-function confirmDeleteAll() {
+function confirmDeleteAll(vacationStatus) {
     // Show the confirmation modal
     showConfirmationModal(
-        `Are you sure you want to delete all of your company's departments?`,
-        () => document.getElementById("deleteAllForm").submit(), //Resubmit the form upon confirmation
+        `Are you sure you want to delete all of your company's vacation requests with Status: '${vacationStatus}'?`,
+        () => document.getElementById(`deleteAll${vacationStatus}Form`).submit(), //Resubmit the form upon confirmation
         "btn-danger",
         "Delete"
     );

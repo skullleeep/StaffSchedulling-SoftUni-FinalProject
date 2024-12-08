@@ -3,24 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StaffScheduling.Web.Models.ViewModels.Vacation
 {
-    public class ManageScheduleViewModel
+    public class ManageVacationsViewModel
     {
         [Required]
         public Guid CompanyId { get; set; }
 
         [Required]
-        public Guid EmployeeId { get; set; }
+        public List<VacationViewModel> Vacations { get; set; } = new List<VacationViewModel>();
 
-        [Required]
-        public List<VacationScheduleViewModel> Vacations { get; set; } = new List<VacationScheduleViewModel>();
+        public string? SearchQuery { get; set; }
 
         public VacationSortFilter? SortFilter { get; set; }
-
-        [Required]
-        public int VacationDaysLeftCurrentYear { get; set; } = 0;
-
-        [Required]
-        public int VacationDaysLeftNextYear { get; set; } = 0;
 
         [Required]
         public int CurrentPage { get; set; } = 1;

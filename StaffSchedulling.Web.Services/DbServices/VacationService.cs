@@ -152,7 +152,7 @@ namespace StaffScheduling.Web.Services.DbServices
 
             var entity = await _unitOfWork
                 .Vacations
-                .FirstOrDefaultAsync(v => v.Id == model.VacationId && v.EmployeeId == entityEmployeeInfo.Id);
+                .FirstOrDefaultAsync(v => v.Id == model.VacationId && v.CompanyId == entityCompany.Id && v.EmployeeId == entityEmployeeInfo.Id);
 
             //Check if vacation exists
             if (entity == null)
@@ -182,11 +182,59 @@ namespace StaffScheduling.Web.Services.DbServices
             return new StatusReport { Ok = true };
         }
 
-        public Task<StatusReport> DeleteAllVacationsOfEmployeeAsync(DeleteAllVacationsOfEmployeeInputModel model, string userId)
+        public async Task<StatusReport> DeleteAllVacationsOfEmployeeAsync(DeleteAllVacationsOfEmployeeInputModel model, string userId)
         {
-            throw new NotImplementedException();
-        }
+            //Check if vacation status to delete is 'Denied'
+            if (model.VacationStatusToDelete == VacationStatus.Denied)
+            {
+                return new StatusReport { Ok = false, Message = CanNotDeleteAllDeniedVacations };
+            }
 
+            var entityCompany = await _unitOfWork
+                .Companies
+                .All()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == model.CompanyId);
+
+            //Check if company exists
+            if (entityCompany == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindCompany };
+            }
+
+            var entityEmployeeInfo = await _unitOfWork
+                            .EmployeesInfo
+                            .All()
+                            .AsNoTracking()
+                            .Where(ef => ef.Id == model.EmployeeId && ef.CompanyId == model.CompanyId && String.IsNullOrEmpty(ef.UserId) == false)
+                            .FirstOrDefaultAsync(ef => ef.UserId! == userId);
+
+            //Check if employee exists
+            if (entityEmployeeInfo == null)
+            {
+                return new StatusReport { Ok = false, Message = CouldNotFindEmployee };
+            }
+
+            //Get IQueryable of the most basic needed results
+            IQueryable<Vacation> selectedVacations = _unitOfWork
+                .Vacations
+                .All()
+                .Include(v => v.Employee)
+                .Where(v => v.CompanyId == model.CompanyId && v.EmployeeId == entityEmployeeInfo.Id && v.Status == model.VacationStatusToDelete);
+
+            try
+            {
+                _unitOfWork.Vacations.DeleteRange(await selectedVacations.ToArrayAsync());
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
+            }
+
+            return new StatusReport { Ok = true };
+        }
 
         public async Task<ManageScheduleViewModel?> GetCompanyManageScheduleModel(Guid companyId, VacationSortFilter? sortFilter, int page, string userId)
         {
@@ -258,8 +306,8 @@ namespace StaffScheduling.Web.Services.DbServices
             int totalVacations = await selectedVacations.CountAsync();
             int totalPages = (int)Math.Ceiling(totalVacations / (double)ManageSchedulePageSize);
 
-            List<VacationViewModel> vacationModels = await selectedVacations
-                .Select(v => new VacationViewModel()
+            List<VacationScheduleViewModel> vacationModels = await selectedVacations
+                .Select(v => new VacationScheduleViewModel()
                 {
                     Id = v.Id,
                     CompanyId = v.CompanyId,
@@ -270,7 +318,7 @@ namespace StaffScheduling.Web.Services.DbServices
                     CreatedOn = v.CreatedOn,
                     Days = v.Days,
                 })
-                .OrderBy(v => v.CreatedOn)
+                .OrderByDescending(v => v.CreatedOn)
                 .Skip((page - 1) * ManageSchedulePageSize)
                 .Take(ManageSchedulePageSize)
                 .AsNoTracking()
@@ -289,7 +337,7 @@ namespace StaffScheduling.Web.Services.DbServices
             };
         }
 
-        public Dictionary<int, int> CalculateVacationDaysYearSplit(DateTime startDate, DateTime endDate)
+        private Dictionary<int, int> CalculateVacationDaysYearSplit(DateTime startDate, DateTime endDate)
         {
             var daysPerYear = new Dictionary<int, int>();
             var currentDate = startDate;

@@ -1,13 +1,12 @@
 ﻿@using StaffScheduling.Common.Enums
 @using StaffScheduling.Web.Models.InputModels.Vacation;
-@model DeleteAllVacationsOfEmployeeInputModel
+@model DeleteAllVacationsOfCompanyInputModel
 @{
     string status = Model.VacationStatusToDelete.ToString();
 }
 
-<form id="deleteAll@(status)Form" asp-controller="Vacation" asp-action="DeleteAllVacationsOfEmployee" method="post" class="">
+<form id="deleteAll@(status)Form" asp-controller="Vacation" asp-action="DeleteAllVacationsOfCompany" method="post" class="">
     <input asp-for="CompanyId" hidden/>
-    <input asp-for="EmployeeId" hidden />
     <input asp-for="VacationStatusToDelete" hidden/>
 
     <button type="button" class="btn btn-sm btn-outline-danger w-auto" onclick="confirmDeleteAll('@status')">Delete All @(status) Vacations</button>

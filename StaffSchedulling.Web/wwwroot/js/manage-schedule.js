@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const table = document.getElementById("vacationsTable");
             if (table) {
                 table.scrollIntoView({ behavior: "instant" });
-                // Remove the scrollToTable parameter
+                //Remove the scrollToTable parameter
                 urlParams.delete("scrollToTable");
                 const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
                 history.replaceState(null, "", newUrl);
@@ -23,17 +23,17 @@ function confirmDelete(vacationId) {
     // Show the confirmation modal
     showConfirmationModal(
         `Are you sure you want to delete vacation request with Total Days: ${totalDays}?`,
-        () => document.getElementById(`deleteForm-${vacationId}`).submit(), // Resubmit the form upon confirmation
+        () => document.getElementById(`deleteForm-${vacationId}`).submit(), //Resubmit the form upon confirmation
         "btn-danger",
         "Delete"
     );
 }
 
-function confirmDeleteAll() {
+function confirmDeleteAll(vacationStatus) {
     // Show the confirmation modal
     showConfirmationModal(
-        `Are you sure you want to delete all of your vacation requests?`,
-        () => document.getElementById("deleteAllForm").submit(), // Resubmit the form upon confirmation
+        `Are you sure you want to delete all of your vacation requests with Status: '${vacationStatus}'?`,
+        () => document.getElementById(`deleteAll${vacationStatus}Form`).submit(), //Resubmit the form upon confirmation
         "btn-danger",
         "Delete"
     );

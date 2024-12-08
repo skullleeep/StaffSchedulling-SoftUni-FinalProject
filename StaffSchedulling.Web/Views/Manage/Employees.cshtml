@@ -38,7 +38,7 @@
     <div class="row mb-4">
         <form method="get" asp-action="Employees" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row"> @*scrollToTable is detected by javascript*@
             <!-- Hidden Input for scrollToTable -->
-            <input type="hidden" name="scrollToTable" value="True" />
+            <input name="scrollToTable" value="True" hidden />
 
             <input type="text" asp-for="SearchQuery" class="form-control w-50" placeholder="Search employees" value="@Model.SearchQuery" />
             <select class="no-border-select w-auto" asp-for="SearchFilter">

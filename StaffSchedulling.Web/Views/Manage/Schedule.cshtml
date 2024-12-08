@@ -23,8 +23,8 @@
             </div>
             <!-- Back to Company Button -->
             <div class="col-md-4 text-end">
-                <a asp-controller="Manage" asp-action="Company" asp-route-id="@Model.CompanyId" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to Company
+                <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
                 </a>
             </div>
         </div>
@@ -40,7 +40,7 @@
     <div class="row mb-4">
         <form method="get" asp-action="Schedule" asp-route-id="@Model.CompanyId" class="input-group gap-2 flex-row flex-nowrap align-items-center justify-content-between"> @*scrollToTable is detected by javascript*@
             <!-- Hidden Input for scrollToTable -->
-            <input type="hidden" name="scrollToTable" value="True" />
+            <input name="scrollToTable" value="True" hidden/>
 
             <!-- Vacation Days Left Counter -->
             <div class="flex-column">
@@ -116,7 +116,10 @@
                                             }
                                         </td>
                                         <td>
-                                            <partial name="_ScheduleForms/_DeleteVacationOfEmployeeForm" model="@new DeleteVacationOfEmployeeInputModel() { CompanyId = Model.CompanyId, VacationId = vacation.Id, EmployeeId = Model.EmployeeId }" />
+                                            @if(vacation.Status != VacationStatus.Denied)
+                                            {
+                                                <partial name="_ScheduleForms/_DeleteVacationOfEmployeeForm" model="@new DeleteVacationOfEmployeeInputModel() { CompanyId = Model.CompanyId, VacationId = vacation.Id, EmployeeId = Model.EmployeeId }" />
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -138,9 +141,18 @@
             <!-- Bulk Actions Section -->
             <div class="card mb-4 mt-1 border-0">
                 <div class="card-body">
-                    <div class="d-flex">
-                        <!-- Delete All -->
-                        <partial name="_ScheduleForms/_DeleteAllVacationsOfEmployeeForm" model="@new DeleteAllVacationsOfEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = Model.EmployeeId }" />
+                    <div class="d-flex gap-2">
+                        <!-- Delete All Pending -->
+                        @if (Model.Vacations.Any(v => v.Status == VacationStatus.Pending))
+                        {
+                            <partial name="_ScheduleForms/_DeleteAllVacationsOfEmployeeForm" model="@new DeleteAllVacationsOfEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = Model.EmployeeId, VacationStatusToDelete = VacationStatus.Pending }" />
+                        }
+
+                        <!-- Delete All Approved -->
+                        @if (Model.Vacations.Any(v => v.Status == VacationStatus.Approved))
+                        {
+                            <partial name="_ScheduleForms/_DeleteAllVacationsOfEmployeeForm" model="@new DeleteAllVacationsOfEmployeeInputModel() { CompanyId = Model.CompanyId, EmployeeId = Model.EmployeeId, VacationStatusToDelete = VacationStatus.Approved }" />
+                        }
                     </div>
                 </div>
             </div>

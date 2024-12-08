@@ -58,6 +58,7 @@
             public const string CouldNotFindEmployee = "Couldn't find employee!";
             public const string CouldNotFindVacation = "Couldn't find vacation request!";
             public const string CanNotDeleteDeniedVacation = "You can't delete a vacation request which has status 'Denied'! Only higher-ups can delete it for you!";
+            public const string CanNotDeleteAllDeniedVacations = "You can't delete vacation requests which havr status 'Denied'! Only higher-ups can delete them for you!";
 
             public const string VacationPendingLimitHitFormat = "You can't add more vacation requests because you have hit the pending vacation request limit (Limit: {0})! Delete some if you want to create new ones or wait for a company admin to change the status of one!";
             public const string NotEnoughVacationDaysLeftFormat = "You can't add vacation request because you don't have enough vacation days left! Total vacation days needed: {0}";

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StaffScheduling.Web.Models.ViewModels.Vacation
 {
-    public class VacationViewModel
+    public class VacationScheduleViewModel
     {
         [Required]
         public Guid Id { get; set; }
@@ -12,10 +12,7 @@ namespace StaffScheduling.Web.Models.ViewModels.Vacation
         public Guid CompanyId { get; set; }
 
         [Required]
-        public string EmployeeName { get; set; } = null!;
-
-        [Required]
-        public string EmployeeEmail { get; set; } = null!;
+        public Guid EmployeeId { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }

@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const table = document.getElementById("employeesTable");
             if (table) {
                 table.scrollIntoView({ behavior: "instant" });
-                // Remove the scrollToTable parameter
+                //Remove the scrollToTable parameter
                 urlParams.delete("scrollToTable");
                 const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
                 history.replaceState(null, "", newUrl);
@@ -23,7 +23,7 @@ function confirmDelete(employeeId) {
     // Show the confirmation modal
     showConfirmationModal(
         `Are you sure you want to delete employee with email ${employeeEmail}?`,
-        () => document.getElementById(`deleteForm-${employeeId}`).submit(), // Resubmit the form upon confirmation
+        () => document.getElementById(`deleteForm-${employeeId}`).submit(), //Resubmit the form upon confirmation
         "btn-danger",
         "Delete"
     );
@@ -33,7 +33,7 @@ function confirmDeleteAll() {
     // Show the confirmation modal
     showConfirmationModal(
         `Are you sure you want to delete all of your company's employees?`,
-        () => document.getElementById("deleteAllForm").submit(), // Resubmit the form upon confirmation
+        () => document.getElementById("deleteAllForm").submit(), //Resubmit the form upon confirmation
         "btn-danger",
         "Delete"
     );
