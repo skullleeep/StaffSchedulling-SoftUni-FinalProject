@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StaffScheduling.Common.Enums.Filters;
-using StaffScheduling.Web.Models.ViewModels.Vacation;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 using static StaffScheduling.Common.Enums.CustomRoles;
 
@@ -136,31 +135,11 @@ namespace StaffScheduling.Web.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
 
-            //TODO: Create the real working function. Dont forget that e.x Supervisor can only manage vacations of employees in his department
-            //var model = await _vacationService.GetCompanyManageVacationsModel(companyGuid, searchQuery, sortFilter, currentPage, permissionRole);
+            //Check if the user's employee role needs to have a department
+            //And if it does just get it
+            Guid? userNeededDepartmentId = await _permissionService.GetUserNeededDepartmentId(companyGuid, userEmail);
 
-            var model = new ManageVacationsViewModel()
-            {
-                CompanyId = companyGuid,
-                CurrentPage = currentPage,
-                SearchQuery = searchQuery,
-                SortFilter = sortFilter,
-                TotalPages = 1,
-                Vacations = new List<VacationViewModel>()
-                {
-                    new VacationViewModel()
-                    {
-                        Id = Guid.NewGuid(),
-                        CompanyId = companyGuid,
-                        CreatedOn = DateTime.Now,
-                        Days = 1,
-                        StartDate = DateTime.Today.AddDays(1),
-                        EndDate = DateTime.Today.AddDays(1),
-                        EmployeeEmail = "test@email.com",
-                        EmployeeName = "John Test Doe"
-                    }
-                }
-            };
+            var model = await _vacationService.GetCompanyManageVacationsModelAsync(companyGuid, searchQuery, sortFilter, currentPage, permissionRole, userNeededDepartmentId);
 
             //Check if entity exists
             if (model == null)
@@ -195,7 +174,7 @@ namespace StaffScheduling.Web.Controllers
 
             string userId = GetCurrentUserId();
 
-            var model = await _vacationService.GetCompanyManageScheduleModel(companyGuid, sortFilter, currentPage, userId);
+            var model = await _vacationService.GetCompanyManageScheduleModelAsync(companyGuid, sortFilter, currentPage, userId);
 
             //Check if entity exists
             if (model == null)

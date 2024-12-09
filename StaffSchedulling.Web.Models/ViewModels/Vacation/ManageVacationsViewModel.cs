@@ -9,6 +9,9 @@ namespace StaffScheduling.Web.Models.ViewModels.Vacation
         public Guid CompanyId { get; set; }
 
         [Required]
+        public string CompanyName { get; set; } = null!;
+
+        [Required]
         public List<VacationViewModel> Vacations { get; set; } = new List<VacationViewModel>();
 
         public string? SearchQuery { get; set; }

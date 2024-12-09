@@ -6,7 +6,7 @@
 @model ManageEmployeesInfoViewModel
 
 @{
-    ViewData["Title"] = $"Manage Employees";
+    ViewData["Title"] = $"Manage Employees - {Model.CompanyName}";
 }
 
 <partial name="_ConfirmationModal">
@@ -16,6 +16,7 @@
         <!-- Header Section -->
         <div class="col-md-8">
             <h1 class="h3">Manage Employees</h1>
+            <h6><span class="text-muted">Company Name:</span> @Model.CompanyName</h6>
         </div>
         <!-- Back to Company Button -->
         <div class="col-md-4 text-end">

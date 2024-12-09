@@ -7,7 +7,7 @@
 @model ManageVacationsViewModel
 
 @{
-    ViewData["Title"] = "Manage Vacations";
+    ViewData["Title"] = $"Manage Vacations - {Model.CompanyName}";
 }
 
 <partial name="_ConfirmationModal">
@@ -17,6 +17,7 @@
             <!-- Header Section -->
             <div class="col-md-8">
                 <h1 class="h3">Manage Vacations</h1>
+                <h6><span class="text-muted">Company Name:</span> @Model.CompanyName</h6>
             </div>
             <!-- Back to Company Button -->
             <div class="col-md-4 text-end">
@@ -152,6 +153,7 @@
                 <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
                     <a class="page-link" asp-controller="Manage" asp-action="Vacations"
                         asp-route-id="@Model.CompanyId"
+                        asp-route-searchQuery="@Model.SearchQuery"
                         asp-route-sortFilter = "@Model.SortFilter"
                         asp-route-currentPage="@i"
                         asp-route-scrollToTable="True">

@@ -20,7 +20,7 @@ namespace StaffScheduling.Web.Controllers
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
 
-                TempData["VacationError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
+                TempData["ScheduleError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
 
                 return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId });
             }
@@ -45,7 +45,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for errors
             if (status.Ok == false)
             {
-                TempData["VacationError"] = status.Message;
+                TempData["ScheduleError"] = status.Message;
 
                 return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId });
             }
@@ -64,7 +64,7 @@ namespace StaffScheduling.Web.Controllers
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
 
-                TempData["VacationError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
+                TempData["ScheduleError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
 
                 return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId });
             }
@@ -89,7 +89,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for errors
             if (status.Ok == false)
             {
-                TempData["VacationError"] = status.Message;
+                TempData["ScheduleError"] = status.Message;
 
                 return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId });
             }
@@ -108,7 +108,7 @@ namespace StaffScheduling.Web.Controllers
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage));
 
-                TempData["VacationError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
+                TempData["ScheduleError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
 
                 return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId });
             }
@@ -133,12 +133,147 @@ namespace StaffScheduling.Web.Controllers
             //Check for errors
             if (status.Ok == false)
             {
-                TempData["VacationError"] = status.Message;
+                TempData["ScheduleError"] = status.Message;
 
                 return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId });
             }
 
             return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeStatus(ChangeStatusInputModel model)
+        {
+            //Check for model errors
+            if (!ModelState.IsValid)
+            {
+                //Get model errors
+                string message = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                TempData["VacationError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
+
+                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId });
+            }
+
+            //Get user email
+            string userEmail = GetCurrentUserEmail();
+
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+
+            //Check for access permission
+            if (permissionRole < PermissionRole.Manager)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            //Check if the user's employee role needs to have a department
+            //And if it does just get it
+            Guid? userNeededDepartmentId = await _permissionService.GetUserNeededDepartmentId(model.CompanyId, userEmail);
+
+            //Change vacation status
+            StatusReport status = await _vacationService.ChangeStatusAsync(model, permissionRole, userNeededDepartmentId);
+
+            //Check for errors
+            if (status.Ok == false)
+            {
+                TempData["VacationError"] = status.Message;
+
+                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId });
+            }
+
+            return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteVacationOfCompany(DeleteVacationOfCompanyInputModel model)
+        {
+            //Check for model errors
+            if (!ModelState.IsValid)
+            {
+                //Get model errors
+                string message = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                TempData["VacationError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
+
+                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId });
+            }
+
+            //Get user email
+            string userEmail = GetCurrentUserEmail();
+
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+
+            //Check for access permission
+            if (permissionRole < PermissionRole.Manager)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            //Check if the user's employee role needs to have a department
+            //And if it does just get it
+            Guid? userNeededDepartmentId = await _permissionService.GetUserNeededDepartmentId(model.CompanyId, userEmail);
+
+            //Remove vacation
+            StatusReport status = await _vacationService.DeleteVacationOfCompanyAsync(model, permissionRole, userNeededDepartmentId);
+
+            //Check for errors
+            if (status.Ok == false)
+            {
+                TempData["VacationError"] = status.Message;
+
+                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId });
+            }
+
+            return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAllVacationsOfCompany(DeleteAllVacationsOfCompanyInputModel model)
+        {
+            //Check for model errors
+            if (!ModelState.IsValid)
+            {
+                //Get model errors
+                string message = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                TempData["VacationError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
+
+                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId });
+            }
+
+            //Get user email
+            string userEmail = GetCurrentUserEmail();
+
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
+
+            //Check for access permission
+            if (permissionRole < PermissionRole.Manager)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            //Check if the user's employee role needs to have a department
+            //And if it does just get it
+            Guid? userNeededDepartmentId = await _permissionService.GetUserNeededDepartmentId(model.CompanyId, userEmail);
+
+            //Remove all vacations up to status
+            StatusReport status = await _vacationService.DeleteAllVacationsOfCompanyAsync(model, permissionRole, userNeededDepartmentId);
+
+            //Check for errors
+            if (status.Ok == false)
+            {
+                TempData["VacationError"] = status.Message;
+
+                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId });
+            }
+
+            return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
         }
     }
 }

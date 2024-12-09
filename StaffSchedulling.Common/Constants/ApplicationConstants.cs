@@ -10,6 +10,7 @@
 
         public const int ManageEmployeesPageSize = 10;
         public const int ManageDepartmentsPageSize = 10;
+        public const int ManageVacationsPageSize = 6;
         public const int ManageSchedulePageSize = 10;
 
         public const int UserJoinedCompaniesLimit = 20;

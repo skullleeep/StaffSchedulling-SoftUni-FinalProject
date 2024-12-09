@@ -8,6 +8,9 @@ namespace StaffScheduling.Web.Models.ViewModels.Department
         public Guid CompanyId { get; set; }
 
         [Required]
+        public string CompanyName { get; set; } = null!;
+
+        [Required]
         public List<DepartmentManageViewModel> Departments { get; set; } = new List<DepartmentManageViewModel>();
 
         [Required]

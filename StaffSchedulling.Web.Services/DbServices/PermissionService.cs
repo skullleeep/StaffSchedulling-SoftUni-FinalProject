@@ -32,8 +32,8 @@ namespace StaffScheduling.Web.Services.DbServices
             var entityEmployeeInfo = await _unitOfWork
                 .EmployeesInfo
                 .All()
-                .Where(e => e.HasJoined == true && e.Email == userEmail && e.CompanyId == companyId)
-                .FirstOrDefaultAsync();
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.HasJoined == true && e.Email == userEmail && e.CompanyId == companyId);
 
             if (entityEmployeeInfo == null)
             {
@@ -41,6 +41,42 @@ namespace StaffScheduling.Web.Services.DbServices
             }
 
             return RoleMapping[entityEmployeeInfo.Role];
+        }
+
+        public async Task<Guid?> GetUserNeededDepartmentId(Guid companyId, string userEmail)
+        {
+            //Get roles which need to have a department
+            //Used to check if user as an employee of a company is in one of those roles
+            var rolesWhichNeedDepartment = GetRolesWhichNeedDepartment();
+
+            var entityCompany = await _unitOfWork
+                            .Companies
+                            .All()
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync(c => c.Id == companyId);
+
+            //Check if company with id exists
+            if (entityCompany == null)
+            {
+                return null;
+            }
+
+            var entityEmployeeInfo = await _unitOfWork
+                .EmployeesInfo
+                .All()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.HasJoined == true
+                        && e.Email == userEmail
+                        && e.CompanyId == companyId
+                        && rolesWhichNeedDepartment.Contains(e.Role)
+                        && e.DepartmentId != null);
+
+            if (entityEmployeeInfo == null)
+            {
+                return null;
+            }
+
+            return entityEmployeeInfo.DepartmentId!.Value;
         }
     }
 

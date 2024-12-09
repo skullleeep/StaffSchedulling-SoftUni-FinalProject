@@ -291,7 +291,8 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = true };
             }
 
-            //Check if new role needs a department and if it is does if employee has department
+            //Check if new role needs a department
+            //And if it does check if employee has department
             if (rolesWhichNeedDepartment.Contains(model.Role))
             {
                 if (entity.Department == null)
@@ -454,7 +455,7 @@ namespace StaffScheduling.Web.Services.DbServices
                 if (searchFilter.Value == EmployeeSearchFilter.Email)
                 {
                     selectedEmployeesInfo = selectedEmployeesInfo
-                        .Where(ef => ef.Email.ToLower().Contains(searchQuery.ToLower()));
+                        .Where(ef => ef.NormalizedEmail.Contains(searchQuery.ToUpper()));
                 }
                 else if (searchFilter.Value == EmployeeSearchFilter.Name)
                 {
@@ -511,6 +512,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return new ManageEmployeesInfoViewModel()
             {
                 CompanyId = companyId,
+                CompanyName = entityCompany.Name,
                 CurrentUserPermission = userPermissionRole,
                 SearchQuery = searchQuery,
                 SearchFilter = searchFilter,

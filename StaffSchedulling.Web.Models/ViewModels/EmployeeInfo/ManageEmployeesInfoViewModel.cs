@@ -11,6 +11,9 @@ namespace StaffScheduling.Web.Models.ViewModels.EmployeeInfo
         public Guid CompanyId { get; set; }
 
         [Required]
+        public string CompanyName { get; set; } = null!;
+
+        [Required]
         public List<EmployeeInfoViewModel> Employees { get; set; } = new List<EmployeeInfoViewModel>();
 
         [Required]

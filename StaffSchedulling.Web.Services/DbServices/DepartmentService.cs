@@ -251,6 +251,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return new ManageDepartmentsViewModel()
             {
                 CompanyId = companyId,
+                CompanyName = entityCompany.Name,
                 CurrentPage = page,
                 TotalPages = totalPages,
                 Departments = departmentModels

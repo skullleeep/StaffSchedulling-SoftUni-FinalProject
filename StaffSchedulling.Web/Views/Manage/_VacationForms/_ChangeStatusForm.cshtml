@@ -2,21 +2,34 @@
 @using StaffScheduling.Common.Enums
 @using StaffScheduling.Web.Models.InputModels.Vacation;
 @model ChangeStatusInputModel
+@{
+    VacationStatus[] enumArray = Helper.EnumArray<VacationStatus>();
+}
 
 <form asp-controller="Vacation" asp-action="ChangeStatus" method="post" class="d-flex align-items-center">
     <input asp-for="CompanyId" type="hidden" readonly/>
     <input asp-for="VacationId" type="hidden" readonly />
     <select asp-for="Status" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
         <!-- Populate roles dynamically -->
-        @foreach (var status in Helper.EnumArray<VacationStatus>())
+        @foreach (var status in enumArray)
         {
             if (status == Model.Status)
             {
-                <option value="@(status)" selected>@status.ToString()</option>
+                if(status == VacationStatus.Pending)
+                {
+                    <option value="@(status)" selected disabled>@status.ToString()</option>
+                }
+                else
+                {
+                    <option value="@(status)" selected>@status.ToString()</option>
+                }
             }
             else
             {
-                <option value="@(status)">@status.ToString()</option>
+                if (status != VacationStatus.Pending)
+                {
+                    <option value="@(status)">@status.ToString()</option>
+                }
             }
         }
     </select>
