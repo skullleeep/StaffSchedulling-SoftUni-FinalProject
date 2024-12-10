@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 using StaffScheduling.Data;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Web.Extensions;
@@ -15,7 +16,12 @@ namespace StaffScheduling.Web
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-            // Add services to the container.
+            //Add logging
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+
+
+            //Add services to the container.
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
@@ -30,6 +36,7 @@ namespace StaffScheduling.Web
             builder.Services.RegisterRepositories();
             builder.Services.RegisterUnitOfWork();
             builder.Services.RegisterServices();
+            builder.Services.RegisterQuartzJobs();
 
             builder.Services.AddControllersWithViews();
 
@@ -84,6 +91,20 @@ namespace StaffScheduling.Web
                                 await userManager.CreateUserAsync(email, password, name, UserRole.Admin);
                             }
                         }*/
+
+            //DELETE THISSSSS
+            // Manually trigger the job during application startup for testing
+            using (var scope = app.Services.CreateScope())
+            {
+                var schedulerFactory = scope.ServiceProvider.GetRequiredService<ISchedulerFactory>();
+                var scheduler = await schedulerFactory.GetScheduler();
+
+                var jobKey = new JobKey("VacationCleanupJob");
+                if (await scheduler.CheckExists(jobKey))
+                {
+                    await scheduler.TriggerJob(jobKey);
+                }
+            }
 
             app.Run();
         }

@@ -7,17 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
-    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
+    <PackageReference Include="Quartz" Version="3.13.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StaffScheduling.Jobs\StaffScheduling.Jobs.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Common\StaffScheduling.Common.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Data.Models\StaffScheduling.Data.Models.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Data\StaffScheduling.Data.csproj" />
-    <ProjectReference Include="..\StaffSchedulling.Web.Services\StaffScheduling.Web.Services.csproj" />
   </ItemGroup>
 
 </Project>

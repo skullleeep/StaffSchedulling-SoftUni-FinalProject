@@ -50,13 +50,15 @@
 
         public static class VacationService
         {
+            //Date errors
             public const string EndDateCanNotBeAfterStartDate = "End date must be after Start Date!";
             public const string StartDateCanNotBeTodayOrInThePast = "Start Date can't be today or in the past!";
-            public const string DatesCanNotBeMoreThanXMonthsFromTomorrowFormat = "Start Date or End Date can't be more than 6 months away from tomorrow";
-            public const string StartDateCanNotBeSameAsStartOrEndDateOfAnotherVacationFormat = "You can't add vacation request with Start Date: '{0}' because there is already one with same Start Or End Date with Status: '{1}'!";
-            public const string EndDateCanNotBeSameAsStartOrEndDateOfAnotherVacationFormat = "You can't add vacation request with End Date: '{0}' because there is already one with same Start Or End Date with Status: '{1}'!";
+            public const string DatesCanNotBeMoreThanXMonthsFromTomorrowFormat = "Start Date or End Date can't be more than {0} months away from tomorrow";
+            public const string StartDateCanNotBeSameAsStartOrEndDateOfAnotherVacationFormat = "You can't add vacation request with Start Date: '{0}' because there is already another one with same Start Or End Date with Status: '{1}'!";
+            public const string EndDateCanNotBeSameAsStartOrEndDateOfAnotherVacationFormat = "You can't add vacation request with End Date: '{0}' because there is already another one with same Start Or End Date with Status: '{1}'!";
             public const string CanNotAddVacationAsItIsInRangeOfAnotherVacation = "You can't add this vacation request because it is in the range of another one with Start Date: '{0}', End Date: '{1}' and Status: '{2}'!";
 
+            //Other errors
             public const string CouldNotFindCompany = "Couldn't find company!";
             public const string CouldNotFindEmployee = "Couldn't find employee!";
             public const string CouldNotFindVacation = "Couldn't find vacation request!";
@@ -64,6 +66,7 @@
             public const string CanNotDeleteAllDeniedVacations = "You can't delete vacation requests which have status 'Denied'! Only higher-ups can delete them for you!";
             public const string CanNotManageEmployeeVacationAsLowerPermission = "You can't manage an employee's vacation with the same or higher permission level than you!";
             public const string CanNotChangeVacationStatusToPending = "You can't change a vacation's status to 'Pending'!";
+            public const string CanNotChangeApproveVacationThatHasAlreadyStarted = "You can't change status of a vacation request which has Start Date: Today or In The Past! You can only delete it!";
 
             public const string VacationPendingLimitHitFormat = "You can't add more vacation requests because you have hit the pending vacation request limit (Limit: {0})! Delete some if you want to create new ones or wait for a company admin to change the status of one!";
             public const string NotEnoughVacationDaysLeftFormat = "You can't add vacation request because you don't have enough vacation days left! Total vacation days needed: {0}";

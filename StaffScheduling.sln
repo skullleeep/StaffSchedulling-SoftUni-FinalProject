@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Web.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Web.Models", "StaffSchedulling.Web.Models\StaffScheduling.Web.Models.csproj", "{915D1B9C-5058-4CD5-8444-3663D243DC5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffScheduling.Tests", "StaffScheduling.Tests\StaffScheduling.Tests.csproj", "{300D38E8-E6C9-4616-925D-8B6DFAAC82A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffScheduling.Tests", "StaffScheduling.Tests\StaffScheduling.Tests.csproj", "{300D38E8-E6C9-4616-925D-8B6DFAAC82A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffScheduling.Jobs", "StaffScheduling.Jobs\StaffScheduling.Jobs.csproj", "{DC7DD3F9-1B57-4C00-A18E-2E8DF7D04783}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{300D38E8-E6C9-4616-925D-8B6DFAAC82A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{300D38E8-E6C9-4616-925D-8B6DFAAC82A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{300D38E8-E6C9-4616-925D-8B6DFAAC82A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC7DD3F9-1B57-4C00-A18E-2E8DF7D04783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC7DD3F9-1B57-4C00-A18E-2E8DF7D04783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC7DD3F9-1B57-4C00-A18E-2E8DF7D04783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC7DD3F9-1B57-4C00-A18E-2E8DF7D04783}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

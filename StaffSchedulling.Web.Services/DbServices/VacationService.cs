@@ -282,6 +282,12 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = false, Message = CouldNotFindVacation };
             }
 
+            //Check if vacation's Start Date is today or in the past
+            if (entity.StartDate < DateTime.Today.AddDays(1))
+            {
+                return new StatusReport { Ok = false, Message = CanNotChangeApproveVacationThatHasAlreadyStarted };
+            }
+
             //Check if user has the required permission level to manage this employee's vacations
             if (userPermissionRole <= RoleMapping[entity.Employee.Role])
             {
@@ -644,7 +650,7 @@ namespace StaffScheduling.Web.Services.DbServices
 
             //Database Checks
 
-            //Get all vacations for the employee that have status 'Pending' or 'Approved'
+            //Get all vacations of employee that have status 'Pending' or 'Approved'
             var existingVacations = await _unitOfWork
                 .Vacations
                 .All()

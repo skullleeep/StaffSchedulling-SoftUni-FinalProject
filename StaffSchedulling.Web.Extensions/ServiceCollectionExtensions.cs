@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Quartz;
 using StaffScheduling.Data.Models;
 using StaffScheduling.Data.Repository;
 using StaffScheduling.Data.Repository.Contracts;
 using StaffScheduling.Data.UnitOfWork;
 using StaffScheduling.Data.UnitOfWork.Contracts;
+using StaffScheduling.Jobs;
 using StaffScheduling.Web.Services.DbServices;
 using StaffScheduling.Web.Services.DbServices.Contracts;
 
@@ -48,6 +50,23 @@ namespace StaffScheduling.Web.Extensions
                 .AddScoped<IDepartmentService, DepartmentService>()
                 //Vacation Service
                 .AddScoped<IVacationService, VacationService>();
+        }
+
+        public static void RegisterQuartzJobs(this IServiceCollection services)
+        {
+            services.AddQuartz(q =>
+            {
+                //q.UseMicrosoftDependencyInjectionJobFactory();
+
+                //Register the cleanup job
+                var jobKey = new JobKey(nameof(VacationCleanupJob));
+                q.AddJob<VacationCleanupJob>(opts => opts.WithIdentity(jobKey));
+                q.AddTrigger(opts => opts
+                    .ForJob(jobKey)
+                    .WithIdentity("VacationCleanupTrigger")
+                    .WithCronSchedule("0 1 0 * * ?", x => x.InTimeZone(TimeZoneInfo.Local))); //Every day at 12:01 AM
+            });
+            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
     }
 }

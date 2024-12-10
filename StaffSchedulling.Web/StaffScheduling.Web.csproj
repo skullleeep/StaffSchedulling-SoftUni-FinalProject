@@ -28,9 +28,12 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+    <PackageReference Include="Quartz" Version="3.13.1" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StaffScheduling.Jobs\StaffScheduling.Jobs.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Common\StaffScheduling.Common.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Data\StaffScheduling.Data.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Web.Extensions\StaffScheduling.Web.Extensions.csproj" />
