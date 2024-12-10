@@ -17,7 +17,9 @@ namespace StaffScheduling.Web.Services.DbServices
 {
     public class VacationService(IUnitOfWork _unitOfWork) : IVacationService
     {
-        public async Task<StatusReport> AddVacationOfEmployeeAsync(AddVacationOfEmployeeInputModel model, string userId)
+        //isUnitTesting bool has been added because the InMemoryDb doesn't support EF.DateDiff
+        //Ef.DateDiff is used in the CalculateVacationDaysLeftForYear() function
+        public async Task<StatusReport> AddVacationOfEmployeeAsync(AddVacationOfEmployeeInputModel model, string userId, bool isUnitTesting = false)
         {
             var entityCompany = await _unitOfWork
                 .Companies
@@ -55,7 +57,6 @@ namespace StaffScheduling.Web.Services.DbServices
             IQueryable<Vacation> entitiesBase = _unitOfWork
                 .Vacations
                 .All()
-                .Include(v => v.Employee)
                 .Where(v => v.CompanyId == model.CompanyId && v.EmployeeId == entityEmployeeInfo.Id);
 
             var entityFound = await entitiesBase
@@ -76,8 +77,8 @@ namespace StaffScheduling.Web.Services.DbServices
             int currentYear = DateTime.Now.Year;
             int nextYear = DateTime.Now.AddYears(1).Year;
 
-            int vacationDaysLeftForCurrentYear = await CalculateVacationDaysLeftForYear(entityCompany.MaxVacationDaysPerYear, currentYear, entitiesBase);
-            int vacationDaysLeftForNextYear = await CalculateVacationDaysLeftForYear(entityCompany.MaxVacationDaysPerYear, nextYear, entitiesBase);
+            int vacationDaysLeftForCurrentYear = await CalculateVacationDaysLeftForYear(entityCompany.MaxVacationDaysPerYear, currentYear, entitiesBase, isUnitTesting);
+            int vacationDaysLeftForNextYear = await CalculateVacationDaysLeftForYear(entityCompany.MaxVacationDaysPerYear, nextYear, entitiesBase, isUnitTesting);
 
             Dictionary<int, int> vacationDaysNeededPerYear = CalculateVacationDaysYearSplit(model.StartDate, model.EndDate);
 
@@ -87,16 +88,6 @@ namespace StaffScheduling.Web.Services.DbServices
             if (vacationDaysNeededPerYear[currentYear] > vacationDaysLeftForCurrentYear || vacationDaysNeededPerYear[nextYear] > vacationDaysLeftForNextYear)
             {
                 return new StatusReport { Ok = false, Message = String.Format(NotEnoughVacationDaysLeftFormat, totalVacationDays) };
-            }
-
-            int vacationPendingCount = await entitiesBase
-                .Where(v => v.Status == VacationStatus.Pending)
-                .CountAsync();
-
-            //Check if pending vacation request limit has been hit
-            if (vacationPendingCount >= entityCompany.MaxVacationDaysPerYear)
-            {
-                return new StatusReport { Ok = false, Message = String.Format(VacationPendingLimitHitFormat, entityCompany.MaxVacationDaysPerYear) };
             }
 
             try
@@ -169,6 +160,13 @@ namespace StaffScheduling.Web.Services.DbServices
                 return new StatusReport { Ok = false, Message = CanNotDeleteDeniedVacation };
             }
 
+            //Check if vacation status is 'Approved' and if Start Date is Today Or In The Past
+            //If it is then don't allow employee to delete
+            if (IsVacationStarted(entity))
+            {
+                return new StatusReport { Ok = false, Message = CanNotDeleteStartedVacation };
+            }
+
             try
             {
                 _unitOfWork.Vacations.Delete(entity);
@@ -222,6 +220,14 @@ namespace StaffScheduling.Web.Services.DbServices
                 .All()
                 .Include(v => v.Employee)
                 .Where(v => v.CompanyId == model.CompanyId && v.EmployeeId == entityEmployeeInfo.Id && v.Status == model.VacationStatusToDelete);
+
+            //Check if vacation status to delete is 'Approved'
+            //If it is then delete only vacations where StartDate is after today
+            if (model.VacationStatusToDelete == VacationStatus.Approved)
+            {
+                entitiesBase
+                    .Where(v => v.StartDate > DateTime.Today);
+            }
 
             try
             {
@@ -482,6 +488,13 @@ namespace StaffScheduling.Web.Services.DbServices
             int totalVacations = await entitiesBase.CountAsync();
             int totalPages = (int)Math.Ceiling(totalVacations / (double)ManageSchedulePageSize);
 
+            //Check if page is non-existent page
+            //If it is then make page last page
+            if (page > totalPages || page < 1)
+            {
+                page = Math.Max(totalPages, 1);
+            }
+
             List<VacationScheduleViewModel> vacationModels = await entitiesBase
                 .Select(v => new VacationScheduleViewModel()
                 {
@@ -493,8 +506,9 @@ namespace StaffScheduling.Web.Services.DbServices
                     EndDate = v.EndDate,
                     CreatedOn = v.CreatedOn,
                     Days = v.Days,
+                    CanDelete = v.Status != VacationStatus.Denied && !IsVacationStarted(v)
                 })
-                .OrderByDescending(v => v.CreatedOn)
+            .OrderByDescending(v => v.CreatedOn)
                 .Skip((page - 1) * ManageSchedulePageSize)
                 .Take(ManageSchedulePageSize)
                 .AsNoTracking()
@@ -573,6 +587,13 @@ namespace StaffScheduling.Web.Services.DbServices
             int totalVacations = await entitiesBase.CountAsync();
             int totalPages = (int)Math.Ceiling(totalVacations / (double)ManageVacationsPageSize);
 
+            //Check if page is non-existent page
+            //If it is then make page last page
+            if (page > totalPages || page < 1)
+            {
+                page = Math.Max(totalPages, 1);
+            }
+
             List<VacationViewModel> vacationModels = await entitiesBase
                 .Select(v => new VacationViewModel()
                 {
@@ -604,18 +625,37 @@ namespace StaffScheduling.Web.Services.DbServices
             };
         }
 
-        private async Task<int> CalculateVacationDaysLeftForYear(int maxVacationDaysPerYear, int year, IQueryable<Vacation> entitiesBase)
+        //isUnitTesting bool has been added because the InMemoryDb doesn't support EF.DateDiff
+        private async Task<int> CalculateVacationDaysLeftForYear(int maxVacationDaysPerYear, int year, IQueryable<Vacation> entitiesBase, bool isUnitTesting = false)
         {
-            int usedDays = await entitiesBase
-                .Where(v => v.Status == VacationStatus.Pending || v.Status == VacationStatus.Approved) //Count the days only from approved or pending vacations
-                .Where(v => v.StartDate.Year <= year && v.EndDate.Year >= year)
-                .SumAsync(v =>
-                    EF.Functions.DateDiffDay(
-                        v.StartDate.Year < year ? new DateTime(year, 1, 1) : v.StartDate,
-                        v.EndDate.Year > year ? new DateTime(year, 12, 31) : v.EndDate
-                         ) + 1);
+            var startOfYear = new DateTime(year, 1, 1);
+            var endOfYear = new DateTime(year, 12, 31);
 
-            return maxVacationDaysPerYear - usedDays;
+            int usedDays = 0;
+
+            if (isUnitTesting)
+            {
+                usedDays = await entitiesBase
+                    .Where(v => v.Status == VacationStatus.Pending || v.Status == VacationStatus.Approved)
+                    .Where(v => v.StartDate <= endOfYear && v.EndDate >= startOfYear)
+                    .SumAsync(v =>
+                         ((v.EndDate > endOfYear ? endOfYear : v.EndDate) -
+                         (v.StartDate < startOfYear ? startOfYear : v.StartDate)
+                         ).Days + 1);
+            }
+            else
+            {
+                usedDays = await entitiesBase
+                    .Where(v => v.Status == VacationStatus.Pending || v.Status == VacationStatus.Approved)
+                    .Where(v => v.StartDate <= endOfYear && v.EndDate >= startOfYear)
+                    .SumAsync(v =>
+                        EF.Functions.DateDiffDay(
+                            v.StartDate < startOfYear ? startOfYear : v.StartDate,
+                            v.EndDate > endOfYear ? endOfYear : v.EndDate
+                            ) + 1);
+            }
+
+            return Math.Max(maxVacationDaysPerYear - usedDays, 0);
         }
 
         private async Task<StatusReport> AreVacationDatesValid(DateTime startDate, DateTime endDate, Guid employeeToAddToId)
@@ -661,7 +701,7 @@ namespace StaffScheduling.Web.Services.DbServices
 
             foreach (var vacation in existingVacations)
             {
-                //Check if the new start or end date matches any existing start or end date
+                //Check if the new start date matches any existing start date
                 if (startDate == vacation.StartDate || startDate == vacation.EndDate)
                 {
                     return new StatusReport
@@ -670,7 +710,7 @@ namespace StaffScheduling.Web.Services.DbServices
                         Message = String.Format(ModelErrorMessages.InvalidModelStateFormat,
                         String.Format(StartDateCanNotBeSameAsStartOrEndDateOfAnotherVacationFormat, startDate.ToString(VacationDateFormat), vacation.Status.ToString()))
                     };
-                }
+                } //Check if the new end date matches any existing end date
                 else if (endDate == vacation.StartDate || endDate == vacation.EndDate)
                 {
                     return new StatusReport
@@ -738,6 +778,11 @@ namespace StaffScheduling.Web.Services.DbServices
             }
 
             return daysPerYear;
+        }
+
+        private bool IsVacationStarted(Vacation entity)
+        {
+            return entity.StartDate <= DateTime.Today && entity.Status == VacationStatus.Approved;
         }
     }
 }

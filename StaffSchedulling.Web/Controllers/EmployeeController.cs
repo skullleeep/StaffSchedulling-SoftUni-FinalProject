@@ -63,7 +63,7 @@ namespace StaffScheduling.Web.Controllers
 
                 TempData["EmployeeError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
 
-                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage });
             }
 
             //Get user email
@@ -85,10 +85,10 @@ namespace StaffScheduling.Web.Controllers
             {
                 TempData["EmployeeError"] = status.Message;
 
-                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage });
             }
 
-            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
         [HttpPost]
@@ -104,7 +104,7 @@ namespace StaffScheduling.Web.Controllers
 
                 TempData["EmployeeError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
 
-                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage });
             }
 
             //Get user email
@@ -126,10 +126,10 @@ namespace StaffScheduling.Web.Controllers
             {
                 TempData["EmployeeError"] = status.Message;
 
-                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage });
             }
 
-            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
         [HttpPost]
@@ -145,7 +145,7 @@ namespace StaffScheduling.Web.Controllers
 
                 TempData["EmployeeError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
 
-                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage });
             }
 
             //Get user email
@@ -167,10 +167,10 @@ namespace StaffScheduling.Web.Controllers
             {
                 TempData["EmployeeError"] = status.Message;
 
-                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage });
             }
 
-            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
         [HttpPost]

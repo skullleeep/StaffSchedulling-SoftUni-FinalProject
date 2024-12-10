@@ -234,6 +234,13 @@ namespace StaffScheduling.Web.Services.DbServices
             int totalDepartments = await selectedDepartments.CountAsync();
             int totalPages = (int)Math.Ceiling(totalDepartments / (double)ManageDepartmentsPageSize);
 
+            //Check if page is non-existent page
+            //If it is then make page last page
+            if (page > totalPages || page < 1)
+            {
+                page = Math.Max(totalPages, 1);
+            }
+
             List<DepartmentManageViewModel> departmentModels = await selectedDepartments
                 .Select(d => new DepartmentManageViewModel()
                 {

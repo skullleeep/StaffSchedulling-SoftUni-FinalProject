@@ -63,7 +63,7 @@ namespace StaffScheduling.Web.Controllers
 
                 TempData["DepartmentError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
 
-                return RedirectToAction("Departments", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Departments", "Manage", new { id = model.CompanyId, model.CurrentPage });
             }
 
             //Get user email
@@ -85,10 +85,10 @@ namespace StaffScheduling.Web.Controllers
             {
                 TempData["DepartmentError"] = status.Message;
 
-                return RedirectToAction("Departments", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Departments", "Manage", new { id = model.CompanyId, model.CurrentPage });
             }
 
-            return RedirectToAction("Departments", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+            return RedirectToAction("Departments", "Manage", new { id = model.CompanyId, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
         [HttpPost]

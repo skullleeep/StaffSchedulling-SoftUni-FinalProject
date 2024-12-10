@@ -7,6 +7,10 @@
     <input asp-for="CompanyId" type="hidden" readonly/>
     <input asp-for="CurrentUserPermission" type="hidden" readonly />
     <input asp-for="EmployeeId" type="hidden" readonly />
+    <input asp-for="SearchQuery" type="hidden" readonly />
+    <input asp-for="SearchFilter" type="hidden" readonly />
+    <input asp-for="CurrentPage" type="hidden" readonly />
+
     <select asp-for="Role" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
         <!-- Populate roles dynamically -->
         @foreach (var role in Helper.EnumArray<CustomRoles.EmployeeRole>())

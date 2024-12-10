@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StaffScheduling.Web.Models.FilterModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace StaffScheduling.Web.Models.ViewModels.Department
 {
-    public class ManageDepartmentsViewModel
+    public class ManageDepartmentsViewModel : ManageDepartmentsFilters
     {
         [Required]
         public Guid CompanyId { get; set; }
@@ -12,9 +13,6 @@ namespace StaffScheduling.Web.Models.ViewModels.Department
 
         [Required]
         public List<DepartmentManageViewModel> Departments { get; set; } = new List<DepartmentManageViewModel>();
-
-        [Required]
-        public int CurrentPage { get; set; } = 1;
 
         [Required]
         public int TotalPages { get; set; }

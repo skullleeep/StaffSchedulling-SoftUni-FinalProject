@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StaffScheduling.Web.Models.FilterModels;
+using System.ComponentModel.DataAnnotations;
 using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Web.Models.InputModels.EmployeeInfo
 {
-    public class ChangeRoleInputModel
+    public class ChangeRoleInputModel : ManageEmployeesInfoFilters
     {
         [Required]
         public Guid CompanyId { get; set; }

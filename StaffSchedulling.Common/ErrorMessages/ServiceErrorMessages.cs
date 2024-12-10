@@ -63,12 +63,13 @@
             public const string CouldNotFindEmployee = "Couldn't find employee!";
             public const string CouldNotFindVacation = "Couldn't find vacation request!";
             public const string CanNotDeleteDeniedVacation = "You can't delete a vacation request which has status 'Denied'! Only higher-ups can delete it for you!";
+            public const string CanNotDeleteStartedVacation = "You can't delete a vacation request which has status 'Approved' and has already started! Only higher-ups can delete it for you!";
             public const string CanNotDeleteAllDeniedVacations = "You can't delete vacation requests which have status 'Denied'! Only higher-ups can delete them for you!";
             public const string CanNotManageEmployeeVacationAsLowerPermission = "You can't manage an employee's vacation with the same or higher permission level than you!";
             public const string CanNotChangeVacationStatusToPending = "You can't change a vacation's status to 'Pending'!";
             public const string CanNotChangeApproveVacationThatHasAlreadyStarted = "You can't change status of a vacation request which has Start Date: Today or In The Past! You can only delete it!";
 
-            public const string VacationPendingLimitHitFormat = "You can't add more vacation requests because you have hit the pending vacation request limit (Limit: {0})! Delete some if you want to create new ones or wait for a company admin to change the status of one!";
+            //public const string VacationPendingLimitHitFormat = "You can't add more vacation requests because you have hit the pending vacation request limit (Limit: {0})! Delete some if you want to create new ones or wait for a company admin to change the status of one!";
             public const string NotEnoughVacationDaysLeftFormat = "You can't add vacation request because you don't have enough vacation days left! Total vacation days needed: {0}";
             public const string VacationWithSameDatesExistsFormat = "You can't add vacation request because you have already made one with same Start Date ({0}) and same End Date ({1}) which has status '{2}'!";
         }

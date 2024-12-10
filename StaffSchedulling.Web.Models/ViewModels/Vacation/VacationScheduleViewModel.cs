@@ -28,5 +28,8 @@ namespace StaffScheduling.Web.Models.ViewModels.Vacation
 
         [Required]
         public VacationStatus Status { get; set; } = 0;
+
+        [Required]
+        public bool CanDelete { get; set; }
     }
 }

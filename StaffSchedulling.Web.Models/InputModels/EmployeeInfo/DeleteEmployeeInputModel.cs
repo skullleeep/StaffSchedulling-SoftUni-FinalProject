@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using StaffScheduling.Web.Models.FilterModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace StaffScheduling.Web.Models.InputModels.EmployeeInfo
 {
-    public class DeleteEmployeeInputModel
+    public class DeleteEmployeeInputModel : ManageEmployeesInfoFilters
     {
         [Required]
         public Guid CompanyId { get; set; }

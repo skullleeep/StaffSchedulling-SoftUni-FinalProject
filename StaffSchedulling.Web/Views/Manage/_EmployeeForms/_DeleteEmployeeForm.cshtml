@@ -5,5 +5,9 @@
 <form id="deleteForm-@Model.EmployeeId.ToString()" asp-controller="Employee" asp-action="Delete" method="post">
     <input asp-for="CompanyId" type="hidden" readonly />
     <input asp-for="EmployeeId" type="hidden" readonly />
+    <input asp-for="SearchQuery" type="hidden" readonly />
+    <input asp-for="SearchFilter" type="hidden" readonly />
+    <input asp-for="CurrentPage" type="hidden" readonly />
+
     <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('@Model.EmployeeId.ToString()')">Delete</button>
 </form>

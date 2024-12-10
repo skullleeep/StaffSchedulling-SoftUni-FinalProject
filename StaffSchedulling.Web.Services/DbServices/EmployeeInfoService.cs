@@ -478,6 +478,13 @@ namespace StaffScheduling.Web.Services.DbServices
             int totalEmployees = await selectedEmployeesInfo.CountAsync();
             int totalPages = (int)Math.Ceiling(totalEmployees / (double)ManageEmployeesPageSize);
 
+            //Check if page is non-existent page
+            //If it is then make page last page
+            if (page > totalPages || page < 1)
+            {
+                page = Math.Max(totalPages, 1);
+            }
+
             List<EmployeeInfoViewModel> employeeInfoModels = await selectedEmployeesInfo
                 .Select(ef => new EmployeeInfoViewModel()
                 {

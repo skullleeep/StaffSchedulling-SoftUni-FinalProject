@@ -66,7 +66,7 @@ namespace StaffScheduling.Web.Controllers
 
                 TempData["ScheduleError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
 
-                return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId, model.SortFilter, model.CurrentPage });
             }
 
             //Get user email
@@ -91,10 +91,10 @@ namespace StaffScheduling.Web.Controllers
             {
                 TempData["ScheduleError"] = status.Message;
 
-                return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId, model.SortFilter, model.CurrentPage });
             }
 
-            return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+            return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId, model.SortFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
         [HttpPost]
@@ -154,7 +154,7 @@ namespace StaffScheduling.Web.Controllers
 
                 TempData["VacationError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
 
-                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SortFilter, model.CurrentPage });
             }
 
             //Get user email
@@ -180,10 +180,10 @@ namespace StaffScheduling.Web.Controllers
             {
                 TempData["VacationError"] = status.Message;
 
-                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SortFilter, model.CurrentPage });
             }
 
-            return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+            return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SortFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
         [HttpPost]
@@ -199,7 +199,7 @@ namespace StaffScheduling.Web.Controllers
 
                 TempData["VacationError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
 
-                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SortFilter, model.CurrentPage });
             }
 
             //Get user email
@@ -225,10 +225,10 @@ namespace StaffScheduling.Web.Controllers
             {
                 TempData["VacationError"] = status.Message;
 
-                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId });
+                return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SortFilter, model.CurrentPage });
             }
 
-            return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+            return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SortFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
         [HttpPost]

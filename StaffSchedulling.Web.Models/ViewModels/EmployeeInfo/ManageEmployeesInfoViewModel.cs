@@ -1,11 +1,11 @@
-﻿using StaffScheduling.Common.Enums.Filters;
+﻿using StaffScheduling.Web.Models.FilterModels;
 using StaffScheduling.Web.Models.ViewModels.Department;
 using System.ComponentModel.DataAnnotations;
 using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Web.Models.ViewModels.EmployeeInfo
 {
-    public class ManageEmployeesInfoViewModel
+    public class ManageEmployeesInfoViewModel : ManageEmployeesInfoFilters
     {
         [Required]
         public Guid CompanyId { get; set; }
@@ -21,13 +21,6 @@ namespace StaffScheduling.Web.Models.ViewModels.EmployeeInfo
 
         [Required]
         public List<DepartmentViewModel> Departments { get; set; } = new List<DepartmentViewModel>();
-
-        public string? SearchQuery { get; set; }
-
-        public EmployeeSearchFilter? SearchFilter { get; set; }
-
-        [Required]
-        public int CurrentPage { get; set; } = 1;
 
         [Required]
         public int TotalPages { get; set; }

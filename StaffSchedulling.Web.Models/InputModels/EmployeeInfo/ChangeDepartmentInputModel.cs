@@ -1,9 +1,10 @@
-﻿using StaffScheduling.Web.Models.ViewModels.Department;
+﻿using StaffScheduling.Web.Models.FilterModels;
+using StaffScheduling.Web.Models.ViewModels.Department;
 using System.ComponentModel.DataAnnotations;
 
 namespace StaffScheduling.Web.Models.InputModels.EmployeeInfo
 {
-    public class ChangeDepartmentInputModel
+    public class ChangeDepartmentInputModel : ManageEmployeesInfoFilters
     {
         [Required]
         public Guid CompanyId { get; set; }

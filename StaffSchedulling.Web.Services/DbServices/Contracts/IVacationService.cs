@@ -8,7 +8,7 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
 {
     public interface IVacationService
     {
-        public Task<StatusReport> AddVacationOfEmployeeAsync(AddVacationOfEmployeeInputModel model, string userId);
+        public Task<StatusReport> AddVacationOfEmployeeAsync(AddVacationOfEmployeeInputModel model, string userId, bool isUnitTesting = false);
 
         public Task<StatusReport> DeleteVacationOfEmployeeAsync(DeleteVacationOfEmployeeInputModel model, string userId);
 

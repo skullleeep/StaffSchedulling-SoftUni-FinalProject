@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using StaffScheduling.Data;
@@ -32,13 +33,16 @@ namespace StaffScheduling.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddUserManager<ApplicationUserManager>();
 
-            //Custom extensions
+            //Custom registrations
             builder.Services.RegisterRepositories();
             builder.Services.RegisterUnitOfWork();
             builder.Services.RegisterServices();
             builder.Services.RegisterQuartzJobs();
 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
 
             var app = builder.Build();
 
@@ -53,6 +57,13 @@ namespace StaffScheduling.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //Security Setup
+            app.UseHsts(hsts => hsts.MaxAge(365).IncludeSubdomains());
+            app.UseXContentTypeOptions();
+            app.UseReferrerPolicy(opts => opts.NoReferrer());
+            app.UseXXssProtection(options => options.Enabled());
+            app.UseXfo(options => options.Deny());
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -91,20 +102,6 @@ namespace StaffScheduling.Web
                                 await userManager.CreateUserAsync(email, password, name, UserRole.Admin);
                             }
                         }*/
-
-            //DELETE THISSSSS
-            // Manually trigger the job during application startup for testing
-            using (var scope = app.Services.CreateScope())
-            {
-                var schedulerFactory = scope.ServiceProvider.GetRequiredService<ISchedulerFactory>();
-                var scheduler = await schedulerFactory.GetScheduler();
-
-                var jobKey = new JobKey("VacationCleanupJob");
-                if (await scheduler.CheckExists(jobKey))
-                {
-                    await scheduler.TriggerJob(jobKey);
-                }
-            }
 
             app.Run();
         }
