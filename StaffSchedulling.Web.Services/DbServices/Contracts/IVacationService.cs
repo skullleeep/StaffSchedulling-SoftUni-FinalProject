@@ -20,7 +20,7 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
 
         public Task<StatusReport> DeleteAllVacationsOfCompanyAsync(DeleteAllVacationsOfCompanyInputModel model, PermissionRole userPermissionRole, Guid? userNeededDepartmentId);
 
-        public Task<ManageScheduleViewModel?> GetCompanyManageScheduleModelAsync(Guid companyId, VacationSortFilter? sortFilter, int page, string userId);
+        public Task<ManageScheduleViewModel?> GetCompanyManageScheduleModelAsync(Guid companyId, VacationSortFilter? sortFilter, int page, string userId, bool isUnitTesting = false);
 
         public Task<ManageVacationsViewModel?> GetCompanyManageVacationsModelAsync(Guid companyId, string? searchQuery, VacationSortFilter? sortFilter, int page, PermissionRole userPermissionRole, Guid? userNeededDepartmentId);
     }

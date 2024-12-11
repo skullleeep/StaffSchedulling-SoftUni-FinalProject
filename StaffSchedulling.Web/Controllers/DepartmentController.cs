@@ -9,6 +9,7 @@ namespace StaffScheduling.Web.Controllers
 {
     public class DepartmentController(IPermissionService _permissionService, IDepartmentService _departmentService) : BaseController
     {
+        //Post request when an employee wants to add a department in a company where he has managing rights
         [HttpPost]
         public async Task<IActionResult> AddManually(AddDepartmentManuallyInputModel model)
         {
@@ -47,10 +48,11 @@ namespace StaffScheduling.Web.Controllers
                 return RedirectToAction("Departments", "Manage", new { id = model.CompanyId });
             }
 
-            return RedirectToAction("Departments", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+            return RedirectToAction("Departments", "Manage", new { id = model.CompanyId }); //No scrollToTable because we don't want that after adding
         }
 
-        [HttpPost]
+        //Post request when an employee wants to delete a department in a company where he has managing rights
+        [HttpDelete]
         public async Task<IActionResult> Delete(DeleteDepartmentInputModel model)
         {
             //Check for model errors
@@ -91,7 +93,8 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Departments", "Manage", new { id = model.CompanyId, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
-        [HttpPost]
+        //Post request when an employee wants to delete all departments in a company where he has managing rights
+        [HttpDelete]
         public async Task<IActionResult> DeleteAll(DeleteAllDepartmentsInputModel model)
         {
             //Check for model errors

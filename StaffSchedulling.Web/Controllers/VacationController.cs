@@ -9,6 +9,7 @@ namespace StaffScheduling.Web.Controllers
 {
     public class VacationController(IPermissionService _permissionService, IVacationService _vacationService) : BaseController
     {
+        //Post request when an employee wants to add vacation request to his schedule
         [HttpPost]
         public async Task<IActionResult> AddVacationOfEmployee(AddVacationOfEmployeeInputModel model)
         {
@@ -50,10 +51,11 @@ namespace StaffScheduling.Web.Controllers
                 return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId });
             }
 
-            return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+            return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId }); //No scrollToTable because we don't want that after adding
         }
 
-        [HttpPost]
+        //Post request when an employee wants to delete a vacation request from his schedule
+        [HttpDelete]
         public async Task<IActionResult> DeleteVacationOfEmployee(DeleteVacationOfEmployeeInputModel model)
         {
             //Check for model errors
@@ -97,7 +99,8 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId, model.SortFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
-        [HttpPost]
+        //Post request when an employee wants to delete all vacation requests with chosen status from his schedule
+        [HttpDelete]
         public async Task<IActionResult> DeleteAllVacationsOfEmployee(DeleteAllVacationsOfEmployeeInputModel model)
         {
             //Check for model errors
@@ -141,7 +144,8 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Schedule", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
-        [HttpPost]
+        //Post request when an employee wants to change status of a vacation request in a company where he has managing rights
+        [HttpPut]
         public async Task<IActionResult> ChangeStatus(ChangeStatusInputModel model)
         {
             //Check for model errors
@@ -186,7 +190,8 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SortFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
-        [HttpPost]
+        //Post request when an employee wants to delete a vacation request in a company where he has managing rights
+        [HttpDelete]
         public async Task<IActionResult> DeleteVacationOfCompany(DeleteVacationOfCompanyInputModel model)
         {
             //Check for model errors
@@ -231,7 +236,8 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Vacations", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SortFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
-        [HttpPost]
+        //Post request when an employee wants to delete all vacation requests with chosen status in a company where he has managing rights
+        [HttpDelete]
         public async Task<IActionResult> DeleteAllVacationsOfCompany(DeleteAllVacationsOfCompanyInputModel model)
         {
             //Check for model errors

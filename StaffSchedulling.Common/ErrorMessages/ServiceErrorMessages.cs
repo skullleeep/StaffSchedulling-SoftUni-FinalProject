@@ -67,7 +67,7 @@
             public const string CanNotDeleteAllDeniedVacations = "You can't delete vacation requests which have status 'Denied'! Only higher-ups can delete them for you!";
             public const string CanNotManageEmployeeVacationAsLowerPermission = "You can't manage an employee's vacation with the same or higher permission level than you!";
             public const string CanNotChangeVacationStatusToPending = "You can't change a vacation's status to 'Pending'!";
-            public const string CanNotChangeApproveVacationThatHasAlreadyStarted = "You can't change status of a vacation request which has Start Date: Today or In The Past! You can only delete it!";
+            public const string CanNotChangeStatufOfVacationThatHasAlreadyStarted = "You can't change status of a vacation request which has Start Date: Today or In The Past! You can only delete it!";
 
             //public const string VacationPendingLimitHitFormat = "You can't add more vacation requests because you have hit the pending vacation request limit (Limit: {0})! Delete some if you want to create new ones or wait for a company admin to change the status of one!";
             public const string NotEnoughVacationDaysLeftFormat = "You can't add vacation request because you don't have enough vacation days left! Total vacation days needed: {0}";

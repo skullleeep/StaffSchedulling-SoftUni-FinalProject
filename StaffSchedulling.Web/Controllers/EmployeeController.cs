@@ -9,6 +9,7 @@ namespace StaffScheduling.Web.Controllers
 {
     public class EmployeeController(IPermissionService _permissionService, IEmployeeInfoService _employeeInfoService) : BaseController
     {
+        //Post request when an employee wants to add another employee in a company where he has managing rights
         [HttpPost]
         public async Task<IActionResult> AddManually(AddEmployeeInfoManuallyInputModel model)
         {
@@ -47,10 +48,11 @@ namespace StaffScheduling.Web.Controllers
                 return RedirectToAction("Employees", "Manage", new { id = model.CompanyId });
             }
 
-            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, scrollToTable = true }); //scrollToTable detected by javascript
+            return RedirectToAction("Employees", "Manage", new { id = model.CompanyId }); //No scrollToTable because we don't want that after adding
         }
 
-        [HttpPost]
+        //Post request when an employee wants to change an emoloyee's Role in a company where he has managing rights
+        [HttpPut]
         public async Task<IActionResult> ChangeRole(ChangeRoleInputModel model)
         {
             //Check for model errors
@@ -91,7 +93,8 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
-        [HttpPost]
+        //Post request when an employee wants to change an emoloyee's Department in a company where he has managing rights
+        [HttpPut]
         public async Task<IActionResult> ChangeDepartment(ChangeDepartmentInputModel model)
         {
             //Check for model errors
@@ -132,7 +135,8 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
-        [HttpPost]
+        //Post request when an employee wants to delete another employee in a company where he has managing rights
+        [HttpDelete]
         public async Task<IActionResult> Delete(DeleteEmployeeInputModel model)
         {
             //Check for model errors
@@ -173,7 +177,8 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Employees", "Manage", new { id = model.CompanyId, model.SearchQuery, model.SearchFilter, model.CurrentPage, scrollToTable = true }); //scrollToTable detected by javascript
         }
 
-        [HttpPost]
+        //Post request when an employee wants to delete all other employees in a company where he has managing rights
+        [HttpDelete]
         public async Task<IActionResult> DeleteAll(DeleteAllEmployeesInputModel model)
         {
             //Check for model errors

@@ -10,6 +10,7 @@ namespace StaffScheduling.Web.Controllers
     public class ManageController(IPermissionService _permissionService, ICompanyService _companyService, IEmployeeInfoService _employeeInfoService,
         IDepartmentService _departmentService, IVacationService _vacationService) : BaseController
     {
+        //Get request to get Manage Company page of an employee who has managing rights in company
         [HttpGet("[controller]/[action]/{id?}")]
         public async Task<IActionResult> Company(string id)
         {
@@ -47,6 +48,7 @@ namespace StaffScheduling.Web.Controllers
             return View(model);
         }
 
+        //Get request to get Manage Employees page of an employee who has managing rights in company
         [HttpGet("[controller]/[action]/{id?}")]
         public async Task<IActionResult> Employees(string id, string? searchQuery, EmployeeSearchFilter? searchFilter, int currentPage = 1)
         {
@@ -80,6 +82,7 @@ namespace StaffScheduling.Web.Controllers
             return View(model);
         }
 
+        //Get request to get Manage Departments page of an employee who has managing rights in company
         [HttpGet("[controller]/[action]/{id?}")]
         public async Task<IActionResult> Departments(string id, int currentPage = 1)
         {
@@ -113,6 +116,7 @@ namespace StaffScheduling.Web.Controllers
             return View(model);
         }
 
+        //Get request to get Manage Vacations page of an employee who has managing rights in company
         [HttpGet("[controller]/[action]/{id?}")]
         public async Task<IActionResult> Vacations(string id, string? searchQuery, VacationSortFilter? sortFilter, int currentPage = 1)
         {
@@ -150,6 +154,7 @@ namespace StaffScheduling.Web.Controllers
             return View(model);
         }
 
+        //Get request to get Manage Schedule page of an employee
         [HttpGet("[controller]/[action]/{id?}")]
         public async Task<IActionResult> Schedule(string id, VacationSortFilter? sortFilter, int currentPage = 1)
         {

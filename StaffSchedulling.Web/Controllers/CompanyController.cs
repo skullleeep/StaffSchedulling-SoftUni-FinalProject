@@ -11,7 +11,7 @@ namespace StaffScheduling.Web.Controllers
     [Authorize]
     public class CompanyController(IPermissionService _permissionService, ICompanyService _companyService, IEmployeeInfoService _employeeInfoService) : BaseController
     {
-        //Get request when trying to join a company
+        //Get request when user is trying to join a company
         [HttpGet("[controller]/[action]/{inviteCode?}")]
         public async Task<IActionResult> Join(string? inviteCode)
         {
@@ -34,7 +34,7 @@ namespace StaffScheduling.Web.Controllers
             return View(model);
         }
 
-        //Post request when trying to join a company
+        //Post request when user is trying to join a company
         [HttpPost("[controller]/[action]/{inviteCode}")]
         public async Task<IActionResult> Join(CompanyJoinViewModel model, string inviteCode)
         {
@@ -63,7 +63,7 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Index", "Dashboard");
         }
 
-        //Get request when trying to create a company
+        //Get request when user is trying to create a company
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -72,7 +72,7 @@ namespace StaffScheduling.Web.Controllers
             return View(model);
         }
 
-        //Post request when trying to create a company
+        //Post request when user is trying to create a company
         [HttpPost]
         public async Task<IActionResult> Create(CompanyCreateInputModel model)
         {
@@ -97,7 +97,7 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Index", "Dashboard");
         }
 
-        //Get request when trying to edit a company
+        //Get request when employee is trying to edit a company in which he has managing rights
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
@@ -125,8 +125,8 @@ namespace StaffScheduling.Web.Controllers
             return View(model);
         }
 
-        //Post request when trying to edit a company
-        [HttpPost]
+        //Get request when employee is trying to edit a company in which he has managing rights
+        [HttpPut]
         public async Task<IActionResult> Edit(CompanyEditInputModel model, string id)
         {
             //Check for model errors
@@ -161,8 +161,8 @@ namespace StaffScheduling.Web.Controllers
             return RedirectToAction("Company", "Manage", new { id = model.Id.ToString() });
         }
 
-        //Post request when trying to delete a company
-        [HttpPost]
+        //Post request when employee is trying to delete a company in which he has managing rights
+        [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
             Guid companyGuid = Guid.Empty;
