@@ -118,7 +118,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             var model = await _companyService.GetCompanyEditInputModelAsync(companyGuid);
@@ -144,7 +144,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             string userId = GetCurrentUserId();
@@ -187,7 +187,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Owner)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             //Delete company

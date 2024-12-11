@@ -33,6 +33,11 @@ namespace StaffScheduling.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddUserManager<ApplicationUserManager>();
 
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = new PathString("/Home/Error/403"); //Redirect for access denied (403)
+            });
+
             //Custom registrations
             builder.Services.RegisterRepositories();
             builder.Services.RegisterUnitOfWork();

@@ -34,7 +34,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             //Add department
@@ -76,7 +76,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             //Delete department
@@ -118,7 +118,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             //Delete all departments

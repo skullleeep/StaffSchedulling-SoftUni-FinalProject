@@ -34,7 +34,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             //Add employee
@@ -76,7 +76,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             //Change employee's role
@@ -118,7 +118,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             //Change employee's role
@@ -160,7 +160,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             //Delete employee
@@ -202,7 +202,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             //Delete all employees

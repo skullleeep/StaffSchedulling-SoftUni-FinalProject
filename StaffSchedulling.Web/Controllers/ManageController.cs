@@ -30,7 +30,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Manager)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             var model = await _companyService.GetManageCompanyModel(companyGuid, permissionRole);
@@ -64,7 +64,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             var model = await _employeeInfoService.GetCompanyManageEmployeeInfoModel(companyGuid, searchQuery, searchFilter, currentPage, permissionRole);
@@ -98,7 +98,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Editor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             var model = await _departmentService.GetCompanyManageDepartmentsModel(companyGuid, currentPage);
@@ -132,7 +132,7 @@ namespace StaffScheduling.Web.Controllers
             //Check for access permission
             if (permissionRole < PermissionRole.Manager)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return Forbid();
             }
 
             //Check if the user's employee role needs to have a department
@@ -168,7 +168,11 @@ namespace StaffScheduling.Web.Controllers
             PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
 
             //Check for access permission
-            if (permissionRole < PermissionRole.Visitor || permissionRole == PermissionRole.Owner) //Don't allow owner as the owner doesn't have a schedule
+            if (permissionRole < PermissionRole.Visitor)
+            {
+                return Forbid();
+            }
+            else if (permissionRole >= PermissionRole.Owner) //Don't allow owner as the owner doesn't have a schedule)
             {
                 return RedirectToAction("Index", "Dashboard");
             }
