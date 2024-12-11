@@ -8,13 +8,17 @@
 <ul class="navbar-nav flex-grow-1">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-kanban"></i> Dashboard</a>
-        </li>
-        if (User.IsInRole(UserRole.Administrator.ToString()))
+        if (!User.IsInRole(UserRole.Administrator.ToString()))
         {
-            //TODO:
-            <a class="nav-link text-dark" asp-area="@AdministrationAreaName" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-person-lock"></i> Administration Dashboard</a>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-kanban"></i> Dashboard</a>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="@AdministrationAreaName" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-person-lock"></i> Administration Dashboard</a>
+            </li>
         }
     }
     else
