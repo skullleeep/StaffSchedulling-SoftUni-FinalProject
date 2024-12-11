@@ -1,7 +1,7 @@
 ﻿@using StaffScheduling.Web.Models.InputModels.Department;
 @model AddDepartmentManuallyInputModel
 
-<form asp-controller="Department" asp-action="AddManually" method="post" class="col-md-8  d-flex gap-2">
+<form asp-controller="Department" asp-action="AddManually" method="post" class="d-flex gap-2">
     <input asp-for="CompanyId" type="hidden" readonly/>
     <input asp-for="Name" class="form-control w-75 flex-grow-1" placeholder="Enter department name" required />
     <button type="submit" class="btn btn-success w-auto">Add Department</button>

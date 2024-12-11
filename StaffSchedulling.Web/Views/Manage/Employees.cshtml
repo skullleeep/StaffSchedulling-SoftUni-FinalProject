@@ -63,22 +63,8 @@
     <!-- Employee Adding Section -->
     <div class="card mb-4">
         <div class="card-body">
-            <div class="row">
-                <!-- Add Employee Manually -->
-                <partial name="_EmployeeForms/_AddEmployeeManuallyForm" model="@new AddEmployeeInfoManuallyInputModel() { CompanyId = Model.CompanyId }" />
-
-                <!-- OR -->
-                <div class="col-md-1 d-flex justify-content-center">
-                    <div style="height: 100%; padding-left: 10px; padding-right: 10px; padding-top:10px;">
-                        <h3>OR</h3>
-                    </div>
-                </div>
-
-                <!-- Upload Employees -->
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-outline-success w-100">Upload File With Employees</button>
-                </div>
-            </div>
+            <!-- Add Employee Manually -->
+            <partial name="_EmployeeForms/_AddEmployeeManuallyForm" model="@new AddEmployeeInfoManuallyInputModel() { CompanyId = Model.CompanyId }" />
         </div>
     </div>
 

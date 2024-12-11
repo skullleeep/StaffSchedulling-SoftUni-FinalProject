@@ -34,22 +34,8 @@
     <!-- Department Adding Section -->
     <div class="card mb-4">
         <div class="card-body">
-            <div class="row">
-                <!-- Add Department Manually -->
-                <partial name="_DepartmentForms/_AddDepartmentManuallyForm" model="@new AddDepartmentManuallyInputModel() { CompanyId = Model.CompanyId }" />
-
-                <!-- OR -->
-                <div class="col-md-1 d-flex justify-content-center">
-                    <div style="height: 100%; padding-left: 10px; padding-right: 10px; padding-top:10px;">
-                        <h3>OR</h3>
-                    </div>
-                </div>
-
-                <!-- Upload Departments -->
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-outline-success w-100">Upload File With Departments</button>
-                </div>
-            </div>
+            <!-- Add Department Manually -->
+            <partial name="_DepartmentForms/_AddDepartmentManuallyForm" model="@new AddDepartmentManuallyInputModel() { CompanyId = Model.CompanyId }" />
         </div>
     </div>
 
