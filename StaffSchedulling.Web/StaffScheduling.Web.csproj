@@ -27,7 +27,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="NWebsec.AspNetCore.Core" Version="3.0.1" />
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
     <PackageReference Include="Quartz" Version="3.13.1" />
@@ -40,6 +40,13 @@
     <ProjectReference Include="..\StaffSchedulling.Data\StaffScheduling.Data.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Web.Extensions\StaffScheduling.Web.Extensions.csproj" />
     <ProjectReference Include="..\StaffSchedulling.Web.Services\StaffScheduling.Web.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Administration\Controllers\" />
+    <Folder Include="Areas\Administration\Data\" />
+    <Folder Include="Areas\Administration\Models\" />
+    <Folder Include="Areas\Administration\Views\" />
   </ItemGroup>
 
 </Project>

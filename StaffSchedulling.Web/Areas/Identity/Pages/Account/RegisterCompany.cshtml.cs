@@ -155,8 +155,8 @@ namespace StaffScheduling.Web.Areas.Identity.Pages.Account
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
 
-                        //Redirect to 'Company/Edit' action
-                        return RedirectToAction("Edit", "Company", new { area = "" });
+                        //Redirect to 'Dashboard' action
+                        return RedirectToAction("Index", "Dashboard");
                         //return LocalRedirect(returnUrl);
                     }
                 }

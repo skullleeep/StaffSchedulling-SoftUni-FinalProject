@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using StaffScheduling.Web.Models.ErrorModels;
-using System.Diagnostics;
 
 namespace StaffScheduling.Web.Controllers
 {
@@ -27,9 +25,19 @@ namespace StaffScheduling.Web.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Error()
+        public IActionResult Error(int? statusCode = null)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (!statusCode.HasValue)
+            {
+                return View();
+            }
+
+            if (statusCode == 404 || statusCode == 403 || statusCode == 401)
+            {
+                return View($"Error{statusCode}");
+            }
+
+            return View("Error500");
         }
     }
 }
