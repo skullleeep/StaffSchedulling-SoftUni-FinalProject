@@ -52,7 +52,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to change an emoloyee's Role in a company where he has managing rights
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> ChangeRole(ChangeRoleInputModel model)
         {
             //Check for model errors
@@ -94,7 +94,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to change an emoloyee's Department in a company where he has managing rights
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> ChangeDepartment(ChangeDepartmentInputModel model)
         {
             //Check for model errors
@@ -136,7 +136,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to delete another employee in a company where he has managing rights
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> Delete(DeleteEmployeeInputModel model)
         {
             //Check for model errors
@@ -178,7 +178,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to delete all other employees in a company where he has managing rights
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> DeleteAll(DeleteAllEmployeesInputModel model)
         {
             //Check for model errors

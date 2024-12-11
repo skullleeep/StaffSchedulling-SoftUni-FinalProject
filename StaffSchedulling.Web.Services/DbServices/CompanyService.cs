@@ -101,7 +101,7 @@ namespace StaffScheduling.Web.Services.DbServices
             return new StatusReport { Ok = true };
         }
 
-        public async Task<StatusReport> DeleteCompanyAsync(Guid id)
+        public async Task<StatusReport> DeleteCompanyAsync(DeleteCompanyInputModel model)
         {
             var entityCompany = await _unitOfWork
                 .Companies
@@ -109,7 +109,7 @@ namespace StaffScheduling.Web.Services.DbServices
                 .Include(c => c.CompanyEmployeesInfo)
                 .Include(c => c.Departments)
                 .Include(c => c.Vacations)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == model.CompanyId);
 
             if (entityCompany == null)
             {
@@ -226,7 +226,7 @@ namespace StaffScheduling.Web.Services.DbServices
             };
         }
 
-        public async Task<CompanyManageViewModel?> GetCompanyFromIdAsync(Guid id, bool UserCanEdit, bool UserCanDelete)
+        public async Task<CompanyManageViewModel?> GetManageCompanyModel(Guid id, PermissionRole userPermissionRole)
         {
             var entity = await _unitOfWork
                 .Companies
@@ -245,8 +245,8 @@ namespace StaffScheduling.Web.Services.DbServices
                 Name = entity.Name,
                 Invite = entity.Invite,
                 MaxVacationDaysPerYear = entity.MaxVacationDaysPerYear,
-                UserCanEdit = UserCanEdit,
-                UserCanDelete = UserCanDelete
+                UserCanEdit = userPermissionRole >= PermissionRole.Editor,
+                UserCanDelete = userPermissionRole >= PermissionRole.Owner,
             };
         }
 

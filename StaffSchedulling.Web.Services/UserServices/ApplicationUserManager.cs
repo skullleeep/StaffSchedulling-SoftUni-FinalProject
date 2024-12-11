@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using StaffScheduling.Common.Enums;
 using StaffScheduling.Data.Models;
 
 namespace StaffScheduling.Web.Services.UserServices
@@ -55,6 +56,20 @@ namespace StaffScheduling.Web.Services.UserServices
                 return String.Empty;
 
             return user.Email ?? String.Empty;
+        }
+
+        public virtual async Task<bool> IsUserAdministratorFromEmailAsync(string email)
+        {
+            var user = await Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpper());
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            return await IsInRoleAsync(user, UserRole.Administrator.ToString());
         }
 
         private async Task<ApplicationUser?> GetUserWithEmployeeInfoInCompaniesFromEmailAsync(string email)

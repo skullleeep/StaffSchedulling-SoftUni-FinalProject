@@ -144,8 +144,10 @@ namespace StaffScheduling.Tests.ServiceTests
             await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
+            var model = new DeleteCompanyInputModel() { CompanyId = newEntity.Id };
+
             //Act
-            var result = await _companyService.DeleteCompanyAsync(newEntity.Id);
+            var result = await _companyService.DeleteCompanyAsync(model);
 
             //Assert
             Assert.IsTrue(result.Ok);
@@ -175,8 +177,10 @@ namespace StaffScheduling.Tests.ServiceTests
 
             Guid notExistingCompanyId = Guid.NewGuid();
 
+            var model = new DeleteCompanyInputModel() { CompanyId = notExistingCompanyId };
+
             //Act
-            var result = await _companyService.DeleteCompanyAsync(notExistingCompanyId);
+            var result = await _companyService.DeleteCompanyAsync(model);
 
             //Assert
             Assert.IsFalse(result.Ok);
@@ -479,8 +483,10 @@ namespace StaffScheduling.Tests.ServiceTests
             await _dbContext.Companies.AddAsync(newEntity);
             await _dbContext.SaveChangesAsync();
 
+            PermissionRole userPermissionRole = PermissionRole.Editor;
+
             //Act
-            var model = await _companyService.GetCompanyFromIdAsync(companyId, true, true);
+            var model = await _companyService.GetManageCompanyModel(companyId, userPermissionRole);
 
             //Assert
             Assert.IsNotNull(model);
@@ -507,9 +513,10 @@ namespace StaffScheduling.Tests.ServiceTests
             await _dbContext.SaveChangesAsync();
 
             Guid randomId = Guid.NewGuid();
+            PermissionRole userPermissionRole = PermissionRole.Editor;
 
             //Act
-            var model = await _companyService.GetCompanyFromIdAsync(randomId, true, true);
+            var model = await _companyService.GetManageCompanyModel(randomId, userPermissionRole);
 
             //Assert
             Assert.IsNull(model);

@@ -85,23 +85,10 @@ namespace StaffScheduling.Web
             }
 
             //Add custom admin
-            /*            using (var scope = app.Services.CreateScope())
-                        {
-                            var userManager =
-                                scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-                            string name = "Admin";
-                            string email = DefaultAdminEmail;
-                            string password = DefaultAdminPassword;
-
-                            var usersInAdminRole = await userManager.GetUsersInRoleAsync(UserRole.Admin.ToString());
-
-                            //If there are no admins then create one
-                            if (usersInAdminRole.Count == 0)
-                            {
-                                await userManager.CreateUserAsync(email, password, name, UserRole.Admin);
-                            }
-                        }*/
+            using (var scope = app.Services.CreateScope())
+            {
+                await scope.CreateDefaultAdminAsync();
+            }
 
             app.Run();
         }

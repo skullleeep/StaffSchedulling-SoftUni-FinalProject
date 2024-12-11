@@ -37,6 +37,13 @@ namespace StaffScheduling.Web.Services.DbServices
 
             if (entityEmployeeInfo == null)
             {
+                //Check if user is in role 'Administrator'
+                //And if it is give full-access rights
+                if (await _userManager.IsUserAdministratorFromEmailAsync(userEmail))
+                {
+                    return PermissionRole.Administrator;
+                }
+
                 return PermissionRole.None;
             }
 

@@ -32,7 +32,7 @@ namespace StaffScheduling.Web.Controllers
             PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
-            if (permissionRole < PermissionRole.Visitor || permissionRole == PermissionRole.Owner) //Don't allow owner as the owner doesn't have a schedule
+            if (permissionRole < PermissionRole.Visitor || permissionRole >= PermissionRole.Owner) //Don't allow owner as the owner doesn't have a schedule
             {
                 return RedirectToAction("Index", "Dashboard");
             }
@@ -55,7 +55,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to delete a vacation request from his schedule
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> DeleteVacationOfEmployee(DeleteVacationOfEmployeeInputModel model)
         {
             //Check for model errors
@@ -77,7 +77,7 @@ namespace StaffScheduling.Web.Controllers
             PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
-            if (permissionRole < PermissionRole.Visitor || permissionRole == PermissionRole.Owner) //Don't allow owner as the owner doesn't have a schedule
+            if (permissionRole < PermissionRole.Visitor || permissionRole >= PermissionRole.Owner) //Don't allow owner as the owner doesn't have a schedule
             {
                 return RedirectToAction("Index", "Dashboard");
             }
@@ -100,7 +100,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to delete all vacation requests with chosen status from his schedule
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> DeleteAllVacationsOfEmployee(DeleteAllVacationsOfEmployeeInputModel model)
         {
             //Check for model errors
@@ -122,7 +122,7 @@ namespace StaffScheduling.Web.Controllers
             PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
-            if (permissionRole < PermissionRole.Visitor || permissionRole == PermissionRole.Owner) //Don't allow owner as the owner doesn't have a schedule
+            if (permissionRole < PermissionRole.Visitor || permissionRole >= PermissionRole.Owner) //Don't allow owner as the owner doesn't have a schedule
             {
                 return RedirectToAction("Index", "Dashboard");
             }
@@ -145,7 +145,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to change status of a vacation request in a company where he has managing rights
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> ChangeStatus(ChangeStatusInputModel model)
         {
             //Check for model errors
@@ -191,7 +191,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to delete a vacation request in a company where he has managing rights
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> DeleteVacationOfCompany(DeleteVacationOfCompanyInputModel model)
         {
             //Check for model errors
@@ -237,7 +237,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to delete all vacation requests with chosen status in a company where he has managing rights
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> DeleteAllVacationsOfCompany(DeleteAllVacationsOfCompanyInputModel model)
         {
             //Check for model errors

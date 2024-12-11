@@ -1,4 +1,5 @@
 ﻿@using StaffScheduling.Web.Models.ViewModels.Company;
+@using StaffScheduling.Web.Models.InputModels.Company;
 @using static StaffScheduling.Common.Constants.ApplicationConstants;
 @model CompanyManageViewModel
 
@@ -21,7 +22,7 @@
 @*                 <h3 class="text-center mb-4">Company Information</h3> *@
                 <ul class="list-group list-group-flush text-center">
                     <li class="list-group-item">
-                        <span class="text-muted">Company Name:</span> <strong>@Model.Name</strong>
+                        <span class="text-muted">Company Name:</span> <strong id="companyName-@Model.Id">@Model.Name</strong>
                     </li>
                     <li class="list-group-item">
                         <span class="text-muted">Maximum Vacation Days Per Year (For each employee):</span> <strong>@Model.MaxVacationDaysPerYear</strong>
@@ -74,31 +75,18 @@
             {
                 <div class="text-center mt-5">
                     <div class="text-danger" role="alert">
-                        @if(String.IsNullOrEmpty(TempData["DeleteError"] as String) == false){
-                            <p>@TempData["DeleteError"]</p>
+                        @if(String.IsNullOrEmpty(TempData["CompanyError"] as String) == false){
+                            <p>@TempData["CompanyError"]</p>
                         }
                     </div>
-                    <form id="deleteForm" asp-controller="Company" asp-action="Delete" method="post">@*  onsubmit="return confirmDelete(event, '@(Model.Name)')"> *@
-                            <input type="hidden" name="id" value="@Model.Id" />
-                            <button type="button" class="btn btn-danger btn-lg px-5 py-3" onclick="confirmDelete('@(Model.Name)')">
-                                <i class="bi bi-trash3-fill"></i> Delete Company
-                        </button>
-                    </form>
+                    <partial name="_CompanyForms/_DeleteCompanyForm" model="@new DeleteCompanyInputModel() { CompanyId = Model.Id }" />
                 </div>
             }
         </div>
     </div>
 </div>
 
-<script src="~/js/confirmation-modal.js"></script>
-<script>
-    function confirmDelete(companyName) {
-        // Show the confirmation modal
-        showConfirmationModal(
-            `Are you sure you want to delete company '${companyName}'?`,
-            () => document.getElementById('deleteForm').submit(), // Resubmit the form upon confirmation
-            "btn-danger",
-            "Delete"
-        );
-    }
-</script>
+@section Scripts {
+    <script src="~/js/confirmation-modal.js"></script>
+    <script src="~/js/manage-company.js"></script>
+}

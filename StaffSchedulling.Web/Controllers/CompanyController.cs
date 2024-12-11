@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StaffScheduling.Common;
+using StaffScheduling.Common.ErrorMessages;
 using StaffScheduling.Web.Models.InputModels.Company;
 using StaffScheduling.Web.Models.ViewModels.Company;
 using StaffScheduling.Web.Services.DbServices.Contracts;
@@ -126,7 +127,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Get request when employee is trying to edit a company in which he has managing rights
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> Edit(CompanyEditInputModel model, string id)
         {
             //Check for model errors
@@ -162,21 +163,26 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when employee is trying to delete a company in which he has managing rights
-        [HttpDelete]
-        public async Task<IActionResult> Delete(string id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(DeleteCompanyInputModel model)
         {
-            Guid companyGuid = Guid.Empty;
-
-            //Check for non-valid string or guid
-            if (IsGuidValid(id, ref companyGuid) == false)
+            //Check for model errors
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction("Index", "Dashboard");
+                //Get model errors
+                string message = string.Join(" | ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+
+                TempData["CompanyError"] = String.Format(ModelErrorMessages.InvalidModelStateFormat, message);
+
+                return RedirectToAction("Company", "Manage", new { id = model.CompanyId });
             }
 
             //Get user email
             string userEmail = GetCurrentUserEmail();
 
-            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(companyGuid, userEmail);
+            PermissionRole permissionRole = await _permissionService.GetUserPermissionInCompanyAsync(model.CompanyId, userEmail);
 
             //Check for access permission
             if (permissionRole < PermissionRole.Owner)
@@ -185,13 +191,13 @@ namespace StaffScheduling.Web.Controllers
             }
 
             //Delete company
-            StatusReport status = await _companyService.DeleteCompanyAsync(companyGuid);
+            StatusReport status = await _companyService.DeleteCompanyAsync(model);
 
             //Check for errors
             if (status.Ok == false)
             {
-                TempData["DeleteError"] = status.Message;
-                return RedirectToAction("Company", "Manage", new { id = id });
+                TempData["CompanyError"] = status.Message;
+                return RedirectToAction("Company", "Manage", new { id = model.CompanyId });
             }
 
             return RedirectToAction("Index", "Dashboard");

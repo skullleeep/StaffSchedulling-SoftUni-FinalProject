@@ -15,7 +15,8 @@
             Visitor = 1,
             Manager = 2,
             Editor = 3,
-            Owner = 4
+            Owner = 4,
+            Administrator = 5
         }
 
         //Used to 'Parse' EmployeeRole roles to PermissionRole roles

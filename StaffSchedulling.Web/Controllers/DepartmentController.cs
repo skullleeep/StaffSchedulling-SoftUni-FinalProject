@@ -52,7 +52,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to delete a department in a company where he has managing rights
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> Delete(DeleteDepartmentInputModel model)
         {
             //Check for model errors
@@ -94,7 +94,7 @@ namespace StaffScheduling.Web.Controllers
         }
 
         //Post request when an employee wants to delete all departments in a company where he has managing rights
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> DeleteAll(DeleteAllDepartmentsInputModel model)
         {
             //Check for model errors

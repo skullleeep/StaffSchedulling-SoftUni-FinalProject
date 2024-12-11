@@ -33,11 +33,7 @@ namespace StaffScheduling.Web.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
 
-
-            bool canUserEdit = permissionRole >= PermissionRole.Editor ? true : false; //Check for edit permission
-            bool canUserDelete = permissionRole == PermissionRole.Owner ? true : false; //Check for delete permission
-
-            var model = await _companyService.GetCompanyFromIdAsync(companyGuid, canUserEdit, canUserDelete);
+            var model = await _companyService.GetManageCompanyModel(companyGuid, permissionRole);
 
             //Check if entity exists
             if (model == null)

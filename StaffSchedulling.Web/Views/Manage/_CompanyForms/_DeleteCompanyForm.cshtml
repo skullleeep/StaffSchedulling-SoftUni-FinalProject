@@ -1,0 +1,9 @@
+﻿@using StaffScheduling.Web.Models.InputModels.Company;
+@model DeleteCompanyInputModel
+
+
+<form id="deleteForm" asp-controller="Company" asp-action="Delete" method="post">
+    <input asp-for="CompanyId" type="hidden" readonly />
+
+    <button type="button" class="btn btn-danger btn-lg px-5 py-3" onclick="confirmDelete('@(Model.CompanyId)')"><i class="bi bi-trash3-fill"></i> Delete Company</button>
+</form>
