@@ -414,6 +414,32 @@ namespace StaffScheduling.Web.Services.DbServices
             return new StatusReport { Ok = true };
         }
 
+        public async Task<StatusReport> ChangeEmailOfUser(string oldEmail, string newEmail)
+        {
+            var entities = await _unitOfWork
+                .EmployeesInfo
+                .All()
+                .Where(ef => ef.NormalizedEmail == oldEmail.ToUpper())
+                .ToListAsync();
+
+            try
+            {
+                foreach (var entity in entities)
+                {
+                    entity.Email = newEmail;
+                    entity.NormalizedEmail = newEmail.ToUpper();
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusReport { Ok = false, Message = String.Format(DatabaseErrorFormat, ex.Message) };
+            }
+
+            return new StatusReport { Ok = true };
+        }
+
         public async Task<ManageEmployeesInfoViewModel?> GetCompanyManageEmployeeInfoModel(Guid companyId, string? searchQuery, EmployeeSearchFilter? searchFilter, int page, PermissionRole userPermissionRole)
         {
             //Search by Email by default
