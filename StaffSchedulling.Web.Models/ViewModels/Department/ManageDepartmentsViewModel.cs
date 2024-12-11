@@ -1,5 +1,6 @@
 ﻿using StaffScheduling.Web.Models.FilterModels;
 using System.ComponentModel.DataAnnotations;
+using static StaffScheduling.Common.Constants.DataConstants.Company;
 
 namespace StaffScheduling.Web.Models.ViewModels.Department
 {
@@ -9,6 +10,8 @@ namespace StaffScheduling.Web.Models.ViewModels.Department
         public Guid CompanyId { get; set; }
 
         [Required]
+        [MinLength(NameMinLength)]
+        [MaxLength(NameMaxLength)]
         public string CompanyName { get; set; } = null!;
 
         [Required]

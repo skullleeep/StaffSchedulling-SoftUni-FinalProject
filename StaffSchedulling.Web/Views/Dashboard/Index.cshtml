@@ -50,7 +50,9 @@
 
                             <div class="col h-100" style="text-align: center;">
                             <div class="card shadow bg-light mb-3" style="max-width: 18rem;">
-                                    <div class="card-header" style="font-weight: 400;"><b>@company.Name</b></div>
+                                    <div class="card-header" style="font-weight: 400;">
+                                        <b>@company.Name</b>
+                                    </div>
                                     <div class="card-body">
                                     <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
                                     <a asp-controller="Manage" asp-action="Company" asp-route-id="@company.Id" class="btn btn-outline-dark">

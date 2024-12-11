@@ -226,6 +226,74 @@ namespace StaffScheduling.Web.Services.DbServices
             };
         }
 
+        public async Task<CompanyAdministrationDashboardViewModel> GetCompaniesForAdministratorModel(string? searchQuery, CompanySortFilter? sortFilter, int page)
+        {
+            //Order by NameAscending by default
+            if (sortFilter.HasValue == false)
+            {
+                sortFilter = CompanySortFilter.NameAscending;
+            }
+
+            //Get IQueryable of the most basic needed results
+            IQueryable<Company> entitiesBase = _unitOfWork
+                .Companies
+                .All()
+                .Include(c => c.Owner)
+                .AsNoTracking();
+
+            //Check if searchQuery has value then filter companies
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                entitiesBase = entitiesBase
+                    .Where(c => c.NormalizedName.Contains(searchQuery.ToUpper())
+                                || c.Owner.Email!.ToLower().Contains(searchQuery.ToLower()));
+            }
+
+            //Calculate total employees and pages
+            int totalEmployees = await entitiesBase.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalEmployees / (double)DashboardAdministrationCompaniesPageSize);
+
+            //Check if page is non-existent page
+            //If it is then make page last page
+            if (page > totalPages || page < 1)
+            {
+                page = Math.Max(totalPages, 1);
+            }
+
+            IQueryable<CompanyAdministrationViewModel> selectedModels = entitiesBase
+                .Select(c => new CompanyAdministrationViewModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    OwnerEmail = c.Owner.Email!,
+                    Invite = c.Invite,
+                });
+
+
+            if (sortFilter == CompanySortFilter.NameAscending)
+            {
+                selectedModels = selectedModels.OrderBy(c => c.Name);
+            }
+            else if (sortFilter == CompanySortFilter.NameDescending)
+            {
+                selectedModels = selectedModels.OrderByDescending(c => c.Name);
+            }
+
+            List<CompanyAdministrationViewModel> companyModels = await selectedModels
+                .Skip((page - 1) * DashboardAdministrationCompaniesPageSize)
+                .Take(DashboardAdministrationCompaniesPageSize)
+                .ToListAsync();
+
+            return new CompanyAdministrationDashboardViewModel()
+            {
+                Companies = companyModels,
+                SearchQuery = searchQuery,
+                SortFilter = sortFilter,
+                CurrentPage = page,
+                TotalPages = totalPages,
+            };
+        }
+
         public async Task<CompanyManageViewModel?> GetManageCompanyModel(Guid id, PermissionRole userPermissionRole)
         {
             var entity = await _unitOfWork

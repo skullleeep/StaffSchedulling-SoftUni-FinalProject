@@ -1,6 +1,7 @@
 ﻿using StaffScheduling.Web.Models.FilterModels;
 using StaffScheduling.Web.Models.ViewModels.Department;
 using System.ComponentModel.DataAnnotations;
+using static StaffScheduling.Common.Constants.DataConstants.Company;
 using static StaffScheduling.Common.Enums.CustomRoles;
 
 namespace StaffScheduling.Web.Models.ViewModels.EmployeeInfo
@@ -11,6 +12,8 @@ namespace StaffScheduling.Web.Models.ViewModels.EmployeeInfo
         public Guid CompanyId { get; set; }
 
         [Required]
+        [MinLength(NameMinLength)]
+        [MaxLength(NameMaxLength)]
         public string CompanyName { get; set; } = null!;
 
         [Required]

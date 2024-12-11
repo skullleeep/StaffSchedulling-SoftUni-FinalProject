@@ -1,0 +1,98 @@
+﻿@using StaffScheduling.Common
+@using StaffScheduling.Common.Enums.Filters
+@using StaffScheduling.Web.Models.ViewModels.Company;
+@using StaffScheduling.Common.Enums;
+@using static StaffScheduling.Common.Constants.ApplicationConstants;
+@model CompanyAdministrationDashboardViewModel
+
+@{
+    ViewData["Title"] = "Administration Dashboard";
+    
+
+    string inviteLinkBase = String.Format(InviteLinkEmptyFormat, Context.Request.Scheme, Context.Request.Host);
+}
+
+<h1>Administration Dashboard</h1>
+<br />
+
+<!-- Filter Section -->
+<div class="row mb-4">
+    <form method="get" asp-action="Index" class="d-flex flex-wrap align-items-center gap-2">
+        <!-- Search Input -->
+        <div class="flex-grow-1">
+            <input type="text" asp-for="SearchQuery" class="form-control"
+                   placeholder="Search by company name and owner email" value="@Model.SearchQuery" />
+        </div>
+
+        <!-- Filter Dropdown and Button -->
+        <div class="d-flex align-items-center gap-2">
+            <select asp-for="SortFilter" id="sortFilter" name="sortFilter" class="form-select" style="min-width: 150px;">
+                @foreach (var filter in Helper.EnumArray<CompanySortFilter>())
+                {
+                    if (filter == Model.SortFilter)
+                    {
+                        <option value="@filter.ToString()" selected="selected">Sort By: @Helper.AddSpacesToString(filter.ToString())</option>
+                    }
+                    else
+                    {
+                        <option value="@filter.ToString()">Sort By: @Helper.AddSpacesToString(filter.ToString())</option>
+                    }
+                }
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
+</div>
+
+<hr />
+
+<div class="d-flex flex-wrap justify-content-center align-items-start gap-3">
+    @if (Model.Companies.Any())
+    {
+        foreach (var company in Model.Companies)
+        {
+            string inviteLink = inviteLinkBase + company.Invite.ToString();
+
+            <div class="card-container" style="text-align: center;">
+                <div class="card shadow bg-light mb-3" style="max-width: 18rem;">
+                    <div class="card-header" style="font-weight: 400;">
+                        <b>@company.Name</b>
+                        <hr class="m-1" />
+                        <span>@company.OwnerEmail</span>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" id="inviteCode_@company.Id" value="@inviteLink" />
+                        <a asp-controller="Manage" asp-action="Company" asp-route-id="@company.Id" class="btn btn-outline-dark">
+                            <i class="bi bi-pencil-square"></i> Manage Company
+                        </a>
+                        <button id="copyBtn_@company.Id" onclick="copyInviteCode('@company.Id')" class="btn btn-link">
+                            <i class="bi bi-copy"></i> <span>Copy Invite Link</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No companies found.</p>
+    }
+</div>
+
+<!-- Pagination Section -->
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        @for (var i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-controller="Dashboard" asp-action="Index"
+                   asp-route-searchQuery="@Model.SearchQuery"
+                   asp-route-sortFilter="@Model.SortFilter"
+                   asp-route-currentPage="@i">
+                    @i
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+

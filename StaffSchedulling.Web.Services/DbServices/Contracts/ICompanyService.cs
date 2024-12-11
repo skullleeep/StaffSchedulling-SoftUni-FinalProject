@@ -18,6 +18,8 @@ namespace StaffScheduling.Web.Services.DbServices.Contracts
 
         public Task<DashboardCompaniesViewModel> GetOwnedAndJoinedCompaniesFromUserEmailAsync(string email, CompanySortFilter? sortFilter);
 
+        public Task<CompanyAdministrationDashboardViewModel> GetCompaniesForAdministratorModel(string? searchQuery, CompanySortFilter? sortFilter, int page);
+
         public Task<CompanyManageViewModel?> GetManageCompanyModel(Guid id, PermissionRole userPermissionRole);
 
         public Task<CompanyEditInputModel?> GetCompanyEditInputModelAsync(Guid id);

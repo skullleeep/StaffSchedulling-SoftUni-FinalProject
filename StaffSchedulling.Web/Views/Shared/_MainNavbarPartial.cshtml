@@ -2,6 +2,7 @@
 @using StaffScheduling.Common.Enums
 @using StaffScheduling.Data.Models
 @using StaffScheduling.Web.Services.UserServices
+@using static StaffScheduling.Common.Constants.ApplicationConstants;
 @inject SignInManager<ApplicationUser> SignInManager
 
 <ul class="navbar-nav flex-grow-1">
@@ -13,7 +14,7 @@
         if (User.IsInRole(UserRole.Administrator.ToString()))
         {
             //TODO:
-            <a class="nav-link text-dark" asp-area="Administration" asp-controller="Manage" asp-action="Index"><i class="bi bi-person-lock"></i> Administration Dashboard</a>
+            <a class="nav-link text-dark" asp-area="@AdministrationAreaName" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-person-lock"></i> Administration Dashboard</a>
         }
     }
     else
