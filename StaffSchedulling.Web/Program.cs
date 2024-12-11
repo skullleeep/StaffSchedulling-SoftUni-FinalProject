@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Quartz;
 using StaffScheduling.Data;
 using StaffScheduling.Data.Models;
+using StaffScheduling.Data.Seeding;
 using StaffScheduling.Web.Extensions;
 using StaffScheduling.Web.Services.UserServices;
 
@@ -91,17 +92,28 @@ namespace StaffScheduling.Web
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
-
             //Add custom roles
             using (var scope = app.Services.CreateScope())
             {
                 await scope.CreateDefaultRolesAsync();
             }
 
-            //Add custom admin
-            using (var scope = app.Services.CreateScope())
+            if (app.Environment.IsDevelopment())
             {
-                await scope.CreateDefaultAdminAsync();
+                //Seed data
+                using (var scope = app.Services.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    var manager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+                    await DataSeeder.SeedData(context, manager);
+                }
+
+                //Add custom admin
+                using (var scope = app.Services.CreateScope())
+                {
+                    await scope.CreateDefaultAdminAsync();
+                }
             }
 
             app.Run();
