@@ -67,12 +67,12 @@ namespace StaffScheduling.Data.Seeding
                 //Create employee info for company1
                 var employee1 = new EmployeeInfo
                 {
-                    Email = "employee1@tech.com",
+                    Email = user2.Email,
                     Role = EmployeeRole.Employee,
                     HasJoined = true,
                     CompanyId = company1.Id,
                     DepartmentId = dept1.Id,
-                    UserId = user1.Id
+                    UserId = user2.Id
                 };
 
                 var employee2 = new EmployeeInfo
@@ -87,12 +87,12 @@ namespace StaffScheduling.Data.Seeding
                 //Create employee info for company2
                 var employee3 = new EmployeeInfo
                 {
-                    Email = "employee1@green.com",
+                    Email = user1.Email,
                     Role = EmployeeRole.Employee,
                     HasJoined = true,
                     CompanyId = company2.Id,
                     DepartmentId = dept3.Id,
-                    UserId = user2.Id
+                    UserId = user1.Id
                 };
 
                 _context.EmployeesInfo.AddRange(employee1, employee2, employee3);
